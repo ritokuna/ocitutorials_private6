@@ -1,1 +1,4 @@
-Sitemap: https://oracle-japan.github.io/ocitutorials/sitemap.xml
+User-agent: *
+Disallow: /tags/*
+
+Sitemap: https://ritokuna.github.io/ocitutorials_private6/sitemap.xml
