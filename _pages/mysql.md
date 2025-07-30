@@ -3,7 +3,8 @@ title: "MySQL Database Serviceチュートリアル"
 excerpt: "MySQL Database Serviceチュートリアルに関するチュートリアルです。"
 permalink: /mysql/
 layout: single
-tags: "mysql"
+tags: 
+    - "mysql"
 show_excerpts: true
 toc: true
 ---

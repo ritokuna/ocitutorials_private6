@@ -1,0 +1,66 @@
+<nav>
+  <!-- 検索窓 -->
+  <!-- {{ partial "search" . }} -->
+  <!------------------> 
+
+  <!-- ナビゲーション -->
+  <!-- <section class="gdoc-nav--main">
+    <h3>{{ i18n "nav_navigation" }}</h3>
+    {{ if .Site.Params.geekdocMenuBundle }}
+      {{ partial "menu-bundle" (dict "current" . "source" .Site.Data.menu.main.main) }}
+    {{ else }}
+      {{ partial "menu-filetree" . }}
+    {{ end }}
+  </section> -->
+  <!------------------> 
+
+
+  <!-- 目次セクション -->
+  <section class="gdoc-nav--toc"> 
+    <h1>&nbsp;{{ i18n "nav_toc" }}</h1>
+    {{ if .TableOfContents }}
+      {{- with .TableOfContents }}
+        {{- $toc := . -}}
+        {{- $toc = replaceRE `<nav id="TableOfContents">\s*<ul>\s*<li>\s*<ul>` `<ul>` $toc -}}
+        {{- $toc = replaceRE `</ul>\s*</li>\s*</ul>\s*</nav>` `</ul>` $toc -}}
+        <!-- <nav>を剥がす -->
+        {{- $toc = replaceRE `(?s)^<nav[^>]*>(.*?)</nav>$` `$1` $toc -}}
+        <!------------------->
+        {{- $toc | safeHTML -}}
+      {{ end }}
+    {{ end }} 
+  </section>
+  <!------------------>
+
+
+  {{ if and (in (slice "posts" "tags") .Section) (default false .Site.Params.geekdocTagsToMenu) }}
+    <section class="gdoc-nav--tags">
+      <h1>{{ i18n "nav_tags" }}</h1>
+      <ul class="gdoc-nav__list">
+        {{ $currentPage := .RelPermalink }}
+        {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+          {{ with $.Site.GetPage (printf "/tags/%s" $name) }}
+            <li>
+              <a
+                class="gdoc-nav__entry{{- if eq $currentPage .RelPermalink }}
+                  {{- printf " is-active" }}
+                {{- end }}"
+                href="{{ .RelPermalink }}"
+              >
+                {{ partial "utils/title" . }}
+              </a>
+            </li>
+          {{ end }}
+        {{ end }}
+      </ul>
+    </section>
+  {{ end }}
+
+
+  <section class="gdoc-nav--more">
+    {{ if .Site.Data.menu.more.more }}
+      <h3>{{ i18n "nav_more" }}</h3>
+      {{ partial "menu-bundle" (dict "current" . "source" .Site.Data.menu.more.more) }}
+    {{ end }}
+  </section>
+</nav>

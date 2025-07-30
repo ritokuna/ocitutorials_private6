@@ -3,7 +3,8 @@ title: "データサイエンス/ビッグデータチュートリアル"
 excerpt: "OCIにおける各種データサイエンス/ビッグデータ関連サービスのチュートリアルについて学習できるチュートリアルです。"
 permalink: /datascience/
 layout: single
-tags: "datascience"
+tags: 
+  - "datascience"
 show_excerpts: true
 toc: true
 ---

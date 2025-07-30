@@ -1,0 +1,11 @@
+{{- $pages := where .Site.RegularPages "Params.tags" "ne" nil -}}
+[
+  {{- range $index, $page := $pages -}}
+    {{- if gt $index 0 }},{{ end }}
+    {
+      "title": {{ $page.Title | jsonify }},
+      "url": {{ $page.RelPermalink | jsonify }},
+      "tags": {{ $page.Params.tags | jsonify }}
+    }
+  {{- end -}}
+]
