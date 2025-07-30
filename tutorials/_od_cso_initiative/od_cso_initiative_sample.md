@@ -8,5 +8,6 @@ tags:
 
 これはODのCloud Optimization Initiativeのページです。削除予定です。
 20250730徳永更新
+20250730徳永更新2
 
 ![](sample1.png)
