@@ -2,7 +2,7 @@ name: Build and deploy Hugo site to GitHub Pages
 on:
   push:
     branches:
-      - main  # 本番はmainブランチだけに限定
+      - master  # 本番はmainブランチだけに限定
 jobs:
   deploy:
     runs-on: ubuntu-latest
