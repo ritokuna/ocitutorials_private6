@@ -1,0 +1,1046 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Email Deliveryを利用した外部へのメール送信(基礎編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Email Deliveryを利用した外部へのメール送信(基礎編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/">
+
+
+  <meta property="og:description" content="クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/img1.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/sending-emails-1/img1.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Email Deliveryを利用した外部へのメール送信(基礎編)
+
+        
+      </h1>
+      
+        <p class="page__lead">クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Email Deliveryを利用した外部へのメール送信(基礎編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/object-storage-advanced/">オブジェクト・ストレージの高度な設定</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/certificate/">プライベート認証局と証明書の発行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/" class="active">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-shell/">クラウド・シェルを使ってブラウザだけで簡単コマンド操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/budget-quota/">予算と割当て制限を設定してコストを適正化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/web-application-acceleration/">Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/vtap/">VTAPでパケットをミラーリングし、パケットキャプチャをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/mobile_app/">OCIモバイル・アプリケーションを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/secure-desktop/">Oracle Secure Desktopsで簡単VDI環境構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Email Deliveryを利用した外部へのメール送信(基礎編)">
+    <meta itemprop="description" content="クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1電子メールの概要">1.　電子メールの概要</a></li><li><a href="#2-smtp資格証明の生成">2. SMTP資格証明の生成</a></li><li><a href="#3-承認済み送信者の作成">3. 承認済み送信者の作成</a></li><li><a href="#4-mailxでメール送信">4. Mailxでメール送信</a></li><li><a href="#5-おまけ">5. おまけ</a><ul><li><a href="#1-malixを利用した際にエラーが発生した場合">1. Malixを利用した際にエラーが発生した場合</a></li><li><a href="#2-postfixによるメール送信">2. Postfixによるメール送信</a></li><li><a href="#3-javamailによるメール送信">3. JavaMailによるメール送信</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong>  <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>OCIのEmail Deliveryサービスを使用することにより、電子メールを受信者へ簡単に一括配信できます。またSPFやDKIMを設定をすることにより、送信元を偽装するなりすましメールを対策して、メールの到達可能性を向上させることができます。</p>
+
+<p>今回のチュートリアルではSMTP認証を設定してMailxでメールを送信します。</p>
+
+<p><img src="img1.png" alt="img1.png" /></p>
+
+<p><strong>所要時間：</strong>　約40分</p>
+
+<p><strong>前提条件：</strong></p>
+<ol>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成</a>が完了していること</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a>（今回のチュートリアルではOracle Linuxインスタンス7.9を使用しています）</li>
+  <li>Javaがインストールされていること（今回のチュートリアルではJava 17で実施しています）</li>
+  <li>Eclipse IDEがインストールされていて使用できる状態であること（今回のチュートリアルではEclipse 2021で実施しています）</li>
+</ol>
+
+<p><strong>注意</strong>:</p>
+<ol>
+  <li>チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります</li>
+  <li>前提条件の3,4はJavaMailからメール送信を行う際に必要になります</li>
+</ol>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1電子メールの概要">1.　電子メールの概要</h1>
+
+<p>電子メールを送信すると、送信者側のメールサーバー、相手側のメールサーバーを経由して受信者にメールが届きます。メールを送信してから受信者のメールサーバーに届くまでの通信にSMTPのプロトコルが使用されています。</p>
+
+<p>電子メールは「メールヘッダ」、「エンべロープ」そして「メール本文」の3つから構成されています。GmailやOutlook等のメールソフトでメールを送受信する際に送信元や宛先等が見えるかと思いますが、これはメールヘッダに当たります。実際にSMTPサーバーが利用するのはメールヘッダの情報ではなくエンベロープの情報になります。ヘッダー情報とエンベロープ情報が違ってもメールを送信できることから、ヘッダーを偽造してなりすましメールを送ることができてしまいます。</p>
+
+<p>このようななりすましメールを対策するために今回の基礎編のチュートリアルSMTP認証を、そして応用編ではSPFとDKIMの設定をします。</p>
+
+<ul>
+  <li>
+    <p>SMTP認証 - メール送信者がユーザーであるかを確認する認証方法です。メールを送信する際にユーザー名とパスワードがないと送れないシステムになります。</p>
+  </li>
+  <li>
+    <p>SPF - 送信ドメイン認証の1つで、事前に送信側のメールサーバーのIPアドレスもしくはSPFレコードをDNSサーバーに登録しておきます。そしてメールが送信された際に受信サーバーはDNSサーバーに対して送信元ドメインに対するSPFレコードを問い合わせして、返ってきたSPFレコードと送信元IPアドレスが一致するか確認します。そして情報が一致した時のみ受信者にメールが届きます。</p>
+  </li>
+</ul>
+
+<p><img src="img2.png" alt="img2.png" /></p>
+
+<ul>
+  <li>DKIM - 送信ドメイン認証の1つで、DKIMでは電子署名を使用します。DNSサーバー側には公開鍵を公開しておきます。メールを送信する際にメールのヘッダとボディの情報の電子署名を追加しておきます。受信者のメールサーバーはDNSから公開鍵を入手して公開鍵で電子署名を検証します。検証が成功すれば受信者にメールが送られます。</li>
+</ul>
+
+<p><img src="img3.png" alt="img3.png" /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-smtp資格証明の生成">2. SMTP資格証明の生成</h1>
+
+<p>Email Deliveryサービスを使用するにはSMTP資格証明書の設定が必要になります。各ユーザー最大2つまで設定することができて、3つ以上作成する場合はユーザーを追加する必要があります。</p>
+
+<ol>
+  <li>
+    <p>コンソールの右上にある人のマークをクリックして、<strong><code class="language-plaintext highlighter-rouge">ユーザー設定</code></strong> を選択します。</p>
+  </li>
+  <li>
+    <p>するとユーザーの詳細画面が表示されるので、スクロールして左下の <strong><code class="language-plaintext highlighter-rouge">SMTP資格証明</code></strong> をクリックします。</p>
+  </li>
+  <li>
+    <p>SMTP資格証明の作成を行います。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> -　チュートリアル用
+ <img src="img4.png" alt="img4.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">SMTP資格証明の作成</code></strong> のボタンを押すと、SMTP送信用のユーザー名(ユーザーのOCID)とパスワードが表示されます。パスワードは1回しか表示されないので、テキストエディタ等に書いておいてください。そのあと <strong><code class="language-plaintext highlighter-rouge">閉じる</code></strong>　を押してください。</p>
+
+    <p><img src="img5.png" alt="img5.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-承認済み送信者の作成">3. 承認済み送信者の作成</h1>
+
+<ol>
+  <li>
+    <p>左上のメニューから <strong><code class="language-plaintext highlighter-rouge">開発者サービス → 電子メール配信</code></strong> をクリックします。そして左側にある <strong><code class="language-plaintext highlighter-rouge">Approved Senders</code></strong> を押します。</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">承認済み送信者の作成</code></strong> をクリックして以下の設定を行います。</p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">電子メール・アドレス</code></strong> - mail@tutorial.com<br />
+<img src="img6.png" alt="img6.png" /></p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+承認済送信者はリージョン単位のものであり、たとえ同じメールアドレスであってもリージョンが異なる場合は他のリージョンでも設定する必要があります。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-mailxでメール送信">4. Mailxでメール送信</h1>
+
+<p>実際にメールを送信します。今回のチュートリアルでは簡単に実装できるMailxコマンドを利用します。</p>
+
+<ol>
+  <li>
+    <p>メールを配信するのに必要な <strong><code class="language-plaintext highlighter-rouge">SMTPエンドポイント</code></strong> を確認します。<strong><code class="language-plaintext highlighter-rouge">開発者サービス →　電子メール配信</code></strong> をクリックすると <strong><code class="language-plaintext highlighter-rouge">SMTP送信情報</code></strong> が表示され、<strong><code class="language-plaintext highlighter-rouge">パブリック・エンドポイント</code></strong> の箇所をテキストエディタ等に書いてください。もしくは<a href="https://docs.oracle.com/ja-jp/iaas/Content/Email/Tasks/configuresmtpconnection.htm">こちら</a>から確認することも出来ます。</p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong>   <br />
+ 今回のチュートリアルの場合はエンドポイントが東京リージョンのため SMTPエンドポイントは <strong><code class="language-plaintext highlighter-rouge">smtp.email.ap-tokyo-1.oci.oraclecloud.com:587</code></strong> になります</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>Oracle Linuxにssh接続をして、Malixがインストールされているか確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> yum list installed | grep mailx
+</code></pre></div>    </div>
+    <p>もしインストールされていなかったら以下のコマンドを実行してください。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install mailx
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">/etc/mail.rc</code></strong> にあるファイルを編集します。そして以下を追記します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo vi /etc/mail.rc
+</code></pre></div>    </div>
+
+    <p>追記する内容</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   #smtp config
+
+   set nss-config-dir=/etc/pki/nssdb/
+   set smtp-use-starttls
+   set smtp-auth=plain
+   set smtp=&lt;SMTPエンドポイント&gt;:587
+   set from=&lt;承認済送信者&gt;
+   set smtp-auth-user=&lt;SMTP送信用のユーザー名(ユーザーOCID)&gt;
+   set smtp-auth-password=&lt;SMTPパスワード&gt;   
+</code></pre></div>    </div>
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+  smtp-auth-userには、2.SMTP資格証明の作成 で表示されたSMTP送信用のユーザー名(ユーザーのOCIDと同一)を使用してください。OCIコンソールのユーザー名を使用すると認証に失敗します</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>malixを使用してメールを送信します。送信先のメールアドレスを適宜書き換えてコマンドを以下のコマンドを入力します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> echo "Malixを使用したメール送信" | mailx -s "テストメール" ＜送信先のメールアドレス＞
+
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>メールが届いているか確認します。メールが届いていない場合は <strong><code class="language-plaintext highlighter-rouge">/var/log/maillog</code></strong> を確認してください。メールが送信されている場合は <strong><code class="language-plaintext highlighter-rouge">status=sent  (250 Ok)</code></strong> と表示されます。</p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+  SPFやDKIMを設定していないためスパムと判定されて迷惑メールに振り分けられている可能性があります。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-おまけ">5. おまけ</h1>
+
+<h2 id="1-malixを利用した際にエラーが発生した場合">1. Malixを利用した際にエラーが発生した場合</h2>
+
+<p>Malixでメール配信した際に <strong><code class="language-plaintext highlighter-rouge">Error in certificate: Peer's certificate issuer is not recognized</code></strong> のエラーが発生した場合は、CA証明書がコネクタの証明書データベースに追加されていないことが原因の可能性があります。</p>
+
+<ol>
+  <li>
+    <p>CA証明書が証明書データベースに証明書が格納されているかを確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo certutil -L -d /etc/pki/nssdb/
+</code></pre></div>    </div>
+    <p>すると以下のように表示され、Certificate Nicknameの下に何も表示されていないので証明書がないことが分かります。</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Certificate Nickname                                         Trust Attributes
+                                                             SSL,S/MIME,JAR/XPI
+</code></pre></div>    </div>
+  </li>
+  <li>次に証明書チェーンの情報を確認します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> echo | openssl s_client -starttls smtp -crlf -connect &lt;SMTPエンドポイント&gt;:587 -showcerts
+</code></pre></div>    </div>
+    <p>するとルート証明書(C = US, O = DigiCert Inc, OU = www.digicert.com, CN = DigiCert Global Root G2 verify return:1)がないことが確認できます。</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> depth=2 C = US, O = DigiCert Inc, OU = www.digicert.com, CN = DigiCert Global Root G2
+ verify return:1
+ depth=1 C = US, O = DigiCert Inc, CN = DigiCert Global G2 TLS RSA SHA256 2020 CA1
+ verify return:1
+ depth=0 C = US, ST = California, L = Redwood City, O = Oracle Corporation, CN = smtp.email.ap-tokyo-1.oci.oraclecloud.com
+ verify return:1
+ ---
+ Certificate chain
+ 0 s:/C=US/ST=California/L=Redwood City/O=Oracle Corporation/CN=smtp.email.ap-tokyo-1.oci.oraclecloud.com
+ i:/C=US/O=DigiCert Inc/CN=DigiCert Global G2 TLS RSA SHA256 2020 CA1
+ -----BEGIN CERTIFICATE-----
+
+ -----END CERTIFICATE-----
+ 1 s:/C=US/O=DigiCert Inc/CN=DigiCert Global G2 TLS RSA SHA256 2020 CA1
+ i:/C=US/O=DigiCert Inc/OU=www.digicert.com/CN=DigiCert Global Root G2
+ -----BEGIN CERTIFICATE-----
+
+ -----END CERTIFICATE-----
+
+ ----
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>DigiCert Global Root G2をインポートします。<a href="https://www.digicert.com/kb/digicert-root-certificates.htm">digicert</a>のサイトから <strong><code class="language-plaintext highlighter-rouge">DigiCert Global Root G2</code></strong> をダウンロードします。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ルート証明書を証明書データーベースにインストールします。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo certutil -A -t "C,," -n "DigiCert Global Root G2" -d /etc/pki/nssdb/ -i DigiCertGlobalRootG2.crt.pem
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>もう一度 <strong><code class="language-plaintext highlighter-rouge">/etc/pki/nssdb/</code></strong> にある証明書のデータベースを確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo certutil -L -d /etc/pki/nssdb/
+</code></pre></div>    </div>
+    <p>すると証明書データベースに証明書があると確認できます。確認できたら再度Mailxからメールを送信してみてください。</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Certificate Nickname                                         Trust Attributes
+                                                             SSL,S/MIME,JAR/XPI
+
+ DigiCert Global Root G2                                      C,,
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="2-postfixによるメール送信">2. Postfixによるメール送信</h2>
+
+<p>Postfixはメール転送エージェント（MTA）に分類されてSendmailと互換性があり、セキュリティが優れていることで知られています。</p>
+
+<ol>
+  <li>
+    <p>事前に作成してあるOracle Linuxインスタンスにログインします。そしてPostfixがインストールされているか下記のコマンドを打って確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> yum list installed | grep postfix
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+ Oracle Linux8を使用している場合はPostfixがインストールされていない可能性があるので<a href="https://docs.oracle.com/en/learn/oracle-linux-postfix/index.html#introduction">こちら</a>を参照してください</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">/etc/postfix/main.cf</code></strong>　のファイルを更新します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo vi /etc/postfix/main.cf
+</code></pre></div>    </div>
+
+    <p>追記する内容</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> #smtp config
+
+ smtp_tls_security_level = may 
+ smtp_sasl_auth_enable = yes 
+ smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd 
+ smtp_sasl_security_options =
+ relayhost = &lt;SMTPエンドポイント&gt; 
+
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">main.cf</code></strong> と同じディレクトリにファイル <strong><code class="language-plaintext highlighter-rouge">sasl_passwd</code></strong> を作ります。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo vi /etc/postfix/sasl_passwd
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">sasl_passwd</code></strong> に以下の情報を書きます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;SMTPエンドポイント&gt;:587 &lt;SMTPユーザー名&gt;:&lt;SMTPパスワード&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>他のユーザーから見えないようにSMTPパスワード等を記述した <strong><code class="language-plaintext highlighter-rouge">sasl_passwd</code></strong>　の権限・所有者を変更します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo chown root:root /etc/postfix/sasl_passwd &amp;&amp; sudo chmod 600 /etc/postfix/sasl_passwd
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>パスワード・ハッシュを生成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo postmap hash:/etc/postfix/sasl_passwd
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Postfixをリロードします。下記のコマンドを入力します。コマンドを打った際に <strong><code class="language-plaintext highlighter-rouge">refreshing the Postfix mail system</code></strong> と表示されたらリロードできています。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo postfix reload
+</code></pre></div>    </div>
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">note</code></strong><br />
+ もしPostfixが動いていないという　<strong><code class="language-plaintext highlighter-rouge">the Postfix mail system is not running</code></strong> エラーが表示されたらPostfixを起動させる <strong><code class="language-plaintext highlighter-rouge">sudo postfix start</code></strong>　のコマンドを実行してください。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>メールを送信します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "This is a test" | mail -s "Test" -r &lt;承認済送信者&gt; &lt;送信先メールアドレス&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>メールが届いているか確認します。メールが届いていない場合は <strong><code class="language-plaintext highlighter-rouge">/var/log/maillog</code></strong> を確認してください。メールが送信されている場合は <strong><code class="language-plaintext highlighter-rouge">status=sent  (250 Ok)</code></strong> と表示されます。</p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+ SPFやDKIMを設定していないためスパムと判定されて迷惑メールに振り分けられている可能性があります。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="3-javamailによるメール送信">3. JavaMailによるメール送信</h2>
+
+<p>JavaMailはJavaでメールを送信する際に利用されるAPIです。
+今回のチュートリアルではEclipseとJavaMail APIを使用して電子メールを送信します。</p>
+
+<ol>
+  <li>
+    <p>javax.mailを使用します。<a href="https://github.com/javaee/javamail/releases">こちら</a>から最新版のJavaMail(今回の場合はJavaMail1.6.2)をダウンロードします。</p>
+
+    <p><img src="img7.png" alt="img7.png" /></p>
+  </li>
+  <li>
+    <p>Java.activationをダウンロードします。<a href="https://www.oracle.com/java/technologies/java-archive-downloads-java-plat-downloads.html#jaf-1.1-fr-oth-JPR">こちら</a>から <strong><code class="language-plaintext highlighter-rouge">JavaBeans Activation Framework 1.1.1</code></strong> のZipファイルをダウンロードして解凍してください。</p>
+  </li>
+  <li>
+    <p>Eclipseを開きます。そして <strong><code class="language-plaintext highlighter-rouge">ファイル → 新規</code></strong> をクリックして <strong><code class="language-plaintext highlighter-rouge">Java プロジェクト</code></strong> を開き以下の設定を行います。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">プロジェクト名</code></strong> - javamail_tutorial</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">JRE</code></strong> - JavaSE-17 (Javaのバージョンに合わせて適宜設定してください)</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">プロジェクト・レイアウト</code></strong> - ソースおよびクラス・ファイルのフォルダーを個別に作成</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ワーキングセット</code></strong>　- なし</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">モジュール</code></strong>　- なし</li>
+    </ul>
+
+    <p><img src="img8.png" alt="img8.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">次へ</code></strong> を押して、 <strong><code class="language-plaintext highlighter-rouge">Java設定</code></strong> を行います。左から3番目に <strong><code class="language-plaintext highlighter-rouge">ライブラリー</code></strong> をクリックして、<strong><code class="language-plaintext highlighter-rouge">クラスパス → 外部JARの追加</code></strong>　のボタンを押します。 <strong><code class="language-plaintext highlighter-rouge">Javax.mail</code></strong> と <strong><code class="language-plaintext highlighter-rouge">java.activation</code></strong> を追加します。 <strong><code class="language-plaintext highlighter-rouge">外部JARの追加</code></strong>追加すると下記のようになります。追加できたら、<strong><code class="language-plaintext highlighter-rouge">完了</code></strong> を押してください。</p>
+
+    <p><img src="img9.png" alt="img9.png" /></p>
+  </li>
+  <li>
+    <p>作成したJavaプロジェクトにクラスを作成します。右クリックをして、<strong><code class="language-plaintext highlighter-rouge">新規 → クラス</code></strong> を選択します。</p>
+
+    <p><img src="img10.png" alt="img10.png" /></p>
+  </li>
+  <li>
+    <p>そして名前の箇所を入力します。それ以外はデフォルトの設定にします。名前の箇所を入力したら <strong><code class="language-plaintext highlighter-rouge">完了</code></strong> ボタンを押します。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong>　- OCIemail<br />
+ <img src="img11.png" alt="img11.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">package javamail_tutorial;</code></strong> の下に以下のコードを貼り付けます。<strong><code class="language-plaintext highlighter-rouge">承認済み送信者</code></strong> 、<strong><code class="language-plaintext highlighter-rouge">受信者のメールアドレス</code></strong> 、<strong><code class="language-plaintext highlighter-rouge">SMTPユーザー名</code></strong>、<strong><code class="language-plaintext highlighter-rouge">SMTPパスワード</code></strong> と <strong><code class="language-plaintext highlighter-rouge">SMTPエンドポイント</code></strong> を必ず書き換えてください。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> import java.util.Properties;
+ import javax.mail.Message;
+ import javax.mail.Session;
+ import javax.mail.Transport;
+ import javax.mail.internet.InternetAddress;
+ import javax.mail.internet.MimeMessage;
+    
+ public class OCIemail {
+    
+     // Replace FROM with your "From" address.
+     // This address must be added to Approved Senders in the console.
+     static final String FROM = "&lt;承認済み送信者&gt;";
+     static final String FROMNAME = "&lt;sender name&gt;";
+    
+     // Replace TO with a recipient address.
+     static final String TO = "&lt;受信者のメールアドレス&gt;";
+    
+     // Replace smtp_username with your Oracle Cloud Infrastructure SMTP username generated in console.
+     static final String SMTP_USERNAME = "&lt;SMTPユーザー名&gt;";
+    
+     // Replace smtp_password with your Oracle Cloud Infrastructure SMTP password generated in console.
+     static final String SMTP_PASSWORD = "&lt;SMTPパスワード&gt;";
+    
+     // Oracle Cloud Infrastructure Email Delivery hostname.
+     static final String HOST = "&lt;SMTPエンドポイント&gt;";
+    
+     // The port you will connect to on the SMTP endpoint. Port 25 or 587 is allowed.
+     static final int PORT = 587;
+    
+     static final String SUBJECT = "&lt;subject of your email&gt;";
+     static final String BODY = String.join(
+    
+         System.getProperty("line.separator"),
+         "&lt;h1&gt;Email Delivery test&lt;/h1&gt;",
+         "&lt;p&gt;This email was sent with OCI Email Delivery&lt;/p&gt; ",
+    
+     );
+    
+     public static void main(String[] args) throws Exception {
+    
+         // Create a Properties object to contain connection configuration information.
+    
+     Properties props = System.getProperties();
+     props.put("mail.transport.protocol", "smtp");
+     props.put("mail.smtp.port", PORT);
+    
+     //props.put("mail.smtp.ssl.enable", "true"); //the default value is false if not set
+     props.put("mail.smtp.auth", "true");
+     props.put("mail.smtp.auth.login.disable", "true");  //the default authorization order is "LOGIN PLAIN DIGEST-MD5 NTLM". 'LOGIN' must be disabled since Email Delivery authorizes as 'PLAIN'
+     props.put("mail.smtp.starttls.enable", "true");   //TLSv1.2 is required
+     props.put("mail.smtp.starttls.required", "true");  //Oracle Cloud Infrastructure required
+    
+         // Create a Session object to represent a mail session with the specified properties.
+     Session session = Session.getDefaultInstance(props);
+    
+         // Create a message with the specified information.
+         MimeMessage msg = new MimeMessage(session);
+         msg.setFrom(new InternetAddress(FROM,FROMNAME));
+         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(TO));
+         msg.setSubject(SUBJECT);
+         msg.setContent(BODY,"text/html");
+    
+         // Create a transport.
+         Transport transport = session.getTransport();
+            
+    
+         // Send the message.
+    
+         try
+         {
+    
+             System.out.println("Sending Email now...standby...");
+    
+    
+             // Connect to OCI Email Delivery using the SMTP credentials specified.
+             transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);    
+    
+             // Send email.
+             transport.sendMessage(msg, msg.getAllRecipients());
+             System.out.println("Email sent!");
+    
+         }
+    
+         catch (Exception ex) {
+    
+             System.out.println("The email was not sent.");
+             System.out.println("Error message: " + ex.getMessage());
+    
+         }
+    
+         finally
+    
+         {
+    
+             // Close &amp; terminate the connection.
+             transport.close();
+    
+         }
+    
+     }
+    
+ }
+
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>そして <strong><code class="language-plaintext highlighter-rouge">実行</code></strong> のボタンを押します。</p>
+  </li>
+  <li>
+    <p>メールを送信した際に以下のように <strong><code class="language-plaintext highlighter-rouge">Email sent</code></strong> と書かれていれば、送信できています。メールが届いているか確認してください。</p>
+
+    <p><img src="img12.png" alt="img12.png" /></p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+  SPFやDKIMを設定していないためスパムと判定されて迷惑メールに振り分けられている可能性があります。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上で、この章の作業は終了です。SPFやDKIMを設定してメール到達可能性を高めたい場合は<a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a>を参照してください。</p>
+
+<p><br /></p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#email" class="page__taxonomy-item p-category" rel="tag">email</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item p-category" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=Email+Delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1%28%E5%9F%BA%E7%A4%8E%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsending-emails-1%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsending-emails-1%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=Email+Delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1%28%E5%9F%BA%E7%A4%8E%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsending-emails-1%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/certificate/" class="pagination--pager" title="プライベート認証局と証明書の発行">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/sending-emails-2/" class="pagination--pager" title="Email Deliveryを利用した外部へのメール送信(応用編)">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

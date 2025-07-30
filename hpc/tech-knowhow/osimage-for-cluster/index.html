@@ -1,0 +1,900 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>クラスタネットワーキングイメージの選び方 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="クラスタネットワーキングイメージの選び方">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">
+
+
+  <meta property="og:description" content="クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          クラスタネットワーキングイメージの選び方
+
+        
+      </h1>
+      
+        <p class="page__lead">クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">クラスタネットワーキングイメージの選び方</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/" class="active">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="クラスタネットワーキングイメージの選び方">
+    <meta itemprop="description" content="クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></li><li><a href="#2-クラスタネットワーキングイメージ指定方法">2. クラスタネットワーキングイメージ指定方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-ociコンソールを使用する方法">2-1. OCIコンソールを使用する方法</a></li><li><a href="#2-2-hpcクラスタスタックを使用する方法">2-2. HPCクラスタスタックを使用する方法</a></li><li><a href="#2-3-terraformスクリプトを使用する方法">2-3. Terraformスクリプトを使用する方法</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <style>
+table, th, td {
+    font-size: 70%;
+}
+</style>
+
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p><strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> は、ベースOSに <strong>Oracle Linux</strong> を採用し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> への接続に必要な以下のソフトウェアが予めインストールされています。</p>
+
+<ul>
+  <li>Mellanox OFED<br />
+<strong>クラスタ・ネットワーク</strong> にインスタンスを接続するNIC（<strong>NVIDIA Mellanox ConnectX</strong>）のドライバーソフトウェアです。</li>
+  <li>WPAサプリカント<br />
+インスタンスが <strong>クラスタ・ネットワーク</strong> に接続する際行われる802.1X認証（※1）のクライアントソフトウェアです。</li>
+  <li>802.1X認証関連ユーティリティソフトウェア<br />
+インスタンスが <strong>クラスタ・ネットワーク</strong> に接続する際行われる802.1X認証に必要な機能を提供するユーティリティソフトウェアです。</li>
+  <li><strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェア<br />
+<strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース作成等の機能を提供するユーティリティソフトウェアです。</li>
+</ul>
+
+<p>※1）802.1X認証の仕組みは、 <strong><a href="https://www.infraexpert.com/study/wireless14.html">ここ</a></strong> のサイトが参考になります。</p>
+
+<p>また <strong>クラスタネットワーキングイメージ</strong> は、以下の観点で異なる用途のものが用意されています。</p>
+
+<ul>
+  <li>802.1X認証関連ユーティリティソフトウェアと <strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェアの提供方法<br />
+<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> （以降 <strong>OCA</strong> と呼称）HPCプラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。</li>
+  <li>対象のシェイプ<br />
+HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキングイメージ</strong> ）か、GPUシェイプ（※3）用（GPU <strong>クラスタネットワーキングイメージ</strong> ）かの違いで、GPU <strong>クラスタネットワーキングイメージ</strong> はNVIDIA GPUドライバがインストールされています。</li>
+  <li>ベースOSの <strong>Oracle Linux</strong> バージョン<br />
+バージョン7系か、バージョン8系かによる違いです。</li>
+</ul>
+
+<p>※2）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm">BM.HPC2.36</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong><br />
+※3）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU.A100-v2.8</a></strong></p>
+
+<p>以降では、用途毎に用意している <strong>クラスタネットワーキングイメージ</strong> の一覧と、選択した <strong>クラスタネットワーキングイメージ</strong> をインスタンスデプロイ時に指定する方法を解説します。</p>
+
+<hr />
+<h1 id="1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</h1>
+
+<p>本章は、前章で説明した用途毎に用意している <strong>クラスタネットワーキングイメージ</strong> の一覧を下表にまとめます。<br />
+自身の用途に合わせて適切なものを選択し、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から入手します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">No.</th>
+      <th style="text-align: center">対象シェイプ</th>
+      <th style="text-align: center"><strong>Oracle Linux</strong><br />バージョン</th>
+      <th style="text-align: center">ユーティリティ<br />提供方法</th>
+      <th style="text-align: center">OFED<br />バージョン</th>
+      <th style="text-align: center">GPU/CUDA<br />バージョン</th>
+      <th style="text-align: center">イメージ名の先頭</th>
+      <th style="text-align: center"><strong>マーケットプレイス</strong><br />URL（※4）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">HPCシェイプ</td>
+      <td style="text-align: center">8.9</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.03.15-0</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-2024.03.15-0</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">8.8</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">8.7</td>
+      <td style="text-align: center">個別RPM</td>
+      <td style="text-align: center">5.4</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-RHCK-OFED-5.4-3.6.8.1-2023.05.18</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center">個別RPM</td>
+      <td style="text-align: center">5.4</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-2023.05.18</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">GPUシェイプ</td>
+      <td style="text-align: center">8.9</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">550/12.4</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">550/12.4</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">8.8</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">535/12.2</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-5.8</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">535/12.2</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-5.8</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center">個別RPM</td>
+      <td style="text-align: center">5.4</td>
+      <td style="text-align: center">515/11.7</td>
+      <td style="text-align: center">OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.05.18</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">HPCシェイプ</td>
+      <td style="text-align: center">8.10</td>
+      <td style="text-align: center"><strong>OCA</strong> HPC<br />プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.09.18-0</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※4）OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
+
+<hr />
+<h1 id="2-クラスタネットワーキングイメージ指定方法">2. クラスタネットワーキングイメージ指定方法</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、 <strong><a href="#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> で選択した <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> をインスタンスデプロイ時にどのように指定するかを解説します。</p>
+
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスのデプロイ方法は、主に以下3種類が存在します。</p>
+
+<ul>
+  <li>OCIコンソールを使用する方法</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用する方法</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用する方法</li>
+</ul>
+
+<p>本章は、選択した <strong>クラスタネットワーキングイメージ</strong> をどのように指定するか、これらのデプロイ方法毎に解説します。</p>
+
+<h2 id="2-1-ociコンソールを使用する方法">2-1. OCIコンソールを使用する方法</h2>
+
+<p>OCIコンソールを使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を予め作成しますが、この <strong>インスタンス構成</strong> の <strong>イメージとシェイプ</strong> フィールドで <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。</p>
+
+<p>以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> （HPC <strong>クラスタネットワーキングイメージ</strong> ）か <strong>gpu</strong> （GPU <strong>クラスタネットワーキングイメージ</strong> ）と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> あるいは <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで適切なOSイメージを選択（※5）し、 <strong>Oracle Standard Terms and Restrictionsを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>イメージの選択</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>※5）前章一覧表中の <strong>イメージ名の先頭</strong> 列を参照し、適切な <strong>イメージ・ビルド</strong> を選択します。</p>
+
+<h2 id="2-2-hpcクラスタスタックを使用する方法">2-2. HPCクラスタスタックを使用する方法</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> メニュー中の以下 <strong>Compute node options</strong> フィールドの <strong>Image version</strong> プルダウンメニューで適切な <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。<br />
+なお、本テクニカルTipsが前提とする <strong>HPCクラスタスタック</strong> は、バージョン <strong>2.10.4.1</strong> です。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>各選択肢は、以下の <strong>クラスタネットワーキングイメージ</strong> に対応しています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">メニュー名</th>
+      <th style="text-align: center">前章一覧表中のNo.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">HPC_OL7</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">HPC_OL8</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GPU_OL7_CUDA12.2</td>
+      <td style="text-align: center">10</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GPU_OL8_CUDA12.2</td>
+      <td style="text-align: center">9</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GPU_OL7_CUDA12.4</td>
+      <td style="text-align: center">8</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GPU_OL8_CUDA12.4</td>
+      <td style="text-align: center">7</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>なお、個別RPMを使用する <strong>クラスタネットワーキングイメージ</strong> は、現在最新の <strong>HPCクラスタスタック</strong> では使用することが出来ません。</p>
+
+<h2 id="2-3-terraformスクリプトを使用する方法">2-3. Terraformスクリプトを使用する方法</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、通常イメージのOCIDをスクリプト内に指定します。</p>
+
+<p><strong><a href="#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> の各 <strong>クラスタネットワーキングイメージ</strong> は、以下のOCIDに対応しています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">前章一覧表中のNo.</th>
+      <th style="text-align: center">OCID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaxiqlqer2ycd7hgto7in7raojq7v5kud6wlakmm7u7q64ai352tzq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaano7btfbh7cvbaygka4fehemtsal7f7l2qx6oqvbwua6xnszdvaha</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2irxaj3eqti6nlggadyo2avsinc6cscxrphsldiuqebcaljlqomq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaabjywapqbljm2hqmpcf6rl2xsc7miz4ilx2bb6o2iwcaf37smyxqa</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa6nrrkywosaxdd4kur5uttrfgut5l5em73rcv4em5senqtm6fogjq</td>
+    </tr>
+  </tbody>
+</table>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E9%81%B8%E3%81%B3%E6%96%B9%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fosimage-for-cluster%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fosimage-for-cluster%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E9%81%B8%E3%81%B3%E6%96%B9%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fosimage-for-cluster%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/" class="pagination--pager" title="クラスタ・ネットワーク接続用ネットワークインターフェース作成方法">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/" class="pagination--pager" title="クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

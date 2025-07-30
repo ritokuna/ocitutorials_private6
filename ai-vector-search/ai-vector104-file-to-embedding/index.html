@@ -1,0 +1,1256 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/">
+
+
+  <meta property="og:description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/ai-vector104-file-to-embedding-teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/ai-vector104-file-to-embedding-teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう
+
+        
+      </h1>
+      
+        <p class="page__lead">23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/ai-vector-search" itemprop="item"><span itemprop="name">Ai vector search</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - AI Vector Search</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">101 : Always Freeで23aiのADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector103-basics/">103 : Oracle AI Vector Searchの基本操作を試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/" class="active">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/">105: マルチベクトル検索で複数のドキュメントを検索してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/">106 : Oracle Database 23aiとLangChainでRAGを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/">107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/">108 : SELECT AI with RAGを試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector109-oracletext/">109 : Oracle Database で全文検索してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
+    <meta itemprop="description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a><ul><li><a href="#0-前提条件">0. 前提条件</a></li><li><a href="#1-事前準備">1. 事前準備</a></li></ul></li><li><a href="#oracle-database-23ai-free編">Oracle Database 23ai free編</a><ul><li><a href="#1-1-oracle-database-23ai-free編-ファイルの格納">1-1. Oracle Database 23ai Free編-ファイルの格納</a></li><li><a href="#1-2-oracle-database-23ai-free編-テキストへの変換">1-2. Oracle Database 23ai Free編-テキストへの変換</a></li><li><a href="#1-3-oracle-database-23ai-free編-チャンクへの分割">1-3. Oracle Database 23ai Free編-チャンクへの分割</a></li><li><a href="#1-4-oracle-database-23ai-free編-ベクトルデータへの変換">1-4. Oracle Database 23ai Free編-ベクトルデータへの変換</a></li><li><a href="#1-5-oracle-database-23ai-free編-ベクトル検索の実行">1-5. Oracle Database 23ai Free編-ベクトル検索の実行</a></li></ul></li><li><a href="#adb23ai-always-free編">ADB23ai Always Free編</a><ul><li><a href="#2-1-adb23ai-always-free編-ファイルの格納">2-1. ADB23ai Always Free編-ファイルの格納</a></li><li><a href="#2-2-adb23ai-always-free編-テキストへの変換">2-2. ADB23ai Always Free編-テキストへの変換</a></li><li><a href="#2-3-adb23ai-always-free編-チャンクへの分割">2-3. ADB23ai Always Free編-チャンクへの分割</a></li><li><a href="#2-4-adb23ai-always-free編-ベクトルデータへの変換">2-4. ADB23ai Always Free編-ベクトルデータへの変換</a></li><li><a href="#2-5-adb23ai-always-free編-ベクトル検索の実行">2-5. ADB23ai Always Free編-ベクトル検索の実行</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>このチュートリアルでは、ファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について、ステップバイステップでの実行する方法をご紹介します。
+23ai free、ADB23ai(Always Free)の両方でのやり方をご紹介します。
+ファイルからテキストへ変換する関数セット(UTL_TO_TEXTおよびDBMS_VECTOR_CHAIN)を使用して、テキストをチャンク(UTL_TO_CHUNKS)に分割し、次にベクトル化モデルを使ってそれぞれのチャンクのベクトル(UTL_TO_EMBEDDINGS)を作成します。</p>
+
+<p><img src="image1.png" alt="image1" /></p>
+
+<h2 id="0-前提条件">0. 前提条件</h2>
+
+<p>ベクトル化処理ではOCI Generative AIのサービスを使用しますので、下記の前提条件を満たせる必要があります。</p>
+
+<ul>
+  <li>使用するOracle Databaseの環境があること
+    <ul>
+      <li>
+        <p>23ai freeで実行する場合、Oracle Database 23ai Freeをインストールする済みであること</p>
+
+        <p>※インストール方法については、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a> を参照ください。</p>
+      </li>
+      <li>
+        <p>ADB23aiで実行する場合、Autonomous Database 23aiのインスタンスを構築済みであること。本記事では無償で使えるAlways Freeを使います。</p>
+
+        <p>※インスタンス作成方法については。<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">101 : Always Freeで23aiのADBインスタンスを作成してみよう</a>をご参照ください。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>AI Vector Searchの基本的な操作を学習済みであること
+ <br /><a href="/ocitutorials/ai-vector-search/ai-vector103-basics/">103 : Oracle AI Vector Searchの基本操作を試してみよう</a>を参照ください。</p>
+  </li>
+  <li>
+    <p>OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。</p>
+
+    <p>※2025/01時点で、利用可能なリージョンは以下です。</p>
+    <ul>
+      <li>サンパウロ(GRU)</li>
+      <li>フランクフルト(FRA)</li>
+      <li>大阪(KIX)</li>
+      <li>ロンドン(LHR)</li>
+      <li>シカゴ(ORD)</li>
+    </ul>
+
+    <p>最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm" target="_blank">こちら</a>から確認のうえ、最新のモデルを使用することを推奨します。以降のチュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。また大阪リージョンの利用が前提となっているため、それ以外のリージョンの場合は適宜サービス・エンドポイントを修正してください。</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次：</strong></p>
+<ul>
+  <li><a href="#はじめに">はじめに</a>
+    <ul>
+      <li><a href="#0-前提条件">0. 前提条件</a></li>
+      <li><a href="#1-事前準備">1. 事前準備</a></li>
+    </ul>
+  </li>
+  <li><a href="#oracle-database-23ai-free編">Oracle Database 23ai free編</a>
+    <ul>
+      <li><a href="#1-1-oracle-database-23ai-free編-ファイルの格納">1-1. Oracle Database 23ai Free編-ファイルの格納</a></li>
+      <li><a href="#1-2-oracle-database-23ai-free編-テキストへの変換">1-2. Oracle Database 23ai Free編-テキストへの変換</a></li>
+      <li><a href="#1-3-oracle-database-23ai-free編-チャンクへの分割">1-3. Oracle Database 23ai Free編-チャンクへの分割</a></li>
+      <li><a href="#1-4-oracle-database-23ai-free編-ベクトルデータへの変換">1-4. Oracle Database 23ai Free編-ベクトルデータへの変換</a></li>
+      <li><a href="#1-5-oracle-database-23ai-free編-ベクトル検索の実行">1-5. Oracle Database 23ai Free編-ベクトル検索の実行</a></li>
+    </ul>
+  </li>
+  <li><a href="#adb23ai-always-free編">ADB23ai Always Free編</a>
+    <ul>
+      <li><a href="#2-1-adb23ai-always-free編-ファイルの格納">2-1. ADB23ai Always Free編-ファイルの格納</a></li>
+      <li><a href="#2-2-adb23ai-always-free編-テキストへの変換">2-2. ADB23ai Always Free編-テキストへの変換</a></li>
+      <li><a href="#2-3-adb23ai-always-free編-チャンクへの分割">2-3. ADB23ai Always Free編-チャンクへの分割</a></li>
+      <li><a href="#2-4-adb23ai-always-free編-ベクトルデータへの変換">2-4. ADB23ai Always Free編-ベクトルデータへの変換</a></li>
+      <li><a href="#2-5-adb23ai-always-free編-ベクトル検索の実行">2-5. ADB23ai Always Free編-ベクトル検索の実行</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><a id="anchor1"></a></p>
+
+<h2 id="1-事前準備">1. 事前準備</h2>
+
+<p>使用するサンプルのPDFドキュメントを準備してください。
+このチュートリアルで、<a href="https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf">corporate-governance-202209-jp.pdf (oracle.com)</a>というサンプルPDFドキュメントを使用します。</p>
+
+<p>ほかのファイルを使用する場合、コマンドの中にあるファイル名を実際のファイル名へ変更してください。</p>
+
+<p>ADB23ai Always Freeで本チュートリアルを実行する場合は、これで事前準備は完了です。<a href="#adb23ai-always-free編">ADB23ai Always Free編</a>からチュートリアルを開始できます。</p>
+
+<p>Oracle Database 23ai Freeで実行する場合は下記の準備をしてください。</p>
+
+<p>サンプルPDFドキュメントを以下の手順で仮想マシンへアップロードしてください。（もし違うファイルをアップロードする場合、WinSCPのようなSCPツールなどをご使用ください。）
+Tera Term等のターミナルソフトを使い、仮想マシンに接続したあと、以下を実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su - oracle
+<span class="nt">--</span>以下でNLS_LANGの設定をします。本チュートリアルでは日本語のデータセットを使用するので、以下を実行しSQL<span class="k">*</span>Plusの文字コードを変更してください。
+<span class="nb">export </span><span class="nv">NLS_LANG</span><span class="o">=</span>Japanese_Japan.AL32UTF8
+</code></pre></div></div>
+
+<p>サンプルPDFドキュメントを取得します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf
+</code></pre></div></div>
+
+<p>また、取り込み用のディレクトリを作成して、サンプルPDFドキュメントをコピーしてください。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> /home/oracle/data/vec_dump
+<span class="nb">cp </span>corporate-governance-202209-jp.pdf /home/oracle/data/vec_dump
+</code></pre></div></div>
+
+<p>OCIコンソールからOCI GenAIサービスにAPIコールするためのAPIキーを作成します。</p>
+
+<p>OCIコンソールにアクセスして、右上のプロファイルからユーザー名を選択します。</p>
+
+<p><img src="APIkey_1.png" alt="APIkey_1" /></p>
+
+<p>左下の<code class="language-plaintext highlighter-rouge">リソース</code>から<code class="language-plaintext highlighter-rouge">APIキー</code>を選択します。</p>
+
+<p><img src="APIkey_2.png" alt="APIkey_2" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">APIキーの追加</code>をクリックします。</p>
+
+<p><img src="APIkey_3.png" alt="APIkey_3" /></p>
+
+<p>APIキー・ペアの生成（デフォルト）を選択し、秘密キーのダウンロードをした上で作成します。</p>
+
+<p><img src="APIkey_4.png" alt="APIkey_4" /></p>
+
+<p>こちらでAPIキーの作成は完了です。</p>
+
+<p>作成APIキーのフィンガープリント等を<a href="#1-4-oracle-database-23ai-free編-ベクトルデータへの変換">1-4. Oracle Database 23ai Free編-ベクトルデータへの変換</a>や、<a href="#2-1-adb23ai-always-free編-ファイルの格納">2-1. ADB23ai Always Free編-ファイルの格納</a>、<a href="#2-4-adb23ai-always-free編-ベクトルデータへの変換">2-4. ADB23ai Always Free編-ベクトルデータへの変換</a>で使用します。</p>
+
+<p>なお、privateキーの値はダウンロードしたキーの中身を<strong>改行を入れずに</strong>指定する必要がありますので、ご注意ください。</p>
+
+<p>また、その他の方法として、OCI CLIを利用したAPIキーの作成も可能です。</p>
+
+<p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a>を参照してください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="oracle-database-23ai-free編">Oracle Database 23ai free編</h1>
+
+<h2 id="1-1-oracle-database-23ai-free編-ファイルの格納">1-1. Oracle Database 23ai Free編-ファイルの格納</h2>
+
+<p>SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザーで接続します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">sqlplus</span> <span class="n">sys</span><span class="o">@</span><span class="n">localhost</span><span class="p">:</span><span class="mi">1521</span><span class="o">/</span><span class="n">freepdb1</span> <span class="k">as</span> <span class="n">sysdba</span>
+</code></pre></div></div>
+
+<p>ローカルのテストユーザー(docuser)を作成し、必要な権限を付与します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- drop user docuser cascade;</span>
+
+  <span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">unlimited</span> <span class="n">tablespace</span><span class="p">,</span> <span class="k">create</span> <span class="n">credential</span><span class="p">,</span> <span class="k">create</span> <span class="k">procedure</span><span class="p">,</span> <span class="k">create</span> <span class="k">table</span> <span class="k">to</span> <span class="n">docuser</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">sys</span><span class="p">.</span><span class="n">dmutil_lib</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">create</span> <span class="n">mining</span> <span class="n">model</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+
+  <span class="k">BEGIN</span>
+    <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
+      <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
+      <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span><span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
+                        <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'docuser'</span><span class="p">,</span>
+                        <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span><span class="p">));</span>
+  <span class="k">END</span><span class="p">;</span>
+  <span class="o">/</span> 
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ユーザーが作成されました。
+  権限付与が成功しました。
+</code></pre></div></div>
+
+<p>サーバー上にローカルディレクトリを作成します(サンプルPDFドキュメント格納用)。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">or</span> <span class="k">replace</span> <span class="n">directory</span> <span class="n">VEC_DUMP</span> <span class="k">as</span> <span class="s1">'/home/oracle/data/vec_dump'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ディレクトリが作成されました。
+</code></pre></div></div>
+
+<p>必要な権限を付与します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">grant</span> <span class="k">read</span><span class="p">,</span> <span class="k">write</span> <span class="k">on</span> <span class="n">directory</span> <span class="n">VEC_DUMP</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">commit</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  権限付与が成功しました。
+  コミットが完了しました。
+</code></pre></div></div>
+
+<p>Oracle Databaseにテストユーザーとして接続します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">sqlplus</span> <span class="n">docuser</span><span class="o">/</span><span class="n">docuser</span><span class="o">@</span><span class="n">freepdb1</span>
+</code></pre></div></div>
+
+<p>SQL<em>Plusの出力をよりわかりやすいように、SQL</em>Plusの環境設定を行います。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SET</span> <span class="n">ECHO</span> <span class="k">ON</span>
+  <span class="k">SET</span> <span class="n">FEEDBACK</span> <span class="mi">1</span>
+  <span class="k">SET</span> <span class="n">NUMWIDTH</span> <span class="mi">10</span>
+  <span class="k">SET</span> <span class="n">LINESIZE</span> <span class="mi">80</span>
+  <span class="k">SET</span> <span class="n">TRIMSPOOL</span> <span class="k">ON</span>
+  <span class="k">SET</span> <span class="n">TAB</span> <span class="k">OFF</span>
+  <span class="k">SET</span> <span class="n">PAGESIZE</span> <span class="mi">10000</span>
+  <span class="k">SET</span> <span class="n">LONG</span> <span class="mi">10000</span>
+</code></pre></div></div>
+
+<p>リレーショナルテーブル(<code class="language-plaintext highlighter-rouge">documentation_tab</code>)を作成し、そのテーブル内にPDFドキュメントを格納します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- drop table documentation_tab purge;</span>
+
+  <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">documentation_tab</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">,</span> <span class="k">data</span> <span class="nb">blob</span><span class="p">);</span>
+  <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">to_blob</span><span class="p">(</span><span class="n">bfilename</span><span class="p">(</span><span class="s1">'VEC_DUMP'</span><span class="p">,</span> <span class="s1">'corporate-governance-202209-jp.pdf'</span><span class="p">)));</span>
+  <span class="k">commit</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  表が作成されました。
+  1行が作成されました。
+  コミットが完了しました。
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">documentation_tab</code>テーブルの<code class="language-plaintext highlighter-rouge">data</code>列に格納されているLOBデータの長さをバイト単位で取得します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">dbms_lob</span><span class="p">.</span><span class="n">getlength</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">t</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  DBMS_LOB.GETLENGTH(T.DATA)
+  --------------------------
+                      310454
+
+  1行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h2 id="1-2-oracle-database-23ai-free編-テキストへの変換">1-2. Oracle Database 23ai Free編-テキストへの変換</h2>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_TEXT</code>を実行してPDFドキュメントをテキスト形式に変換します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  DBMS_VECTOR_CHAIN.UTL_TO_TEXT(DT.DATA)
+  --------------------------------------------------------------------------------
+  コーポレートガバナンス
+  CORPORATE
+  GOVERNANCE
+  ...
+  1行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h2 id="1-3-oracle-database-23ai-free編-チャンクへの分割">1-3. Oracle Database 23ai Free編-チャンクへの分割</h2>
+
+<p>精度のよい検索結果を得られるために、このチュートリアルでは、<code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は<a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240">こちら</a>をご参照ください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  {"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>を実行して、テキストドキュメントをチャンクに分割します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- （オプション）デフォルトのパラメータで実行する。</span>
+  <span class="c1">-- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;</span>
+  <span class="k">SELECT</span> <span class="n">ct</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">ct</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  COLUMN_VALUE
+  --------------------------------------------------------------------------------
+  {"chunk_id":1,"chunk_offset":14,"chunk_length":619,"chunk_da
+  ta":"コーポレートガバナンス \nCORPORATE \nGOVERNANC
+  E \nOracle \nCorporationJapan\n\n最終更新日:2
+  022年9月13日 \n日本オラクル株式会社\n\n代表執行役 法務室 マネージ
+  ング・カウンシル 内海 寛子 \n問合せ先:IR部 03-6834-6666 \
+  n証券コード: \n4716\n\nhttp://www.oracle.com/
+  jp/corporate/investor-relations/index.ht
+  ml\n\n当社のコーポレート・ガバナンスの状況は以下のとおりです。\n\n
+  Ⅰ\n\nコーポレート・ガバナンスに関する基本的な考え方及び資本構成、企業属性その他
+  の基本情報\n\n1.基本的な考え方 \n当社は継続的に企業価値を高めていく
+  上で、コーポレート・ガバナンスの確立は重要な課題であると考え、すべてのステークホ
+  ルダーに対する経 \n営の責任を果たすべく、日本の法制度等に合致し、さらに親会社で
+  あるオラクル・コーポレーションのコーポレート・ガバナンス方針に基づいた体制 \nの
+  整備に努めております。 \nまた、従業員に対しては全世界のオラクル
+  ・グループ共通の「Oracle \nCode \nofEthicsand \nBusiness
+  \nConduct(倫理とビジネス行動規範に関する規"}
+  ...
+  {"chunk_id":62,"chunk_offset":29600,"chunk_length":471,"chun
+  k_data":"業界経験 \nテクノロジー\n\nデータセキュリティ・\n\n
+  リスクマネージメント\n\nファイナンス\n\n法務・コンプライア\n\nン
+  ス・コーポレートガバナンス\n\nエグゼクティブリーダーシップ・タレント\n\nディ
+  ベロップメント・ダイバーシティ&amp;イ\n\nンクルージョン\n\n三澤 \n智
+  光 \n〇 \n〇 \n〇 \n〇 \n〇\n\nクリシュナ・シヴァラマン\n\n〇
+  \n〇 \n〇 \n〇\n\nギャレット・イルグ \n〇 \n〇 \n〇 \n
+  〇 \n〇\n\nヴィンセント・エス・グレリ\n\n〇 \n〇 \n〇 \n〇\
+  n\nキンバリー・ウーリー \n〇 \n〇 \n〇 \n〇\n\n藤森 \n義明
+  \n〇 \n〇\n\nジョン・エル・ホール \n〇 \n〇 \n〇 \n〇\n
+  \n夏野 \n剛 \n〇 \n〇 \n〇\n\n⿊⽥ \n由貴子 \n〇 \n〇
+  "}
+
+
+  62行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h2 id="1-4-oracle-database-23ai-free編-ベクトルデータへの変換">1-4. Oracle Database 23ai Free編-ベクトルデータへの変換</h2>
+
+<p>チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
+冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- exec dbms_vector.drop_credential('OCI_CRED');</span>
+  <span class="k">declare</span>
+  <span class="n">jo</span> <span class="n">json_object_t</span><span class="p">;</span>
+  <span class="k">begin</span>
+  <span class="c1">-- create an OCI credential</span>
+  <span class="n">jo</span> <span class="p">:</span><span class="o">=</span> <span class="n">json_object_t</span><span class="p">();</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'user_ocid'</span><span class="p">,</span> <span class="s1">'user ocid value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'tenancy_ocid'</span><span class="p">,</span> <span class="s1">'tenancy ocid value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'compartment_ocid'</span><span class="p">,</span> <span class="s1">'compartment ocid value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'private_key'</span><span class="p">,</span> <span class="s1">'private key value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'fingerprint'</span><span class="p">,</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
+  <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">);</span>
+  <span class="n">dbms_vector</span><span class="p">.</span><span class="n">create_credential</span><span class="p">(</span>
+    <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span>
+    <span class="n">params</span>          <span class="o">=&gt;</span> <span class="n">json</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">));</span>
+  <span class="k">end</span><span class="p">;</span>
+  <span class="o">/</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  PL/SQLプロシージャが正常に完了しました。
+</code></pre></div></div>
+
+<p>OCI GenAIサービスを利用するためのパラメータを設定します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。</p>
+
+<p>※urlには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによってここからの手順では適宜修正してください。最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。例えばロンドンの場合は、urlには<em>https://inference.generativeai.uk-london-1.oci.oraclecloud.com</em>と指定します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">var</span> <span class="n">embed_genai_params</span> <span class="k">clob</span><span class="p">;</span>
+  <span class="k">exec</span> <span class="p">:</span><span class="n">embed_genai_params</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>上記の設定を検証してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  COLUMN_VALUE
+  --------------------------------------------------------------------------------
+  {"embed_id":"1","embed_data":"hello","embed_vector":"[0.0035
+  934448,0.028701782,0.031051636,-0.001415
+  ...
+  1行が選択されました。
+</code></pre></div></div>
+
+<p>（オプション）<code class="language-plaintext highlighter-rouge">UTL_TO_EMBEDDINGS</code>を実行して、チャンクをベクトルデータに変換します。</p>
+
+<blockquote>
+  <p>こちらのSQL文は単なく検索処理で、変換されたベクトル情報はテーブルに保存されません。</p>
+</blockquote>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> 
+  <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span> <span class="n">json</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>注意
+Oracle Database 23aiのバージョンが23.04.xxxの場合、”overlap”: “20%”と指定してください。</p>
+
+  <p>23.05以降の場合は、上記のSQL同様”overlap”: “20”のようにチャンク内で重複させる文字数を指定します。</p>
+</blockquote>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ...
+  62行が選択されました。
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_EMBEDDINGS</code>を実行して、チャンクをベクトルデータに変換して、<code class="language-plaintext highlighter-rouge">doc_chunks</code>テーブルに保存します。</p>
+
+<blockquote>
+  <p>注意：処理する件数によって時間がかかる場合があります。</p>
+</blockquote>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">table</span> <span class="n">doc_chunks</span> <span class="k">as</span>
+  <span class="k">select</span> 
+    <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span>
+    <span class="n">TO_VECTOR</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
+  <span class="k">from</span>
+    <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+    <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
+      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span>
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+      <span class="p">)</span> <span class="n">t</span><span class="p">,</span>
+      <span class="n">JSON_TABLE</span><span class="p">(</span>
+      <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> 
+      <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span>
+        <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span> 
+        <span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span>
+        <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span>
+       <span class="p">)</span>
+      <span class="p">)</span> <span class="n">et</span>
+  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  表が作成されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h2 id="1-5-oracle-database-23ai-free編-ベクトル検索の実行">1-5. Oracle Database 23ai Free編-ベクトル検索の実行</h2>
+
+<p>ベクトル検索を実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">embed_data</span>
+  <span class="k">FROM</span> <span class="n">doc_chunks</span>
+  <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">vector_distance</span><span class="p">(</span><span class="n">embed_vector</span> <span class="p">,</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="n">embed_vector</span>
+  <span class="k">FROM</span>
+  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'コーポレート・ガバナンスに関する基本的な考え方'</span><span class="p">,</span> <span class="n">JSON</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span>
+  <span class="n">JSON_TABLE</span> <span class="p">(</span> <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span>
+  <span class="n">COLUMNS</span> <span class="p">(</span>
+  <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span> <span class="n">embed_data</span> <span class="n">VARCHAR2</span> <span class="p">(</span> <span class="mi">4000</span> <span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span> <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span>
+  <span class="p">))</span><span class="n">et</span><span class="p">),</span> <span class="n">COSINE</span><span class="p">)</span>
+  <span class="k">FETCH</span> <span class="n">EXACT</span> <span class="k">FIRST</span> <span class="mi">4</span> <span class="k">ROWS</span> <span class="k">ONLY</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      DOC_ID   EMBED_ID
+  ---------- ----------
+  EMBED_DATA
+  --------------------------------------------------------------------------------
+          1         15
+  値向上と、循環型経済の実現に向けITの側面から支援します。(5)ビジネスパートナーと
+  のエコシステムを強化当社とステークホルダーの強みを合
+  わせ、イニシアチブを推進します。
+  ...
+  よび会計監査人は、それぞれ監査委員と適宜会合を持
+  ち、当社が対処すべき課題、監査委員会による監査の環境整備の状況、監査上の重要課題
+  等について意見を交換し、代表執行役、会計監査人
+  および監査委員の間で相互認識を深める体制をとっております。
+
+
+  4行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor7"></a></p>
+
+<h1 id="adb23ai-always-free編">ADB23ai Always Free編</h1>
+
+<h2 id="2-1-adb23ai-always-free編-ファイルの格納">2-1. ADB23ai Always Free編-ファイルの格納</h2>
+
+<p>ここからはADB23aiを使って、チュートリアルの内容を行います。</p>
+
+<p>まずは、ファイルをオブジェクトストレージに格納します。手順は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#2-2-oci%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%81%B8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89">OCIオブジェクトストレージへのデータアップロード</a>をご参照ください。</p>
+
+<p>※オブジェクトの詳細から、ファイル名まで含んだオブジェクトのURLパスをメモ帳などにあらかじめ保存してください。のちの手順で使用します。</p>
+
+<p>ADBのコンソール画面から、ADMINユーザーでDatabase Actionsにアクセスをし、ローカルのテストユーザー(docuser)を作成します。
+Database Actionsからのユーザー作成方法については、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/#3-database-actions%E3%81%A7%E6%93%8D%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86">101: ADBインスタンスを作成してみよう, 3. Database Actionsで操作してみよう</a>をご参照ください。</p>
+
+<p>ユーザー作成画面では以下のように設定してください。</p>
+<ul>
+  <li>ユーザー名：DOCUSER</li>
+  <li>パスワード：Welcome12345# (例)</li>
+  <li>表領域の割り当て制限：UNLIMITED</li>
+  <li>Webアクセス：トグルをON</li>
+</ul>
+
+<p>Database Actionsの開発カテゴリのSQLのツールにて以下のように設定し、DOCUSERに対して必要な権限を付与します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">dwrole</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">DBMS_CLOUD_AI</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">DBMS_VECTOR</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">DBMS_VECTOR_CHAIN</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  
+  <span class="k">BEGIN</span>
+    <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
+      <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
+      <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span><span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
+                        <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'docuser'</span><span class="p">,</span>
+                        <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span><span class="p">));</span>
+  <span class="k">END</span><span class="p">;</span>
+  <span class="o">/</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  権限付与が成功しました。
+</code></pre></div></div>
+
+<p>Database ActionsにDOCUSERユーザーとして接続します。</p>
+
+<p>リレーショナルテーブル(<code class="language-plaintext highlighter-rouge">documentation_tab</code>)を作成し、オブジェクトストレージからサンプル・ドキュメントをロードするためのクレデンシャル作成をします。
+冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintを記入して実行してください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- drop table documentation_tab purge;</span>
+
+  <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">documentation_tab</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">,</span> <span class="k">data</span> <span class="nb">blob</span><span class="p">);</span>
+  <span class="k">BEGIN</span>  
+    <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span> <span class="p">(</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span>
+        <span class="n">user_ocid</span> <span class="o">=&gt;</span> <span class="s1">'user ocid value'</span><span class="p">,</span>
+        <span class="n">tenancy_ocid</span> <span class="o">=&gt;</span> <span class="s1">'tenancy ocid value'</span><span class="p">,</span>
+        <span class="n">private_key</span> <span class="o">=&gt;</span> <span class="s1">'private key value'</span><span class="p">,</span>
+        <span class="n">fingerprint</span> <span class="o">=&gt;</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
+  <span class="k">END</span><span class="p">;</span>
+  <span class="o">/</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  表が作成されました。
+  PL/SQLプロシージャが正常に完了しました。
+</code></pre></div></div>
+
+<p>PDFドキュメントをDBMS_CLOUD.GET_OBJECTでBLOBとしてGETし、documentation_tabテーブル内に格納します。
+object_uriには前に手順でメモをしたURIパスを入力します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">DECLARE</span>
+    <span class="n">l_blob</span> <span class="nb">BLOB</span> <span class="p">:</span><span class="o">=</span> <span class="k">NULL</span><span class="p">;</span>
+    <span class="k">BEGIN</span>
+    <span class="n">l_blob</span> <span class="p">:</span><span class="o">=</span> <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">GET_OBJECT</span><span class="p">(</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span> 
+        <span class="n">object_uri</span> <span class="o">=&gt;</span> <span class="s1">'https://objectstorage.xxxxxxxxxxxx.oraclecloud.com/xxxxxxxxxxxxxxxxxx/corporate-governance-202209-jp.pdf'</span><span class="p">);</span>
+    <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">l_blob</span><span class="p">);</span>
+    <span class="k">commit</span><span class="p">;</span>
+    <span class="k">END</span><span class="p">;</span>
+    <span class="o">/</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  1行が作成されました。
+  コミットが完了しました。
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">documentation_tab</code>テーブルの<code class="language-plaintext highlighter-rouge">data</code>列に格納されているLOBデータの長さをバイト単位で取得します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">dbms_lob</span><span class="p">.</span><span class="n">getlength</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">t</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  DBMS_LOB.GETLENGTH<span class="o">(</span>T.DATA<span class="o">)</span>
+  <span class="nt">--------------------------</span>
+                      310454
+
+  1行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor8"></a></p>
+
+<h2 id="2-2-adb23ai-always-free編-テキストへの変換">2-2. ADB23ai Always Free編-テキストへの変換</h2>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_TEXT</code>を実行してPDFドキュメントをテキスト形式に変換します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  DBMS_VECTOR_CHAIN.UTL_TO_TEXT<span class="o">(</span>DT.DATA<span class="o">)</span>
+  <span class="nt">--------------------------------------------------------------------------------</span>
+  コーポレートガバナンス
+  CORPORATE
+  GOVERNANCE
+  ...
+  1行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor9"></a></p>
+
+<h2 id="2-3-adb23ai-always-free編-チャンクへの分割">2-3. ADB23ai Always Free編-チャンクへの分割</h2>
+
+<p>精度のよい検索結果を得られるために、このチュートリアルでは、<code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は<a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240">こちら</a>をご参照ください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="p">{</span><span class="nv">"max"</span><span class="p">:</span> <span class="nv">" 400"</span><span class="p">,</span> <span class="nv">"overlap"</span><span class="p">:</span> <span class="nv">"20"</span><span class="p">,</span> <span class="nv">"language"</span><span class="p">:</span> <span class="nv">"JAPANESE"</span><span class="p">,</span> <span class="nv">"normalize"</span><span class="p">:</span> <span class="nv">"all"</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>を実行して、テキストドキュメントをチャンクに分割します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">ct</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">ct</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  COLUMN_VALUE
+  <span class="nt">--------------------------------------------------------------------------------</span>
+  <span class="o">{</span><span class="s2">"chunk_id"</span>:1,<span class="s2">"chunk_offset"</span>:14,<span class="s2">"chunk_length"</span>:619,<span class="s2">"chunk_da
+  ta"</span>:<span class="s2">"コーポレートガバナンス </span><span class="se">\n</span><span class="s2">CORPORATE </span><span class="se">\n</span><span class="s2">GOVERNANC
+  E </span><span class="se">\n</span><span class="s2">Oracle </span><span class="se">\n</span><span class="s2">CorporationJapan</span><span class="se">\n\n</span><span class="s2">最終更新日:2
+  022年9月13日 </span><span class="se">\n</span><span class="s2">日本オラクル株式会社</span><span class="se">\n\n</span><span class="s2">代表執行役 法務室 マネージ
+  ング・カウンシル 内海 寛子 </span><span class="se">\n</span><span class="s2">問合せ先:IR部 03-6834-6666 </span><span class="se">\</span><span class="s2">
+  n証券コード: </span><span class="se">\n</span><span class="s2">4716</span><span class="se">\n\n</span><span class="s2">http://www.oracle.com/
+  jp/corporate/investor-relations/index.ht
+  ml</span><span class="se">\n\n</span><span class="s2">当社のコーポレート・ガバナンスの状況は以下のとおりです。</span><span class="se">\n\n</span><span class="s2">
+  Ⅰ</span><span class="se">\n\n</span><span class="s2">コーポレート・ガバナンスに関する基本的な考え方及び資本構成、企業属性その他
+  の基本情報</span><span class="se">\n\n</span><span class="s2">1.基本的な考え方 </span><span class="se">\n</span><span class="s2">当社は継続的に企業価値を高めていく
+  上で、コーポレート・ガバナンスの確立は重要な課題であると考え、すべてのステークホ
+  ルダーに対する経 </span><span class="se">\n</span><span class="s2">営の責任を果たすべく、日本の法制度等に合致し、さらに親会社で
+  あるオラクル・コーポレーションのコーポレート・ガバナンス方針に基づいた体制 </span><span class="se">\n</span><span class="s2">の
+  整備に努めております。 </span><span class="se">\n</span><span class="s2">また、従業員に対しては全世界のオラクル
+  ・グループ共通の「Oracle </span><span class="se">\n</span><span class="s2">Code </span><span class="se">\n</span><span class="s2">ofEthicsand </span><span class="se">\n</span><span class="s2">Business
+  </span><span class="se">\n</span><span class="s2">Conduct(倫理とビジネス行動規範に関する規"</span><span class="o">}</span>
+  ...
+  <span class="o">{</span><span class="s2">"chunk_id"</span>:62,<span class="s2">"chunk_offset"</span>:29600,<span class="s2">"chunk_length"</span>:471,<span class="s2">"chun
+  k_data"</span>:<span class="s2">"業界経験 </span><span class="se">\n</span><span class="s2">テクノロジー</span><span class="se">\n\n</span><span class="s2">データセキュリティ・</span><span class="se">\n\n</span><span class="s2">
+  リスクマネージメント</span><span class="se">\n\n</span><span class="s2">ファイナンス</span><span class="se">\n\n</span><span class="s2">法務・コンプライア</span><span class="se">\n\n</span><span class="s2">ン
+  ス・コーポレートガバナンス</span><span class="se">\n\n</span><span class="s2">エグゼクティブリーダーシップ・タレント</span><span class="se">\n\n</span><span class="s2">ディ
+  ベロップメント・ダイバーシティ&amp;イ</span><span class="se">\n\n</span><span class="s2">ンクルージョン</span><span class="se">\n\n</span><span class="s2">三澤 </span><span class="se">\n</span><span class="s2">智
+  光 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n\n</span><span class="s2">クリシュナ・シヴァラマン</span><span class="se">\n\n</span><span class="s2">〇
+  </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n\n</span><span class="s2">ギャレット・イルグ </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">
+  〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n\n</span><span class="s2">ヴィンセント・エス・グレリ</span><span class="se">\n\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\</span><span class="s2">
+  n</span><span class="se">\n</span><span class="s2">キンバリー・ウーリー </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n\n</span><span class="s2">藤森 </span><span class="se">\n</span><span class="s2">義明
+  </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n\n</span><span class="s2">ジョン・エル・ホール </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n</span><span class="s2">
+  </span><span class="se">\n</span><span class="s2">夏野 </span><span class="se">\n</span><span class="s2">剛 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇</span><span class="se">\n\n</span><span class="s2">⿊⽥ </span><span class="se">\n</span><span class="s2">由貴子 </span><span class="se">\n</span><span class="s2">〇 </span><span class="se">\n</span><span class="s2">〇
+  "</span><span class="o">}</span>
+
+
+  62行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor10"></a></p>
+
+<h2 id="2-4-adb23ai-always-free編-ベクトルデータへの変換">2-4. ADB23ai Always Free編-ベクトルデータへの変換</h2>
+
+<p>チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
+冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">declare</span>
+    <span class="n">jo</span> <span class="n">json_object_t</span><span class="p">;</span>
+  <span class="k">begin</span>
+    <span class="n">jo</span> <span class="p">:</span><span class="o">=</span> <span class="n">json_object_t</span><span class="p">();</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'user_ocid'</span><span class="p">,</span> <span class="s1">'user ocid value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'tenancy_ocid'</span><span class="p">,</span> <span class="s1">'tenancy ocid value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'compartment_ocid'</span><span class="p">,</span> <span class="s1">'compartment ocid value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'private_key'</span><span class="p">,</span> <span class="s1">'private key value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'fingerprint'</span><span class="p">,</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
+    <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">);</span>
+    <span class="n">dbms_vector</span><span class="p">.</span><span class="n">create_credential</span><span class="p">(</span>
+      <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'VECTOR_CRED'</span><span class="p">,</span>
+      <span class="n">params</span>          <span class="o">=&gt;</span> <span class="n">json</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">));</span>
+  <span class="k">end</span><span class="p">;</span>
+  <span class="o">/</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  PL/SQLプロシージャが正常に完了しました。
+</code></pre></div></div>
+<p>OCI GenAIサービスを利用するためのパラメータを設定します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。</p>
+
+<p>※urlには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによってここからの手順では適宜修正してください。最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。例えばロンドンの場合は、urlには<em>https://inference.generativeai.uk-london-1.oci.oraclecloud.com</em>と指定します。</p>
+
+<p>上記の設定を検証してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  COLUMN_VALUE
+  --------------------------------------------------------------------------------
+  {"embed_id":"1","embed_data":"hello","embed_vector":"[0.0035
+  934448,0.028701782,0.031051636,-0.001415
+  ...
+  1行が選択されました。
+</code></pre></div></div>
+
+<p>ここでエラーが出力される場合は、クレデンシャルのAPIキーが正しく作成されているか確認してください。</p>
+
+<p>特にprivate_keyにはダウンロードした秘密鍵の中身を<strong>改行を入れずに</strong>指定する必要がありますので、ご注意ください。</p>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_EMBEDDINGS</code>を実行して、チャンクをベクトルデータに変換して、<code class="language-plaintext highlighter-rouge">doc_chunks</code>テーブルに保存します。</p>
+
+<blockquote>
+  <p>注意：処理する件数によって時間がかかる場合があります。</p>
+</blockquote>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">table</span> <span class="n">doc_chunks</span> <span class="k">as</span>
+  <span class="k">select</span> 
+    <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span>
+    <span class="n">TO_VECTOR</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
+  <span class="k">from</span>
+    <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+    <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
+      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span>
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+      <span class="p">)</span> <span class="n">t</span><span class="p">,</span>
+      <span class="n">JSON_TABLE</span><span class="p">(</span>
+      <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> 
+      <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span>
+        <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span> 
+        <span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span>
+        <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span>
+       <span class="p">)</span>
+      <span class="p">)</span> <span class="n">et</span>
+  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  表が作成されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor11"></a></p>
+
+<h2 id="2-5-adb23ai-always-free編-ベクトル検索の実行">2-5. ADB23ai Always Free編-ベクトル検索の実行</h2>
+
+<p>ベクトル検索を実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">embed_data</span>
+  <span class="k">FROM</span> <span class="n">doc_chunks</span>
+  <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">vector_distance</span><span class="p">(</span><span class="n">embed_vector</span> <span class="p">,</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="n">embed_vector</span>
+  <span class="k">FROM</span>
+  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'コーポレート・ガバナンスに関する基本的な考え方'</span><span class="p">,</span> <span class="n">JSON</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span>
+  <span class="n">JSON_TABLE</span> <span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span>
+  <span class="n">COLUMNS</span> <span class="p">(</span>
+  <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span>
+  <span class="n">embed_data</span> <span class="n">VARCHAR2</span> <span class="p">(</span> <span class="mi">4000</span> <span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span>
+  <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span><span class="p">))</span> <span class="n">et</span><span class="p">),</span> <span class="n">COSINE</span><span class="p">)</span> <span class="k">FETCH</span> <span class="n">EXACT</span> <span class="k">FIRST</span> <span class="mi">4</span> <span class="k">ROWS</span> <span class="k">ONLY</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      DOC_ID   EMBED_ID
+  <span class="nt">----------</span> <span class="nt">----------</span>
+  EMBED_DATA
+  <span class="nt">--------------------------------------------------------------------------------</span>
+          1         15
+  値向上と、循環型経済の実現に向けITの側面から支援します。<span class="o">(</span>5<span class="o">)</span>ビジネスパートナーと
+  のエコシステムを強化当社とステークホルダーの強みを合
+  わせ、イニシアチブを推進します。
+  ...
+  よび会計監査人は、それぞれ監査委員と適宜会合を持
+  ち、当社が対処すべき課題、監査委員会による監査の環境整備の状況、監査上の重要課題
+  等について意見を交換し、代表執行役、会計監査人
+  および監査委員の間で相互認識を深める体制をとっております。
+
+
+  4行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="おわりに"></a>
+以上、Oracle Database 23ai free、ADB23ai Always Freeを使って、ファイル→テキスト→チャンク→ベクトルデータへの変換、またベクトルの検索を完了しました。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=104+%3A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E2%86%92%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E2%86%92%E3%83%81%E3%83%A3%E3%83%B3%E3%82%AF%E2%86%92%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E3%81%B8%E3%81%AE%E5%A4%89%E6%8F%9B%E3%81%8A%E3%82%88%E3%81%B3%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E6%A4%9C%E7%B4%A2%E3%82%92%E4%BD%BF%E3%81%8A%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector104-file-to-embedding%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector104-file-to-embedding%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=104+%3A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E2%86%92%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E2%86%92%E3%83%81%E3%83%A3%E3%83%B3%E3%82%AF%E2%86%92%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E3%81%B8%E3%81%AE%E5%A4%89%E6%8F%9B%E3%81%8A%E3%82%88%E3%81%B3%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E6%A4%9C%E7%B4%A2%E3%82%92%E4%BD%BF%E3%81%8A%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector104-file-to-embedding%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/ai-vector-search/ai-vector103-basics/" class="pagination--pager" title="103 : Oracle AI Vector Searchの基本操作を試してみよう">前へ</a>
+    
+    
+      <a href="/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/" class="pagination--pager" title="105: マルチベクトル検索で複数のドキュメントを検索してみよう">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

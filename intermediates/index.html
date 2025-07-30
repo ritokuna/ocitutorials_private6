@@ -1,0 +1,1369 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>応用編 - Oracle Cloud Infrastructure をもっと活用する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Cloud Infrastructure (OCI) のちょっと進んだ使い方を習得するためのチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="応用編 - Oracle Cloud Infrastructure をもっと活用する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/">
+
+
+  <meta property="og:description" content="Oracle Cloud Infrastructure (OCI) のちょっと進んだ使い方を習得するためのチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--collection wide" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          応用編 - Oracle Cloud Infrastructure をもっと活用する
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Cloud Infrastructure (OCI) のちょっと進んだ使い方を習得するためのチュートリアルです。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        <li class="current">応用編 - Oracle Cloud Infrastructure をもっと活用する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <div class="archive">
+    
+    
+
+
+
+<div class="entries-grid">
+  
+
+
+
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/monitoring-resources/image-20210112132107310.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/monitoring-resources/" rel="permalink">モニタリング機能でOCIのリソースを監視する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/using-load-balancer/img1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/using-load-balancer/" rel="permalink">ロードバランサーでWebサーバーを負荷分散する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/autoscaling/img5.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/autoscaling/" rel="permalink">インスタンスのオートスケーリングを設定する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/taking-block-volume-backups/img6.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/taking-block-volume-backups/" rel="permalink">ブロック・ボリュームをバックアップする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/object-storage-advanced/img11.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/object-storage-advanced/" rel="permalink">オブジェクト・ストレージの高度な設定
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">オブジェクト・ストレージには事前認証済みリクエスト以外にもDR構成を行うために他リージョンのバケットにレプリケーションするなどさまざまな機能があります。この章では主にコンソールから設定します。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/using-dns/image10.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/using-dns/" rel="permalink">DNSサービスを使ってWebサーバーの名前解決をする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/private-dns/04.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/private-dns/" rel="permalink">プライベートDNSを使って名前解決をする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">インスタンスなどに独自の名前をつけることで一目で分かりやすい名前解決を行えます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/certificate/01.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/certificate/" rel="permalink">プライベート認証局と証明書の発行
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">SSL/TLS通信の際に証明書が必要になります。プライベート認証局を立てて証明書の管理や更新をしましょう。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/sending-emails-1/img1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/sending-emails-1/" rel="permalink">Email Deliveryを利用した外部へのメール送信(基礎編)
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/sending-emails-2/img2.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/sending-emails-2/" rel="permalink">Email Deliveryを利用した外部へのメール送信(応用編)
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Email Deliveryを利用した外部へのメール送信(基礎編)でSMTP認証を設定しましたが、それだけでは迷惑メールとみなされてしまう可能性があります。そこで今回のチュートリアルでは送信ドメイン認証であるSPFとDKIMの設定を行い、メールの到達可能性を向上させます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/accessing-serial-console/img1-3.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/accessing-serial-console/" rel="permalink">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/attaching-secondary-ips/img3.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/attaching-secondary-ips/" rel="permalink">インスタンスにセカンダリIPを付与する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/using-cli/image-20210913161308143.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/using-cli/" rel="permalink">コマンドライン(CLI)でOCIを操作する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/cloud-shell/cloud-shell.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/cloud-shell/" rel="permalink">クラウド・シェルを使ってブラウザだけで簡単コマンド操作
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIのコンソール画面はGUI操作ができて便利ですが、時にはコマンドラインで操作したい場合もあります。そんな時に別途ターミナルを用いてコマンド操作するのではなく、ブラウザのコンソール画面の中でコマンド操作ができると便利です。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/budget-quota/cost.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/budget-quota/" rel="permalink">予算と割当て制限を設定してコストを適正化する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">予期せぬコスト増加を避けるために、テナンシの管理者側で予算（Budget）機能と、割当て制限（Quota）機能を使って適切にコスト管理をしていきましょう
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/management/audit-log-analytics/audit-loganalytics16.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/audit-log-analytics/" rel="permalink">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLogging Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLogging Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行う...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/ocitutorials/security/networkfirewall-setup/nfw1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/networkfirewall/" rel="permalink">OCI Network Firewallを構築する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="https://qiita.com/western24/items/06271c09a17e566661e8">OCI Valut (OCI Key Management) でBYOKをする
+</a> <a href="/ocitutorials/intermediates/byok-with-vault/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Cloud Infrastructureには、OCI Valut (旧称 OCI Key Management) という暗号化マスター鍵を仮想化したHSMで管理する機能があり、ユーザーが管理する暗号鍵でブロック・ボリュームやオブジェクト・ストレージなどのデータを暗号化をできるようになっています。OC...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/management/dbcs-database-management/dbmgmt1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/dbcs-database-management/" rel="permalink">OCI Database Cloud ServiceでDatabase Managementを有効化する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIで利用しているDatabase Cloud Serviceを監視するツールをお探しではありませんか？Database ManagementはOracle DBのメトリック監視はもちろん、ASH分析、SQLモニタリング、ADDM、ブロッキングセッションまで確認することができます。無償でご利用を開始いただけるオ...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="https://community.oracle.com/tech/welcome/discussion/4474298/web-application-firewall-waf-%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6web%E3%82%B5%E3%83%BC%E3%83%90%E3%82%92%E4%BF%9D%E8%AD%B7%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89">Web Application Firewall(WAF)を使ってWebサーバを保護する
+</a> <a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/web-application-acceleration/overview_architecture.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/web-application-acceleration/" rel="permalink">Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Web Application Acceleration（WAA）により、フレキシブル・ロード・バランサにコンテンツ・キャッシュおよびコンテンツ圧縮機能を持たせ、アプリケーションの応答速度向上を図れます
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/management/dbcs_operations_insights/DB_OperationsInsights16.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/dbcs_operations_insights/" rel="permalink">OCIのDBCSでOperations Insightsを有効化する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">パフォーマンスの悪いSQL文の特定や、Oracle DatabaseのCPU、メモリーの割当てなどのリソース配分の意思決定に時間がかかっていませんか？Operations Insightsを使用すると、問題のあるSQL文やOracle Databaseのリソースの使用状況、需要予測などを行うことが出来ます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/identitydomains1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/identitydomains-add-domains-license/" rel="permalink">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証基盤です。Identity DomainsはOCIへのユーザーの認証・認可だけではなく、OracleのSaaSや他社クラウドのSaaSなどへの認証基盤としてご利用いただくことも可能です。利用用途に合わせてIdentity Do...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/ocitutorials/identity/identitydomain-setup-users/users7.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/identitydomains-admin-users/" rel="permalink">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証基盤です。本チュートリアルではIdentity DomainsでのOCIテナント管理者ユーザーの作成手順と、一般ユーザーの作成手順を紹介します。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/management/logginganalytics_adb_log/img1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/logginganalytics_adb_log/" rel="permalink">Logging AnalyticsでAutonomous Databaseのログを収集する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Autonomous Databaseのログを収集するためのLogging Analyticsの設定方法について紹介します。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/management/logginganalytics_customparser/LA_customparser5.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/logginganalytics_customparser/" rel="permalink">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Logging Analyticsでは250を超えるログの解析文「パーサー」が定義されているため、主要なシステムのログはすぐに分析をすることができます。しかし万が一、分析したいログのパーサーが定義されていない場合、ユーザーが手動でパーサーを作成することができます。カスタム・パーサーの作成は画面UIからの操作だけで...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="https://qiita.com/western24/items/1e44bfcaa77f3251a263">Oracle Management Cloud チュートリアルまとめ
+</a> <a href="/ocitutorials/intermediates/management-cloud-tutorials/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Management Cloud (OMC) は、機械学習と大規模データ技術を活用した次世代の統合モニタリング、管理、アナリティクス・クラウド・サービスです。このまとめページでは、OMCの構築に始まり、各種リソース(OS、ログ、Javaアプリ、OCIのインフラ、Oracle Databaseなど)を...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/management/monitoring_prometheus/prom1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/monitoring_prometheus/" rel="permalink">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIの管理エージェントには、PrometheusのNode Exporterを利用したメトリックの収集機能が用意されています。こちらを使うことで標準では提供されていないメトリックの項目（Disk使用量など）をモニタリングで可視化したり、オンプレミスのサーバーのメトリックをモニタリングで可視化することが可能となり...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="https://qiita.com/western24/items/d1469545749866867191">Cloud Guardを使ってみる
+</a> <a href="/ocitutorials/intermediates/cloud-guard/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Cloud Guardを利用することで、Oracle Cloud Infrastructureの顧客テナント全体のクラウド・セキュリティ体制を統一的なビューから確認することができます。OCIの構成にセキュリティの弱点がないか、ユーザーにリスクのあるアクティビティがないかを検出し、セキュリティ担当者へアラート通知、...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/data-safe-tutorials/" rel="permalink">Oracle Data Safe チュートリアルまとめ
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Data Safeは、Oracle CloudのDatabase Serviceをよりセキュアに使うための付加的なサービスで、機密データの発見、(データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価などを、GUIツールから簡単に実施できます。このまとめページでは、Da...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="https://qiita.com/western24/items/c391afbf51951424b35f">OCI Database ManagementでOracleDBのパフォーマンス監視をする
+</a> <a href="/ocitutorials/intermediates/database-management/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Database Managementは、OCIやオンプレミスを含むすべての種類のOracle Databaseに包括的なデータベースのパフォーマンスと管理機能を提供し、監視、パフォーマンス管理、チューニング、データベース管理を含む完全なライフサイクルソリューションを提供することでDBAの負荷を大幅...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/storage-gateway/img01.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/storage-gateway/" rel="permalink">ストレージ・ゲートウェイを作成する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">ストレージ・ゲートウェイを利用することで、アプリケーションが 標準の NFSv4 プロトコルを使用して オブジェクト・ストレージ と相互作用できるようになります。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/resource-manager/000.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/resource-manager/" rel="permalink">リソース・マネージャを使ってサンプルアプリケーションをデプロイする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/terraform/03.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/terraform/" rel="permalink">TerraformでOCIの構築を自動化する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/using-logging/img1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/using-logging/" rel="permalink">ロギング・サービスを使って3つのログを収集する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIのロギング・サービスを使用することによりログを一元的に収集できて、トラブルが発生しても、ログをすぐに確認し素早く対策できます。また安価で使用できてOCIリソースだけでなくオンプレミスや他社クラウド環境のログを確認することができます。この文書ではコンソールからOCIで提供されている３つのログを使用します。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/vtap/arc-prog-completed.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/vtap/" rel="permalink">VTAPでパケットをミラーリングし、パケットキャプチャをする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">仮想テスト・アクセス・ポイント（VTAP）により、様々なコンポーネントへ流れるトラフィックをミラーリングでき、ネットワークのトラブル・シューティングやテストに役立てられます
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/serviceconnecterhub/image01.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/serviceconnecterhub/" rel="permalink">監査(Audit)ログを使用したテナント監視
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていき...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/mobile_app/ma_02.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/mobile_app/" rel="permalink">OCIモバイル・アプリケーションを使ってみる
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle CloudInfrastructureモバイル・アプリケーションを使用することで、いつでも、どこでも、リソースの詳細やステータスを簡単に監視することができます
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/content-management/create_oce_instance/024.jpg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/content-management/">Oracle Content and Experience チュートリアル
+</a> <a href="/ocitutorials/intermediates/oce-tutorial/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Content and Experience (OCE)は、API ファーストなアーキテクチャで、マルチチャネルでのコンテンツ配信を実現するインテリジェントなコンテンツ管理プラットフォームです。この文書では、OCEが提供するファイル共有、アセット管理、Webサイト管理などさまざまな機能の説明や使い方...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/secure-desktop/img1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/secure-desktop/" rel="permalink">Oracle Secure Desktopsで簡単VDI環境構築
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">クラウド上で仮想デスクトップの環境が必要なケースはありませんか？クライアントPCにデータを配置せず、リモートからOCIにアクセスして作業したい、オフィス以外からでも社内システムにアクセスしたい、そのような要件の時にOCIのセキュア・デスクトップが利用可能です。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/blockchain/01_1_create_instance/service_console.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/blockchain/">Oracle Blockchain Platform チュートリアル
+</a> <a href="/ocitutorials/intermediates/blockchain-tutorial/" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Blockchain Platform（OBP）は、オープンソースのブロックチェーンプロトコルHyperledger Fabricをベースとした、エンタープライズ向けブロックチェーン基盤です。この文書では、OBPの基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせ...</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/bastion/img1.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/bastion/" rel="permalink">BastionサービスでパブリックIPを持たないリソースにアクセスする
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/oracle-linux-storage-appliance/img10.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/" rel="permalink">Oracle Linux Storage Applianceでファイルストレージの構築
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Oracle Linux Storage Applianceを使用すると共有ストレージ・システムを構築することができます。また。Webインターフェースを利用して簡単にNFSおよびSMBプロトコルを使用する共有を作成することができます。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/os_management/img_12.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/os_management/" rel="permalink">コンピュート・インスタンスのOSを管理する
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OS管理サービスではオペレーティング・システムの更新やパッチを管理、監視できます。また、OSで動作しているリソースを検出して監視することも可能です。
+</p>
+  </article>
+</div>
+
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/ocitutorials/intermediates/ocidi-tutorials/top.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/ocitutorials/intermediates/ocidi-tutorials/" rel="permalink">OCI Data Integrationチュートリアル
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。
+</p>
+  </article>
+</div>
+
+</div>
+
+  </div>
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

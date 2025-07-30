@@ -1,0 +1,832 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Cloud Infrastructure(OCI) DevOps事前準備 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI DevOpsを利用するための事前準備を行います。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Cloud Infrastructure(OCI) DevOps事前準備">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/">
+
+
+  <meta property="og:description" content="OCI DevOpsを利用するための事前準備を行います。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Cloud Infrastructure(OCI) DevOps事前準備
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI DevOpsを利用するための事前準備を行います。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Cloud Infrastructure(OCI) DevOps事前準備</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/" class="active">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ci-for-beginners/">OCI Container Instances をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/">OCI API GatewayとOCI Functions を利用したデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-beginners/">OCI Cacheを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-commons/">OCI Cacheを使ってレスポンス・キャッシングをしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Cloud Infrastructure(OCI) DevOps事前準備">
+    <meta itemprop="description" content="OCI DevOpsを利用するための事前準備を行います。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#事前準備の流れ">事前準備の流れ</a></li><li><a href="#1oci-notifications-セットアップ">1.OCI Notifications セットアップ</a><ul><li><a href="#1-1-トピックとサブスクリプションの設定">1-1 トピックとサブスクリプションの設定</a><ul><li><a href="#1-1-1-トピックの作成">1-1-1 トピックの作成</a></li><li><a href="#1-1-2-サブスクリプションの作成">1-1-2 サブスクリプションの作成</a></li></ul></li></ul></li><li><a href="#2動的グループポリシー-セットアップ">2.動的グループ/ポリシー セットアップ</a><ul><li><a href="#2-1-動的グループとポリシーの作成">2-1 動的グループとポリシーの作成</a><ul><li><a href="#2-1-1-oci-devopsで利用する動的グループ">2-1-1 OCI DevOpsで利用する動的グループ</a></li><li><a href="#2-1-2-oci-devopsで利用するポリシー">2-1-2 OCI DevOpsで利用するポリシー</a></li></ul></li><li><a href="#2-2-動的グループとポリシーの設定">2-2 動的グループとポリシーの設定</a></li></ul></li><li><a href="#3プロジェクト">3.プロジェクト</a><ul><li><a href="#3-1-プロジェクトの作成">3-1 プロジェクトの作成</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <p>OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。<br />
+ここでは、OCI DevOpsを利用するための事前準備を行います。　　</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウント（Free Trial）を取得済みであること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="事前準備の流れ">事前準備の流れ</h2>
+
+<ul>
+  <li>
+    <p>1.OCI Notifications セットアップ</p>
+  </li>
+  <li>
+    <p>2.動的グループ/ポリシー セットアップ</p>
+  </li>
+  <li>
+    <p>3.プロジェクトの作成</p>
+  </li>
+</ul>
+
+<h2 id="1oci-notifications-セットアップ">1.OCI Notifications セットアップ</h2>
+
+<h3 id="1-1-トピックとサブスクリプションの設定">1-1 トピックとサブスクリプションの設定</h3>
+
+<p>OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サブスクリプション」の設定が必要となります。<br />
+この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。</p>
+
+<p class="notice--info"><strong>OCI Notificationsについて</strong><br />
+OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。<br />
+本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm">こちら</a>のページをご確認ください。</p>
+
+<h4 id="1-1-1-トピックの作成">1-1-1 トピックの作成</h4>
+
+<p>左上のハンバーガーメニューをクリックして、「開発者サービス」-「通知」を選択します。</p>
+
+<p><img src="1-013.png" alt="" /></p>
+
+<p>「トピックの作成」ボタンをクリックします。</p>
+
+<p><img src="1-014.png" alt="" /></p>
+
+<p class="notice--warning"><strong>トピックの名前について</strong><br />
+トピックの名前はテナンシで一意になります。<br />
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code class="language-plaintext highlighter-rouge">oci-devops-handson-01</code>や<code class="language-plaintext highlighter-rouge">handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</p>
+
+<p>「名前」に「oci-devops-handson」と入力します。</p>
+
+<p><img src="1-015.png" alt="" /></p>
+
+<p>「作成」ボタンをクリックします。</p>
+
+<p><img src="1-016.png" alt="" /></p>
+
+<p>「アクティブ」になることを確認します。</p>
+
+<p><img src="1-017.png" alt="" /></p>
+
+<p>以上でトピックの作成は完了です。</p>
+
+<h4 id="1-1-2-サブスクリプションの作成">1-1-2 サブスクリプションの作成</h4>
+
+<p>左メニュー「サブスクリプション」を選択します。</p>
+
+<p><img src="1-018.png" alt="" /></p>
+
+<p>「サブスクリプションの作成」ボタンをクリックします。</p>
+
+<p><img src="1-019.png" alt="" /></p>
+
+<p>「電子メール」にご自身のメールアドレスを入力します。</p>
+
+<p><img src="1-020.png" alt="" /></p>
+
+<p>「作成」ボタンをクリックします。</p>
+
+<p><img src="1-016.png" alt="" /></p>
+
+<p>設定したメールアドレスに、以下の内容のメールが届きます。「Confirm subscription」をクリックして、サブスクリプションを有効にします。</p>
+
+<p><img src="1-021.png" alt="" /></p>
+
+<p>以下の画面が表示されれば完了です。</p>
+
+<p><img src="1-022.png" alt="" /></p>
+
+<p>アクティブになっていることを確認します。<br />
+アクティブになっていない場合は、ブラウザを更新してください。</p>
+
+<p><img src="1-138.png" alt="" /></p>
+
+<p>以上で、サブスクリプションの作成は完了です。</p>
+
+<h2 id="2動的グループポリシー-セットアップ">2.動的グループ/ポリシー セットアップ</h2>
+
+<h3 id="2-1-動的グループとポリシーの作成">2-1 動的グループとポリシーの作成</h3>
+
+<p>ここでは、OCI DevOpsを利用するための動的グループとポリシーの作成を行います。</p>
+
+<p class="notice--info"><strong>動的グループとポリシーについて</strong><br />
+Oracle Cloud Infrastrctureには動的グループという考え方があります。<br />
+動的グループの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm">こちら</a>のページをご確認ください。<br />
+また、設定した動的グループは、ポリシーを利用することにより、OCI上のリソースやインスタンスを主体とした操作を実現できます。<br />
+ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Concepts/policygetstarted.htm#Getting_Started_with_Policies">こちら</a>のページをご確認ください。</p>
+
+<h4 id="2-1-1-oci-devopsで利用する動的グループ">2-1-1 OCI DevOpsで利用する動的グループ</h4>
+
+<p>OCI DevOpsを利用する上で、必要となる動的グループを作成します。<br />
+OCI DevOpsで設定する動的グループは以下となります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>動的グループ</th>
+      <th>ルール</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OCI_DevOps_Dynamic_Group</td>
+      <td>All {resource.type = ‘devopsrepository’, resource.compartment.id = ‘コンパートメントOCID’}</td>
+      <td>OCI DevOpsのコード・リポジトリを利用するために必要な動的グループ</td>
+    </tr>
+    <tr>
+      <td>OCI_DevOps_Dynamic_Group</td>
+      <td>All {resource.type = ‘devopsbuildpipeline’, resource.compartment.id = ‘コンパートメントOCID’}</td>
+      <td>ビルド・パイプラインを利用するために必要な動的グループ</td>
+    </tr>
+    <tr>
+      <td>OCI_DevOps_Dynamic_Group</td>
+      <td>All {resource.type = ‘devopsdeploypipeline’, resource.compartment.id = ‘コンパートメントOCID’}</td>
+      <td>デプロイメント・パイプラインを利用するために必要な動的グループ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--info"><strong>コンパートメントについて</strong><br />
+Oracle Cloud Infrastrctureにはコンパートメントという考え方があります。
+コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。
+コンパートメントの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingcompartments.htm">こちら</a>のページをご確認ください。</p>
+
+<p class="notice--warning"><strong>動的グループの名前について</strong><br />
+動的グループの名前はテナンシで一意になります。<br />
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code class="language-plaintext highlighter-rouge">OCI_DevOps_Dynamic_Group_01</code>や<code class="language-plaintext highlighter-rouge">OCI_DevOps_Dynamic_Group_tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</p>
+
+<h4 id="2-1-2-oci-devopsで利用するポリシー">2-1-2 OCI DevOpsで利用するポリシー</h4>
+
+<p>OCI DevOpsを利用する上で、必要となるポリシーを作成します。
+ポリシーは以下となります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ポリシー</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id コンパートメントOCID</td>
+      <td>OCI DevOpsの各機能を利用するために必要なポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id コンパートメントOCID</td>
+      <td>OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id コンパートメントOCID</td>
+      <td>OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--warning"><strong>本ハンズオンでの動的グループについて</strong><br />
+今回は、簡易的にハンズオンを実施するために、コンパートメント内の全てのリソースやインスタンスを動的グループとして含める設定を行なっています。<br />
+本来は、各サービスのタイプを指定して動的グループを作成することになります。</p>
+
+<h3 id="2-2-動的グループとポリシーの設定">2-2 動的グループとポリシーの設定</h3>
+
+<p>今回のハンズオンでは、スクリプトを利用して、動的グループとポリシーを設定します。<br />
+サンプルコードをダウンロードします。</p>
+
+<p>上部メニューの「Cloud　Shell」アイコンをクリックして、Cloud Shellを起動します。</p>
+
+<p><img src="1-028.png" alt="" /></p>
+
+<p>起動画面</p>
+
+<p><img src="1-029.png" alt="" /></p>
+
+<p>起動後、以下コマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://raw.githubusercontent.com/oracle-japan/devops-commons-script/master/common_prepare.sh
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">--2022-04-05</span> 00:55:37--  https://raw.githubusercontent.com/oracle-japan/devops-commons-script/master/common_prepare.sh
+Resolving raw.githubusercontent.com <span class="o">(</span>raw.githubusercontent.com<span class="o">)</span>... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
+Connecting to raw.githubusercontent.com <span class="o">(</span>raw.githubusercontent.com<span class="o">)</span>|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1195 <span class="o">(</span>1.2K<span class="o">)</span> <span class="o">[</span>text/plain]
+Saving to: ‘common_prepare.sh.1’
+
+100%[<span class="o">==============================================================================================================================================================================================================================================&gt;]</span> 1,195       <span class="nt">--</span>.-K/s   <span class="k">in </span>0s      
+
+2022-04-05 00:55:37 <span class="o">(</span>66.7 MB/s<span class="o">)</span> - ‘common_prepare.sh’ saved <span class="o">[</span>1195/1195]
+</code></pre></div></div>
+
+<p>ダウンロードしたスクリプトを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x ./common_prepare.sh
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sh ./common_prepare.sh
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxxxxxxx@xxxxx"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2021-11-18T07:41:49.264Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dynamicgroup.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"matching-rule"</span>: <span class="s2">"Any {resource.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}, {instance.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-11-18T07:41:49.350000+00:00"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"5f604e055e624ed3f993aafb2052b775bd37da0e"</span>
+<span class="o">}</span>
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxxxxxxx@xxxxx"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2021-11-18T07:41:50.746Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.policy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
+    <span class="s2">"statements"</span>: <span class="o">[</span>
+      <span class="s2">"Allow dynamic-group member-takuya.niita_dynamic_group to manage devops-family in compartment ocid1.policy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+      <span class="s2">"Allow dynamic-group member-takuya.niita_dynamic_group to manage all-artifacts in compartment ocid1.policy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+      <span class="s2">"Allow dynamic-group member-takuya.niita_dynamic_group to use ons-topics in compartment ocid1.policy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>
+    <span class="o">]</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-11-18T07:41:50.880000+00:00"</span>,
+    <span class="s2">"version-date"</span>: null
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"31c9339700c6132a1b6205df041ad52fcf66be51"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>これで、ポリシーの設定は完了です。</p>
+
+<h2 id="3プロジェクト">3.プロジェクト</h2>
+
+<p>ここでは、OCI DevOpsインスタンスを作成し、プロジェクトを作成します。</p>
+
+<p><img src="1-127.png" alt="" /></p>
+
+<h3 id="3-1-プロジェクトの作成">3-1 プロジェクトの作成</h3>
+
+<p>OCI DevOpsは、プロジェクト単位で管理する仕組みです。最初にプロジェクトを作成します。</p>
+
+<p>左上にあるハンバーガーメニューから「開発者サービス」-「プロジェクト」を選択します。</p>
+
+<p><img src="1-032.png" alt="" /></p>
+
+<p>「DevOpsプロジェクトの作成」ボタンをクリックします。</p>
+
+<p><img src="1-033.png" alt="" /></p>
+
+<p>「プロジェクト名」に「oci-devops-handson」と入力して、「トピックの選択」ボタンをクリックします。</p>
+
+<p><img src="1-034.png" alt="" /></p>
+
+<p class="notice--warning"><strong>プロジェクト名について</strong><br />
+プロジェクト名はテナンシで一意になります。<br />
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code class="language-plaintext highlighter-rouge">oci-devops-handson-01</code>や<code class="language-plaintext highlighter-rouge">oci-devops-handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</p>
+
+<p>「トピック」が「oci-devops-handson」であることを確認します。</p>
+
+<p><img src="1-035.png" alt="" /></p>
+
+<p>「トピックの選択」ボタンをクリックします。</p>
+
+<p><img src="1-036.png" alt="" /></p>
+
+<p>「DevOpsプロジェクトの作成」ボタンをクリックします。</p>
+
+<p><img src="1-037.png" alt="" /></p>
+
+<p>ロギングを有効化するために、「ログの有効化」ボタンをクリックします。</p>
+
+<p><img src="1-038.png" alt="" /></p>
+
+<p>赤枠の箇所をクリックして有効化します。</p>
+
+<p><img src="1-039.png" alt="" /></p>
+
+<p>そのままの状態で、「ログの有効化」ボタンをクリックします。</p>
+
+<p><img src="1-040.png" alt="" /></p>
+
+<p><img src="1-041.png" alt="" /></p>
+
+<p>左メニューの「ログ」を選択して、「Active」となっていることを確認します。</p>
+
+<p><img src="1-139.png" alt="" /></p>
+
+<p>以上で、プロジェクトの作成は完了です。</p>
+
+<p>この後はそれぞれ以下のハンズオン手順に従ってください。</p>
+
+<p><a href="../devops-for-beginners-compute/">初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></p>
+
+<p><a href="../devops-for-beginners-oke/">初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></p>
+
+<p><a href="../devops-for-beginners-functions/">初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=Oracle+Cloud+Infrastructure%28OCI%29+DevOps%E4%BA%8B%E5%89%8D%E6%BA%96%E5%82%99%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fdevops-for-commons%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fdevops-for-commons%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=Oracle+Cloud+Infrastructure%28OCI%29+DevOps%E4%BA%8B%E5%89%8D%E6%BA%96%E5%82%99%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fdevops-for-commons%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/devops-for-beginners-compute/" class="pagination--pager" title="Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

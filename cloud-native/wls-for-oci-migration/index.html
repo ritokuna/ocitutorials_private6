@@ -1,0 +1,841 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>WebLogic Server for OCIにアプリケーションを移行してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIが提供するWebLogic Server for OCIを利用して、JavaEEアプリケーションのクラウド移行を体験していただけるコンテンツです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="WebLogic Server for OCIにアプリケーションを移行してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oci-migration/">
+
+
+  <meta property="og:description" content="OCIが提供するWebLogic Server for OCIを利用して、JavaEEアプリケーションのクラウド移行を体験していただけるコンテンツです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oci-migration/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          WebLogic Server for OCIにアプリケーションを移行してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIが提供するWebLogic Server for OCIを利用して、JavaEEアプリケーションのクラウド移行を体験していただけるコンテンツです。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">WebLogic Server for OCIにアプリケーションを移行してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ci-for-beginners/">OCI Container Instances をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/">OCI API GatewayとOCI Functions を利用したデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-beginners/">OCI Cacheを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-commons/">OCI Cacheを使ってレスポンス・キャッシングをしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/" class="active">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="WebLogic Server for OCIにアプリケーションを移行してみよう">
+    <meta itemprop="description" content="OCIが提供するWebLogic Server for OCIを利用して、JavaEEアプリケーションのクラウド移行を体験していただけるコンテンツです。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオンの全体像">ハンズオンの全体像</a></li><li><a href="#1移行先環境で利用するデータベースのスキーマを作成">1.移行先環境で利用するデータベースのスキーマを作成</a></li><li><a href="#2移行先環境となるweblogic-server-for-ociを移行元環境と同一サブネットに作成">2.移行先環境となるWebLogic Server for OCIを移行元環境と同一サブネットに作成</a><ul><li><a href="#21-マーケットプレイスにてスタックを起動する">2.1. マーケットプレイスにてスタックを起動する</a></li><li><a href="#22-weblogic-server-for-ociをプロビジョニングする">2.2. WebLogic Server for OCIをプロビジョニングする</a></li></ul></li><li><a href="#3移行ファイルの抽出">3.移行ファイルの抽出</a><ul><li><a href="#31-wdt-をインストールする">3.1. WDT をインストールする</a></li><li><a href="#32-移行ファイルを抽出する">3.2. 移行ファイルを抽出する</a></li></ul></li><li><a href="#4移行ファイルの編集">4.移行ファイルの編集</a><ul><li><a href="#41-sourcepropertiesファイルの編集">4.1. source.propertiesファイルの編集</a></li><li><a href="#42-sourceyamlファイルの編集">4.2. source.yamlファイルの編集</a></li><li><a href="#43-wdtモデルファイルを移行先管理サーバに転送する">4.3. WDTモデルファイルを移行先管理サーバに転送する</a></li></ul></li><li><a href="#5移行ファイルの適用">5.移行ファイルの適用</a><ul><li><a href="#51-移行ファイルを移行先環境に適用する">5.1. 移行ファイルを移行先環境に適用する</a></li><li><a href="#52-アプリケーションの動作確認を行う">5.2. アプリケーションの動作確認を行う</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <h2 id="前提条件">前提条件</h2>
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウントを取得済みであること</li>
+      <li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIのプロビジョニング</a>を実施済みであること
+        <ul>
+          <li>このハンズオンでは以後この環境を「移行元環境」と呼びます</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ハンズオンの全体像">ハンズオンの全体像</h2>
+
+<ol>
+  <li>移行先環境で利用するデータベースのスキーマを作成</li>
+  <li>移行先環境となるWebLogic Server for OCIを移行元環境と同一サブネットに作成</li>
+  <li>移行元環境より移行ファイルを抽出</li>
+  <li>移行ファイルを編集</li>
+  <li>移行先環境に移行ファイルを適用</li>
+</ol>
+
+<p class="notice--info"><strong>Note: 移行元/移行先のデータベースに関して</strong><br />
+本ハンズオンでは、移行元と移行先で同一データベースを利用しますが、異なるスキーマを利用します。実際の移行では、接続先となるデータベースそのものが異なる場合が考えられます。</p>
+
+<p><img src="summary_1.jpg" alt="" /></p>
+
+<p class="notice--info"><strong>Note: ツールで移行可能なファイル</strong><br />
+本ハンズオンで利用する移行ツールのWebLogic Deploy Toolingでは、<strong>アプリケーション/アプリケーションの構成 以外のファイルは移行できません。</strong> そのため、アプリケーションが利用するファイル(例: データベースウォレット)などの移行は手作業で行う必要があります。<br />
+本ハンズオンでは、データベースにAutonomous Databaseを利用しているため、データベースウォレットの手動移行が必要になります。</p>
+
+<p><img src="summary_2.jpg" alt="" /></p>
+
+<h2 id="1移行先環境で利用するデータベースのスキーマを作成">1.移行先環境で利用するデータベースのスキーマを作成</h2>
+
+<p class="notice--info"><strong>Note: 移行元/移行先のデータベースに関して</strong><br />
+この手順では、移行元と移行先で同一データベースのスキーマのみを変更しています。実際の移行では、接続先となるデータベースが異なる場合が考えられます。その場合、接続先のJDBC URLが異なる場合がございますので、ご注意ください</p>
+
+<p>左上のハンバーガーメニューを展開して、「Oracle Database」から「Autonomous Transaction Processing」を選択します。
+<img src="1.3.001.jpg" alt="" /></p>
+
+<p>データベース・アクションをクリックします。<br />
+<img src="1.3.008.jpg" alt="" /></p>
+
+<p>「ユーザー名」に<code class="language-plaintext highlighter-rouge">ADMIN</code>、「パスワード」に<code class="language-plaintext highlighter-rouge">Welcome1234!</code>と入力します。※セッションの関係で、入力の必要がない場合があります。
+<img src="1.3.009.jpg" alt="" /></p>
+
+<p>「SQL」のパネルをクリックします。<br />
+<img src="1.3.010.jpg" alt="" /></p>
+
+<p>以下のSQLをワークシートに貼り付け、<strong>F5を押下し</strong>全文を実行し、移行先環境が利用するスキーマを作成します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- USER SQL
+CREATE USER "DEST" IDENTIFIED BY "Welcome1234!";
+
+-- ADD ROLES
+GRANT CONNECT TO DEST;
+GRANT RESOURCE TO DEST;
+ALTER USER DEST DEFAULT ROLE CONNECT,RESOURCE;
+
+-- ENABLE REST
+BEGIN
+    ORDS.ENABLE_SCHEMA(
+        p_enabled =&gt; TRUE,
+        p_schema =&gt; 'DEST',
+        p_url_mapping_type =&gt; 'BASE_PATH',
+        p_url_mapping_pattern =&gt; 'dest',
+        p_auto_rest_auth=&gt; TRUE
+    );
+    commit;
+END;
+/
+
+-- QUOTA
+ALTER USER DEST QUOTA UNLIMITED ON DATA;
+</code></pre></div></div>
+
+<p>画面右上、「ADMIN」をクリックし、「サインアウト」をクリック
+<img src="1.3.014.jpg" alt="" /></p>
+
+<p>「サインイン」をクリックし、「ユーザー名」に<code class="language-plaintext highlighter-rouge">DEST</code>と入力し、「次」をクリックします。<br />
+その後、「パスワード」に<code class="language-plaintext highlighter-rouge">Welcome1234!</code>と入力し、DESTユーザーでログインします。</p>
+
+<p>「SQL」のパネルをクリックします。<br />
+<img src="1.3.010.jpg" alt="" /></p>
+
+<p>　 <br />
+以下のSQLをワークシートに貼り付け、<strong>F5を押下し</strong>全文を実行。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE TABLE "DEST"."TODO_HEAD" 
+    (	
+        "RID" NUMBER(10,0), 
+        "STATUS" NUMBER(2,0), 
+        "TITLE" VARCHAR2(100 BYTE), 
+        "MEMO" VARCHAR2(1000 BYTE), 
+        "IMPORTANCE" NUMBER(2,0), 
+        "INCHARGE" NUMBER(10,0), 
+        "CREATE_DATE" DATE, 
+        "MODIFY_DATE" DATE
+    );
+
+INSERT INTO "DEST"."TODO_HEAD"
+    (
+        "RID", 
+        "STATUS", 
+        "TITLE", 
+        "MEMO", 
+        "IMPORTANCE", 
+        "INCHARGE", 
+        "CREATE_DATE", 
+        "MODIFY_DATE"
+    ) VALUES (
+        0, 
+        0,
+        'TODO TITLE',
+        'TODO MEMO',
+        0,
+        1000,
+        sysdate,
+        sysdate
+    );
+</code></pre></div></div>
+
+<h2 id="2移行先環境となるweblogic-server-for-ociを移行元環境と同一サブネットに作成">2.移行先環境となるWebLogic Server for OCIを移行元環境と同一サブネットに作成</h2>
+
+<h3 id="21-マーケットプレイスにてスタックを起動する">2.1. マーケットプレイスにてスタックを起動する</h3>
+
+<p>左上のハンバーガーメニューを展開して、「マーケットプレイス」から「すべてのアプリケーション」を選択します。
+<img src="2.1.001.jpg" alt="" /></p>
+
+<p>検索欄に「WebLogic Server Enterprise Edition UCM」と入力し、先頭に出てくるパネルをクリックします。
+<img src="2.1.002.jpg" alt="" /></p>
+
+<p>チェックボックスにチェックを入れ、「スタックの起動」をクリックします。
+<img src="2.1.003.jpg" alt="" /></p>
+
+<h3 id="22-weblogic-server-for-ociをプロビジョニングする">2.2. WebLogic Server for OCIをプロビジョニングする</h3>
+
+<p class="notice--info"><strong>Note: 特に記載のない部分に関してはデフォルトの値で構いません</strong></p>
+
+<p>名前に「handson_dest」と入力し、「次」をクリックします。<br />
+<img src="2.2.001.jpg" alt="" /></p>
+
+<p>Resource Name Prefix に「dest」と入力します。<br />
+<img src="2.2.002.jpg" alt="" /></p>
+
+<p>SSH Public Keyでは、<a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/#事前準備">事前準備</a>で作成したSSH Keyを選択します。</p>
+
+<p>Validated Secret for WebLogic Server Admin Passwordでは、<a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/#事前準備">事前準備</a>で作成したSecret(wlsadmin)を選択します。<br />
+<img src="1.2.003.jpg" alt="" /></p>
+
+<p>Existing Networkは「base-wls_handson」を選択し、Validated Existing Networkに「YES」と入力します。<br />
+<img src="2.2.003.jpg" alt="" /></p>
+
+<p>Existing Subnet for WebLogic Serverは「base-wl-subnet」を選択します。
+<img src="2.2.004.jpg" alt="" /></p>
+
+<p>Existing Subnet for Bastion Hostは「base-bsubnet」を選択します。
+<img src="2.2.005.jpg" alt="" /></p>
+
+<p>Existing Subnet for Load Balancerは「base-lbpubst1」を選択します。
+<img src="2.2.006.jpg" alt="" /></p>
+
+<p>「次」をクリックし、「作成」をクリックします。</p>
+
+<h2 id="3移行ファイルの抽出">3.移行ファイルの抽出</h2>
+<p>WebLogic Deploy Tooling (WDT)を利用して、アプリケーションなどの移行ファイルを移行元環境より抽出します。</p>
+
+<h3 id="31-wdt-をインストールする">3.1. WDT をインストールする</h3>
+
+<p>コンソール右上、OCI Cloud ShellのアイコンをクリックしてOCI Cloud Shellを開きます。
+<img src="4.3.001.jpg" alt="" /></p>
+
+<p>WDTをダウンロードします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/oracle/weblogic-deploy-tooling/releases/download/release-2.3.2/weblogic-deploy.zip
+</code></pre></div></div>
+
+<p>WDTとSSH KeyをSCPで転送します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp -i &lt;SSH Keyのパス&gt; \
+-o ProxyCommand='ssh -i &lt;SSH Keyのパス&gt; \
+-W %h:%p opc@&lt;base-bastion-instanceのパブリックIP&gt;' \
+~/weblogic-deploy.zip &lt;SSH Key&gt; opc@&lt;base-wls-0のプライベートIP&gt;:~/
+</code></pre></div></div>
+
+<p>以下コマンドを実行し、移行元のWebLogicインスタンス(base-wls-0)にSSHログインします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -i &lt;SSH Keyのパス&gt; \
+-o ProxyCommand='ssh -i &lt;SSH Keyのパス&gt; \
+-W %h:%p opc@&lt;base-bastion-instanceのパブリックIP&gt;' \
+opc@&lt;base-wls-0のプライベートIP&gt;
+</code></pre></div></div>
+
+<p>rootユーザーにスイッチします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo su - 
+</code></pre></div></div>
+
+<p>WDTとSSH Keyをoracleユーザーが利用できるようにします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv /home/opc/weblogic-deploy.zip /home/oracle/
+mv &lt;SSH Key&gt; /home/oracle/
+
+chown oracle:oracle /home/oracle/weblogic-deploy.zip
+chown oracle:oracle &lt;SSH Key&gt;
+</code></pre></div></div>
+
+<p>oracleユーザーにスイッチします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo su - oracle
+</code></pre></div></div>
+
+<p>WDTをunzipします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip weblogic-deploy.zip
+</code></pre></div></div>
+
+<p>WDTスクリプトの権限変更を行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x weblogic-deploy/bin/*.sh
+</code></pre></div></div>
+
+<h3 id="32-移行ファイルを抽出する">3.2. 移行ファイルを抽出する</h3>
+
+<p>以下の<code class="language-plaintext highlighter-rouge">discoverDomain</code>コマンドを利用して、移行ファイルの抽出を行います。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>weblogic-deploy/bin/discoverDomain.sh \
+    -oracle_home $MW_HOME \
+    -domain_home $DOMAIN_HOME \
+    -archive_file ./source.zip \
+    -model_file ./source.yaml \
+    -variable_file source.properties \
+</code></pre></div></div>
+
+<h2 id="4移行ファイルの編集">4.移行ファイルの編集</h2>
+<p>Cloud Shell上のVimなど任意のテキストエディタで、移行ファイル(WDTモデルファイル)を編集します。</p>
+
+<h3 id="41-sourcepropertiesファイルの編集">4.1. source.propertiesファイルの編集</h3>
+<p><code class="language-plaintext highlighter-rouge">source.properties</code>は、モデルファイル(<code class="language-plaintext highlighter-rouge">source.yaml</code>)で利用する変数をまとめたファイルです。</p>
+
+<p><code class="language-plaintext highlighter-rouge">JDBC.Handson.PasswordEncrypted</code>に<code class="language-plaintext highlighter-rouge">Welcome1234!</code><br />
+<code class="language-plaintext highlighter-rouge">JDBC.Handson.user.Value</code>は<code class="language-plaintext highlighter-rouge">DEST</code>と入力します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JDBC.Handson.PasswordEncrypted=Welcome1234!
+JDBC.Handson.user.Value=DEST
+</code></pre></div></div>
+
+<h3 id="42-sourceyamlファイルの編集">4.2. source.yamlファイルの編集</h3>
+<p><code class="language-plaintext highlighter-rouge">source.yaml</code>は、WebLogicドメインをモデル化したファイルです。</p>
+
+<p><code class="language-plaintext highlighter-rouge">domainInfo</code>フィールドと<code class="language-plaintext highlighter-rouge">topology</code>フィールドをすべて削除します。</p>
+
+<p class="notice--info"><code class="language-plaintext highlighter-rouge">resouces</code>フィールドと<code class="language-plaintext highlighter-rouge">appDeployments</code>フィールドのみが残ります。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Handson</code>フィールド下の<code class="language-plaintext highlighter-rouge">Target</code>は<code class="language-plaintext highlighter-rouge">base_cluster</code>を<code class="language-plaintext highlighter-rouge">dest_cluster</code>と変更します。</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+    <span class="na">JDBCSystemResource</span><span class="pi">:</span>
+        <span class="na">Handson</span><span class="pi">:</span>
+            <span class="na">Target</span><span class="pi">:</span> <span class="s">dest_cluster</span> <span class="c1">#変更</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">TodoApp-0.0.1-SNAPSHOT</code>フィールド下の<code class="language-plaintext highlighter-rouge">Target</code>は<code class="language-plaintext highlighter-rouge">base_cluster</code>を<code class="language-plaintext highlighter-rouge">dest_cluster</code>と変更します。</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">appDeployments</span><span class="pi">:</span>
+    <span class="na">Application</span><span class="pi">:</span>
+        <span class="na">TodoApp-0.0.1-SNAPSHOT</span><span class="pi">:</span>
+            <span class="na">SourcePath</span><span class="pi">:</span> <span class="s">wlsdeploy/applications/TodoApp-0.0.1-SNAPSHOT.war</span>
+            <span class="na">ModuleType</span><span class="pi">:</span> <span class="s">war</span>
+            <span class="na">Target</span><span class="pi">:</span> <span class="s">dest_cluster</span> <span class="c1">#変更</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">StagingMode: stage</code>を<code class="language-plaintext highlighter-rouge">appDeployments</code>内の<code class="language-plaintext highlighter-rouge">Target: dest_cluster</code>の下に追加します。</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">appDeployments</span><span class="pi">:</span>
+    <span class="na">Application</span><span class="pi">:</span>
+        <span class="na">TodoApp-0.0.1-SNAPSHOT</span><span class="pi">:</span>
+            <span class="na">SourcePath</span><span class="pi">:</span> <span class="s">wlsdeploy/applications/TodoApp-0.0.1-SNAPSHOT.war</span>
+            <span class="na">ModuleType</span><span class="pi">:</span> <span class="s">war</span>
+            <span class="na">Target</span><span class="pi">:</span> <span class="s">dest_cluster</span>
+            <span class="na">StagingMode</span><span class="pi">:</span> <span class="s">stage</span> <span class="c1">#追加</span>
+</code></pre></div></div>
+
+<h3 id="43-wdtモデルファイルを移行先管理サーバに転送する">4.3. WDTモデルファイルを移行先管理サーバに転送する</h3>
+
+<p>WDT、移行ファイル、Walletを移行先のWebLogic Server for OCIのインスタンスにscpで転送します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp -i &lt;SSH Key&gt; weblogic-deploy.zip source.* \
+Wallet_handsonDB.zip opc@&lt;移行先インスタンスのPrivate IP&gt;:~/
+</code></pre></div></div>
+
+<p>移行先のWebLogic Server for OCIのインスタンスにSSH接続します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -i [SSH Keyの名前] opc@[移行先インスタンスのPrivate IP]
+</code></pre></div></div>
+
+<p>WDT、移行ファイル、Walletの所有者を変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo chown oracle:oracle *
+</code></pre></div></div>
+
+<p>ファイルすべてを移動します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mv * /home/oracle/
+</code></pre></div></div>
+
+<p>oracleユーザにスイッチします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo su - oracle
+</code></pre></div></div>
+
+<p>Walletを<code class="language-plaintext highlighter-rouge">unzip</code>します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip -d handsondb Wallet_handsonDB.zip
+</code></pre></div></div>
+
+<p>WDTを<code class="language-plaintext highlighter-rouge">unzip</code>します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip weblogic-deploy.zip
+</code></pre></div></div>
+
+<p>WDTの権限変更を行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x weblogic-deploy/bin/*.sh
+</code></pre></div></div>
+
+<h2 id="5移行ファイルの適用">5.移行ファイルの適用</h2>
+<p>移行ファイルを移行先環境に適用し、移行が正常に行われることを確認します。</p>
+
+<h3 id="51-移行ファイルを移行先環境に適用する">5.1. 移行ファイルを移行先環境に適用する</h3>
+<p>以下のコマンドを実行し、WebLogic Server for OCIにデプロイを行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>weblogic-deploy/bin/updateDomain.sh \
+ -oracle_home $MW_HOME \
+ -domain_home $DOMAIN_HOME \
+ -model_file source.yaml \
+ -variable_file source.properties \
+ -archive_file source.zip \
+ -admin_url t3://$(hostname -i):9071
+</code></pre></div></div>
+<p>コマンドを実行すると、ユーザー名とパスワードを聞かれます。<br />
+それぞれ<code class="language-plaintext highlighter-rouge">weblogic</code>, <code class="language-plaintext highlighter-rouge">wilcome1</code>と入力してください。</p>
+
+<h3 id="52-アプリケーションの動作確認を行う">5.2. アプリケーションの動作確認を行う</h3>
+<p><code class="language-plaintext highlighter-rouge">&lt;Load Balancer IP&gt;</code>を移行先のものに置き換えて、アプリケーションにアクセスします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://&lt;Load Balancer IP&gt;/todo    
+</code></pre></div></div>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=WebLogic+Server+for+OCI%E3%81%AB%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E7%A7%BB%E8%A1%8C%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oci-migration%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oci-migration%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oci-migration/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=WebLogic+Server+for+OCI%E3%81%AB%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E7%A7%BB%E8%A1%8C%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oci-migration%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/" class="pagination--pager" title="WebLogic Server for OCIをプロビジョニングしてみよう">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/" class="pagination--pager" title="WebLogic Server for OKEをプロビジョニングしてみよう">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

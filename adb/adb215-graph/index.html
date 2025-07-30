@@ -1,0 +1,1044 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>215 : Graph Studioで金融取引の分析を行う | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Graph Studioのユーザー作成から、分析用のクエリまで、基本的な流れを学習しましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="215 : Graph Studioで金融取引の分析を行う">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb215-graph/">
+
+
+  <meta property="og:description" content="Graph Studioのユーザー作成から、分析用のクエリまで、基本的な流れを学習しましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb215-graph/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          215 : Graph Studioで金融取引の分析を行う
+
+        
+      </h1>
+      
+        <p class="page__lead">Graph Studioのユーザー作成から、分析用のクエリまで、基本的な流れを学習しましょう。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">215 : Graph Studioで金融取引の分析を行う</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb111-select-ai/">111: SELECT AIを試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/" class="active">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb220-autoworkload-replay/">220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb221-autopartitioning/">221 : 自動パーティション化（Automatic Partitioning）を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb404-cloud-link/">404 : クラウド・リンクによるデータ共有をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="215 : Graph Studioで金融取引の分析を行う">
+    <meta itemprop="description" content="Graph Studioのユーザー作成から、分析用のクエリまで、基本的な流れを学習しましょう。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#graph-studioとは">Graph Studioとは</a></li><li><a href="#この記事で確認できること">この記事で確認できること</a></li><li><a href="#1-graph-studio用のユーザーを作成">1. Graph Studio用のユーザーを作成</a></li><li><a href="#2-データの準備取込み">2. データの準備(取込み)</a></li><li><a href="#3-データの準備整形">3. データの準備(整形)</a></li><li><a href="#4-graph-studioにてリレーショナル表からグラフを作成">4. Graph Studioにてリレーショナル表からグラフを作成</a></li><li><a href="#5-ノートブック上でのクエリ">5. ノートブック上でのクエリ</a></li><li><a href="#まとめ">まとめ</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+<h1 id="はじめに">はじめに</h1>
+<p>この記事は<a href="https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=770&amp;clear=RR,180&amp;session=109952730335961">“Graph Studio: Find Circular Payment Chains with Graph Queries in Autonomous Database”</a>
+の記事と補足事項を日本語で解説した内容になります。</p>
+
+<h1 id="graph-studioとは">Graph Studioとは</h1>
+<p>Autonomous Databaseには、2021年の5月ごろより、プロパティグラフを取り扱うことのできるGraph Studioが標準機能として搭載されました。</p>
+
+<p>Graph Studioでは下記のような機能を利用可能です。</p>
+
+<ul>
+  <li>データベースに存在するグラフをメモリに読み込んで分析</li>
+  <li>リレーショナル表からグラフのモデルを作成するための自動変換</li>
+  <li>SQLのようにクエリができるPGQLでの分析アルゴリズム</li>
+  <li>グラフの可視化機能</li>
+</ul>
+
+<p>上記のような機能がGraph Studioには搭載されているため、簡単にクラウドのUI上で完結する形でプロパティグラフの作成や分析が可能になっています。</p>
+
+<h1 id="この記事で確認できること">この記事で確認できること</h1>
+
+<ul>
+  <li>CSVファイルのデータをAutonomous Databaseにアップロードする方法(SQL Developer Web (Database Actions SQL))</li>
+  <li>Graph Studioへの接続方法</li>
+  <li>PGQLクエリ(グラフクエリ言語)を用いたグラフ作成方法</li>
+  <li>PGQLクエリを使ったノートブック上でグラフをクエリ&amp;可視化方法</li>
+</ul>
+
+<p>具体的な題材として、今回は金融トランザクションから、循環的な資金の流れを見つける分析を行います。</p>
+
+<p>リレーショナル表からプロパティグラフへのデータの変換では、変換をほぼ自動で行ってくれる Graph Studio の機能を活用します。</p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1.Graph Studio用のユーザーを作成</a></li>
+  <li><a href="#anchor2">2.データの準備(取込み)</a></li>
+  <li><a href="#anchor3">3.データの準備(整形)</a></li>
+  <li><a href="#anchor4">4.Graph Studioにてリレーショナル表からグラフを作成</a></li>
+  <li><a href="#anchor5">5.ノートブック上のクエリ</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>Oracle Cloudのアカウント</li>
+  <li>プロビジョニングしたAutonomous Database</li>
+</ul>
+
+<p><br />
+上記環境が必要になります。</p>
+
+<p>Always Freeの範囲内でも十分に確認できる題材となっているので、気軽にお試しください。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-graph-studio用のユーザーを作成">1. Graph Studio用のユーザーを作成</h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール上でAutonomous Databaseのインスタンス詳細画面を開く</p>
+
+    <p><img src="1.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>ツールタブに移動して、データベースアクションを開く</p>
+
+    <p><img src="2.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>管理より、データベースユーザー作成画面へ移動</p>
+
+    <p><img src="3.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>ユーザーの作成ボタンをクリック</p>
+
+    <p><img src="4.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>グラフ用のユーザを作成</p>
+
+    <p>以下の様に設定します。</p>
+    <ul>
+      <li>ユーザー設定
+        <ul>
+          <li>ユーザー名 - GRAPHUSER</li>
+          <li>パスワード - 任意（本チュートリアルでは、Welcome12345#とします）</li>
+          <li>表領域 -  UNLIMITED</li>
+          <li>グラフ - 有効化</li>
+          <li>Webアクセス - 有効化</li>
+        </ul>
+      </li>
+      <li>権限
+        <ul>
+          <li>DWROLE - 付与済み、デフォルト</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="5.png" alt="alt text" /></p>
+
+    <p><img src="6.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>一旦Data Actionsからサインアウトします。</p>
+
+    <p><img src="7.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>作成したGRAPHUSERとしてサインインします。</p>
+
+    <p><img src="8.png" alt="alt text" /></p>
+  </li>
+</ol>
+
+<p>これで準備完了です。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-データの準備取込み">2. データの準備(取込み)</h1>
+
+<p>サンプルデータをダウンロード後は、データベースアクションの画面から、csvファイルをデータベースに取り込んでいきます。</p>
+
+<ol>
+  <li>
+    <p>必要データのダウンロード</p>
+
+    <p>今回利用するワークショップ用のデータを<a href="https://github.com/r-deguchi/random-acct-txn" target="_blank">こちら</a>から<strong>random-acct-txn-data.zip</strong>というファイルをダウンロードします。</p>
+
+    <p>ダウンロードができたら、unzipしておきましょう。unzipすると下記のようなデータが確認可能となっており、mac OS用のデータも入っています。
+ <img src="dataunzip.jpg" alt="dataunzip.jpg" /></p>
+
+    <p>これで、今回使用するデータのダウンロードが完了しました。</p>
+
+    <p>入手したcsvファイルをデータベースアクション画面からデータベースへとロードしていきます。</p>
+  </li>
+  <li>
+    <p>データベースアクションのトップから、データロードの機能を選択</p>
+
+    <p><img src="9.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>データのロードを選択し、次へ</p>
+
+    <p><img src="10.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>ファイルのアップロード
+ ファイルの選択画面になるので、今回使用する二つのcsvデータを選択します。</p>
+
+    <p>今回は以下の二つのファイルを同時にアップロードします。</p>
+    <ul>
+      <li>bank_accounts.csv</li>
+      <li>bank_txns.csv</li>
+    </ul>
+
+    <p><img src="11.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>開始ボタンを押して、データロードを実行</p>
+
+    <p><img src="12.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>データが正常にロードされたことが確認後、右下の完了ボタンを押しデータのロードを終了</p>
+
+    <p><img src="13.png" alt="alt text" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-データの準備整形">3. データの準備(整形)</h1>
+<p>csvのデータをデータベースにアップロードすることが完了したので、次はそのデータに対して主キーや外部参照制約などを追加していきます。この操作もデータベースアクション上で実行可能です。</p>
+
+<ol>
+  <li>
+    <p>SQL問い合わせ画面を開く</p>
+
+    <p><img src="14.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>fixup.sqlファイルの内容を実行</p>
+
+    <p>ダウンロードしたcsvファイルと共に、fixup.sqlというファイルが入っているので、そちらをSQLワークシート画面にアップロードするか、下記のクエリを実行してください。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">alter</span> <span class="k">table</span> <span class="n">bank_accounts</span> <span class="k">add</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">acct_id</span><span class="p">);</span>
+
+ <span class="k">alter</span> <span class="k">table</span> <span class="n">bank_txns</span> <span class="k">add</span> <span class="n">txn_id</span> <span class="n">number</span><span class="p">;</span>
+ <span class="k">update</span> <span class="n">bank_txns</span> <span class="k">set</span> <span class="n">txn_id</span> <span class="o">=</span> <span class="n">rownum</span><span class="p">;</span>
+ <span class="k">commit</span><span class="p">;</span>
+
+ <span class="k">alter</span> <span class="k">table</span> <span class="n">bank_txns</span> <span class="k">add</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">txn_id</span><span class="p">);</span>
+ <span class="k">alter</span> <span class="k">table</span> <span class="n">bank_txns</span> <span class="k">modify</span> <span class="n">from_acct_id</span> <span class="k">references</span> <span class="n">bank_accounts</span> <span class="p">(</span><span class="n">acct_id</span><span class="p">);</span>
+ <span class="k">alter</span> <span class="k">table</span> <span class="n">bank_txns</span> <span class="k">modify</span> <span class="n">to_acct_id</span> <span class="k">references</span> <span class="n">bank_accounts</span> <span class="p">(</span><span class="n">acct_id</span><span class="p">);</span>
+
+ <span class="k">desc</span> <span class="n">bank_txns</span><span class="p">;</span>
+
+ <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">USER_CONS_COLUMNS</span> <span class="k">where</span> <span class="k">table_name</span> <span class="k">in</span> <span class="p">(</span><span class="s1">'BANK_ACCOUNTS'</span><span class="p">,</span> <span class="s1">'BANK_TXNS'</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>実行結果の確認</p>
+
+    <p>下記のような実行結果になっていればクエリは成功しています。</p>
+
+    <p><img src="15.png" alt="alt text" /></p>
+  </li>
+</ol>
+
+<p>BANK_ACCOUNTSと、BANK_TXNSという二つのリレーショナル表から、次のステップではGraph Studioにてグラフを作成していきます。</p>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-graph-studioにてリレーショナル表からグラフを作成">4. Graph Studioにてリレーショナル表からグラフを作成</h1>
+
+<p>ロードした表を基に、グラフを作成していきます。</p>
+
+<ol>
+  <li>
+    <p>Autonomous Databaseの詳細から、ツールタブを開き、Graph Studioを開きます。</p>
+
+    <p><img src="16.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>ADMINではGraph Studioには入れないので、作成したGraph用のユーザーでサインインをしましょう。</p>
+
+    <p><img src="17.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>左メニューの、上から2つ目のグラフアイコンをクリックして、モデリングをスタートします。</p>
+
+    <p><img src="18.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>グラフの作成をクリックします。</p>
+
+    <p><img src="19.png" alt="alt text" /></p>
+  </li>
+  <li>グラフ名を入力し、次へをクリック
+    <ul>
+      <li>グラフ名 - BANK_GRAPH</li>
+    </ul>
+
+    <p><img src="20.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>リレーショナル表一覧の確認
+モデリングのページに移動すると、参照可能なデータベース上のリレーショナル表一覧が確認できます。今回のデータでは、BANK_ACCOUNTS と BANK_TXNS の表を使用するので選択して、真ん中の→アイコンを押して、右側の選択画面にデータを移動します。</p>
+
+    <p><img src="21.png" alt="alt text" /></p>
+
+    <p>準備ができたら、次ボタンを押して、次へ進みます。</p>
+
+    <p><img src="22.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>選択した表のグラフへのマッピングを確認
+ 画面上半分の左側には元のリレーショナル表、右側にはマッピング予定のグラフが確認できます。Vertexはグラフの頂点で、Edgeはグラフの辺を表します。</p>
+
+    <p><img src="23.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>BANK_ACCOUNTSをクリックし、頂点ラベルをACCOUNTSに変更します。変更したらチェックマークを押して保存します。
+ <img src="24.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>BANK_TXNSをクリックし、頂点ラベルをTRANSFERSに変更します。変更したらチェックマークを押して保存します。両方の頂点ラベルを変更したら、次ボタンを押します。</p>
+
+    <p><img src="25.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>グラフの作成をクリックし、グラフを作成します。</p>
+
+    <p><img src="26.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>メモリーにロードはオンにしたままグラフの作成をクリックします。</p>
+
+    <p><img src="27.png" alt="alt text" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+<h1 id="5-ノートブック上でのクエリ">5. ノートブック上でのクエリ</h1>
+
+<p>本チュートリアルでは、違法行為に使用された可能性のある銀行口座をグラフの技術を使用して特定してみたいと思います。</p>
+
+<ol>
+  <li>
+    <p>ノートブックの作成・インポート</p>
+
+    <p>本チュートリアルでは、既に作成済みのノートブックを使用していきます。<a href="/ocitutorials/adb/adb-data/BANK_GRAPH.dsnb">こちら</a>から<strong>BANK_GRAPH.dsnb</strong>というノートブックをダウンロードします。</p>
+
+    <p>ノートブック画面へは左側のメニューバーから入ることができます。画面右上のインポートをクリックします。</p>
+
+    <p><img src="28.png" alt="alt text" /></p>
+
+    <p>ダウンロードしたノートブックをドラッグアンドドロップし、インポートします。</p>
+
+    <p><img src="29.png" alt="alt text" /></p>
+
+    <p>これで、ノートブックのインポートが出来ました。</p>
+  </li>
+  <li>
+    <p>最初に、グラフをインメモリ・グラフサーバにロードします。
+以下のクエリを実行し、組み込みのセッションオブジェクトを使ってデータベースからグラフをメモリに読み込み、読み込まれたグラフを扱うPgXGraphオブジェクトを生成します。</p>
+
+    <p>三角形の実行ボタンをクリックし、クエリを実行します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">%</span><span class="n">python</span><span class="o">-</span><span class="n">pgx</span>
+ <span class="n">GRAPH_NAME</span><span class="o">=</span><span class="nv">"BANK_GRAPH"</span>
+ <span class="o">#</span> <span class="n">try</span> <span class="n">getting</span> <span class="n">the</span> <span class="n">graph</span> <span class="k">from</span> <span class="n">the</span> <span class="k">in</span><span class="o">-</span><span class="n">memory</span> <span class="n">graph</span> <span class="n">server</span>
+ <span class="n">graph</span> <span class="o">=</span> <span class="k">session</span><span class="p">.</span><span class="n">get_graph</span><span class="p">(</span><span class="n">GRAPH_NAME</span><span class="p">)</span>
+ <span class="o">#</span> <span class="n">if</span> <span class="n">it</span> <span class="n">does</span> <span class="k">not</span> <span class="n">exist</span> <span class="k">read</span> <span class="n">it</span> <span class="k">into</span> <span class="n">memory</span>
+ <span class="n">if</span> <span class="p">(</span><span class="n">graph</span> <span class="o">==</span> <span class="k">None</span><span class="p">)</span> <span class="p">:</span>
+     <span class="k">session</span><span class="p">.</span><span class="n">read_graph_by_name</span><span class="p">(</span><span class="n">GRAPH_NAME</span><span class="p">,</span> <span class="nv">"pg_view"</span><span class="p">)</span>
+     <span class="n">print</span><span class="p">(</span><span class="nv">"Graph "</span><span class="o">+</span> <span class="n">GRAPH_NAME</span> <span class="o">+</span> <span class="nv">" successfully loaded"</span><span class="p">)</span>
+     <span class="n">graph</span> <span class="o">=</span> <span class="k">session</span><span class="p">.</span><span class="n">get_graph</span><span class="p">(</span><span class="n">GRAPH_NAME</span><span class="p">)</span>
+ <span class="k">else</span> <span class="p">:</span>
+     <span class="n">print</span><span class="p">(</span><span class="nv">"Graph '"</span><span class="o">+</span> <span class="n">GRAPH_NAME</span> <span class="o">+</span> <span class="nv">"' already loaded"</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>先ずは、転送数が多い銀行口座の上位10口座を探してみます。
+ 以下のクエリを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %pgql-pgx
+ /* List 10 accounts with the most number of transactions (that is, incoming + outgoing edges) */
+ SELECT a.acct_id, (in_degree(a) + out_degree(a)) AS num_transactions
+ FROM MATCH (a) ON bank_graph
+ ORDER BY num_transactions DESC
+ LIMIT 10
+</code></pre></div>    </div>
+
+    <p>口座934と387がリストの上位にあることが分かります。</p>
+
+    <p><img src="30.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>それでは転送数の多い、口座934を起点とする循環転送があるかどうかを確認してみます。
+ 以下のクエリを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ```sql
+ %pgql-pgx
+ /* Check if there are any circular payment chains of length 4 from acct 934 */
+ SELECT v,e,v2
+ FROM MATCH ALL (a)-[:TRANSFERS]-&gt;{4}(b) ON bank_graph ONE ROW PER STEP (v,e,v2)
+ WHERE a.acct_id=934 AND id(a) = id(b)
+ LIMIT 100
+ ```  934で始まり、934で終わる長さ3ホップのサークルがあることが分かりました。
+</code></pre></div>    </div>
+
+    <p><img src="31.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>上記のクエリを変更して、長さを5ホップにした場合の循環転送の数を確認してみます。
+ 資金が循環して動くときは詐欺の可能性があるので、循環転送の数が多い場合は違法行為をしている口座である場合が高くなります。
+ 以下のクエリを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %pgql-pgx
+ /* Check if there are any circular payment chains of length 5 from acct 934 */
+ SELECT v,e,v2
+ FROM MATCH ALL (a)-[:TRANSFERS]-&gt;{5}(b) ON bank_graph ONE ROW PER STEP (v,e,v2)
+ WHERE a.acct_id=934 AND id(a) = id(b)
+ LIMIT 100
+</code></pre></div>    </div>
+
+    <p>934で始まり、934で終わる循環転送の数が多いので、この口座が疑わしいということになります。</p>
+
+    <p><img src="32.png" alt="alt text" /></p>
+  </li>
+  <li>ShortestPathHopDist() という分析アルゴリズムを使用し、アカウント934とアカウント387に近接しているアカウントを調べます。ShortestPathHopDist()は、934、387とグラフ内の他のすべてのアカウント間の最小ホップ数を計算します。ホップ数が少ないほど、アカウントが違法行為に関与している可能性が高くなります。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">%</span><span class="n">python</span><span class="o">-</span><span class="n">pgx</span>
+ <span class="o">#</span><span class="k">By</span> <span class="k">default</span> <span class="n">this</span> <span class="k">is</span> <span class="n">property</span> <span class="n">refers</span> <span class="k">to</span> <span class="n">account</span> <span class="o">#</span><span class="mi">934</span>
+ <span class="n">vertex</span> <span class="o">=</span> <span class="n">graph</span><span class="p">.</span><span class="n">get_vertex</span><span class="p">(</span><span class="nv">"BANK_ACCOUNTS(934)"</span><span class="p">)</span>
+ <span class="n">analyst</span><span class="p">.</span><span class="n">shortest_path_hop_distance</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">vertex</span><span class="p">,</span> <span class="nv">"hop_dist_from_934"</span><span class="p">)</span>
+
+ <span class="o">%</span><span class="n">python</span><span class="o">-</span><span class="n">pgx</span>
+ <span class="n">vertex</span> <span class="o">=</span> <span class="n">graph</span><span class="p">.</span><span class="n">get_vertex</span><span class="p">(</span><span class="nv">"BANK_ACCOUNTS(387)"</span><span class="p">)</span>
+ <span class="n">analyst</span><span class="p">.</span><span class="n">shortest_path_hop_distance</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">vertex</span><span class="p">,</span> <span class="nv">"hop_dist_from_387"</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>934と387から2ホップ以下で繋がっている口座のトランザクション数を見てみます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %pgql-pgx
+ SELECT a.acct_id, a.hop_dist_from_934 AS hops, in_degree(a) + out_degree(a) AS num_transactions FROM MATCH (a) ON bank_graph
+ WHERE hops &gt; 0 AND hops &lt;=2 
+ ORDER BY num_transactions DESC
+
+ %pgql-pgx
+ SELECT a.acct_id, a.hop_dist_from_387 AS hops, in_degree(a) + out_degree(a) AS num_transactions FROM MATCH (a) ON bank_graph
+ WHERE hops &gt; 0 AND hops &lt;=2 
+ ORDER BY num_transactions DESC
+</code></pre></div>    </div>
+
+    <p>934と近い口座として135、そして387と近い口座として534が挙げられます。これらも違法行為に関与している可能性があります。</p>
+
+    <p><img src="33.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>循環転送の数等を調べる以外にも、DeepWalkというグラフ機械学習アルゴリズムを使って違法行為に使用された可能性のある銀行口座を探すことが出来ます。
+以下のクエリを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %python-pgx
+
+ model = analyst.deepwalk_builder(
+ learning_rate=0.002,
+ num_epochs=30,
+ seed=1,
+ )
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>機械学習アルゴリズムなので、モデルをトレーニングする必要があります。以下のクエリを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %python-pgx
+ import time
+ start_ts = time.time()
+ model.fit(graph)
+ print("DeepWalk model training completed in {:.4f} seconds".format(time.time() - start_ts))
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>先ずは、口座934に類似した口座を探してみます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %python-pgx
+ similars_934 = model.compute_similars("BANK_ACCOUNTS(934)", 10)
+ print("List of nodes most similar to node 934.")
+ similars_934.print()
+</code></pre></div>    </div>
+
+    <p>口座387の他に、怪しいと思われている口座135、534が上位に表示されています。</p>
+
+    <p><img src="34.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>次に、口座387に類似した口座を探してみます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %python-pgx
+ similars_387 = model.compute_similars("BANK_ACCOUNTS(387)", 10)
+ print("List of nodes most similar to node 387.")
+ similars_387.print()
+</code></pre></div>    </div>
+
+    <p>口座934の他に、口座135、534が今回も上位に表示されました。
+ この結果から、口座934、387、135、534が違法行為に関与している可能性が高いと言えます。</p>
+
+    <p><img src="35.png" alt="alt text" /></p>
+
+    <p>グラフのアルゴリズムを活用し、違法行為に加担している可能性の高い口座を見つける事が出来ました。</p>
+  </li>
+</ol>
+
+<h1 id="まとめ">まとめ</h1>
+<p>今回の記事を実践いただき、Graph Studioの利用の始め方から簡単なクエリの方法までご理解いただけたかと思います。
+グラフのアルゴリズムを活用することで、今までのリレーショナル表では分析が大変だったようなつながりも簡単にクエリが可能になっています。</p>
+
+<p>今回の例は口座の取引について分析しましたが、サプライチェーン分析や人物関係等、他にもグラフを活用できる場面は多くあります。この記事の手順をご理解いただければ、すでに皆さんのリレーショナル表にある他のデータもグラフで分析することも可能になっているので、ぜひご活用ください。
+<br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li>Oracle LiveLabs
+<a href="https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=770&amp;clear=RR,180&amp;session=109952730335961">“Graph Studio: Find Circular Payment Chains with Graph Queries in Autonomous Database”</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#autonomous-database" class="page__taxonomy-item p-category" rel="tag">autonomous_database</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#graph" class="page__taxonomy-item p-category" rel="tag">graph</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#oraclecloud" class="page__taxonomy-item p-category" rel="tag">oraclecloud</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#pgql" class="page__taxonomy-item p-category" rel="tag">PGQL</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=215+%3A+Graph+Studio%E3%81%A7%E9%87%91%E8%9E%8D%E5%8F%96%E5%BC%95%E3%81%AE%E5%88%86%E6%9E%90%E3%82%92%E8%A1%8C%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb215-graph%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb215-graph%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/adb/adb215-graph/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=215+%3A+Graph+Studio%E3%81%A7%E9%87%91%E8%9E%8D%E5%8F%96%E5%BC%95%E3%81%AE%E5%88%86%E6%9E%90%E3%82%92%E8%A1%8C%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb215-graph%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb214-spatial-studio/" class="pagination--pager" title="214 : Spatial Studio で地理情報を扱おう">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb216-patch-spa/" class="pagination--pager" title="216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

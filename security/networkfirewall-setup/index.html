@@ -1,0 +1,894 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Network Firewallを構築する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Network Firewallを構築する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/">
+
+
+  <meta property="og:description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/nfw00.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/security/networkfirewall-setup/nfw00.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Network Firewallを構築する
+
+        
+      </h1>
+      
+        <p class="page__lead">本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/security" itemprop="item"><span itemprop="name">Security</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Network Firewallを構築する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Network Firewallを構築する">
+    <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-はじめに">0. はじめに</a><ul><li><a href="#実施内容">・実施内容</a></li><li><a href="#network-firewallの概要">・Network Firewallの概要</a></li><li><a href="#ルーティングについて">・ルーティングについて</a></li></ul></li><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-network-firewall用サブネットの作成">1-2. Network Firewall用サブネットの作成</a><ul><li><a href="#ルート表の作成">・ルート表の作成</a></li><li><a href="#セキュリティリストの作成">・セキュリティ・リストの作成</a></li><li><a href="#サブネットの作成">・サブネットの作成</a></li></ul></li></ul></li><li><a href="#2-network-firewallの作成">2. Network Firewallの作成</a><ul><li><a href="#2-1-ネットワークファイアウォールポリシーの作成">2-1. ネットワーク・ファイアウォール・ポリシーの作成</a></li><li><a href="#2-2-ネットワークファイアウォールポリシーの設定">2-2. ネットワーク・ファイアウォール・ポリシーの設定</a></li><li><a href="#2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</a></li></ul></li><li><a href="#3-テストwebページ用のコンピュートインスタンスの作成と設定">3. テストWebページ用のコンピュートインスタンスの作成と設定</a><ul><li><a href="#3-1-コンピュートインスタンスの作成">3-1. コンピュートインスタンスの作成</a></li><li><a href="#3-2-httpアクセスのためのセキュリティリストの編集">3-2. HTTPアクセスのためのセキュリティ・リストの編集</a></li><li><a href="#3-3-webページへのアクセスを確認">3-3. Webページへのアクセスを確認</a></li></ul></li><li><a href="#4-firewallを経由するためのルーティング設定">4. Firewallを経由するためのルーティング設定</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-パブリックサブネットのルート表の編集">4-2. パブリック・サブネットのルート表の編集</a></li></ul></li><li><a href="#5-network-firewallのidp機能を確認する">5. Network FirewallのIDP機能を確認する</a><ul><li><a href="#5-1-テストサイトにアクセスする">5-1. テストサイトにアクセスする</a></li><li><a href="#5-2-ログを確認する">5-2. ログを確認する</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <!-- 
+リンク：
+    [OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/) 
+-->
+
+<p>OCI Network Firewallは2022年7月にリリースされた、パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール・サービスです。
+主な機能として、URLフィルタリングやTLS/SSL検査などを提供します。<br />
+本チュートリアルではOCI Network Firewallが動作するための環境を構築し、簡単なテストにて動作を確認します。</p>
+
+<p><strong>所要時間 :</strong></p>
+<ul>
+  <li>約70分</li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/overview.htm#iam">ドキュメント</a>を参照ください。</li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>本チュートリアル内の画面ショットは、OCIのコンソール画面と異なる場合があります。</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="0-はじめに">0. はじめに</h1>
+<h2 id="実施内容">・実施内容</h2>
+<p>以下が本チュートリアルで作成するNetwork Firewallの構成図です。
+OCI環境を出入りする通信はNetwork Firewallを経由し、監視および検査が行われます。</p>
+
+<p><img src="nfw00.png" alt="構成図" /></p>
+
+<p>本チュートリアルでは動作テストのためにOCI内にWEBサーバーを準備した後ウィルステストファイルを配置し、外部からの通信がNetwork Firewallによってブロックされることを確認するところまでを行います。</p>
+
+<h2 id="network-firewallの概要">・Network Firewallの概要</h2>
+<p>Network Firewallは次世代ファイアウォールとして、TLSトラフィックも含め、通過するすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
+より詳細な情報は<a href="https://speakerdeck.com/oracle4engineer/oci-network-firewallgai-yao">こちら</a>をご参照ください</p>
+
+<p><strong>主なユースケース</strong></p>
+<ul>
+  <li>Palo Alto Networksの脅威シグネチャおよび脅威分析エンジンを活用し、脆弱性攻撃やマルウェア、C&amp;Cサーバーなどの脅威を検知・防御。</li>
+  <li>不正なアウトバウンド通信を識別し、機密データの流出を抑止。</li>
+</ul>
+
+<p><br /></p>
+
+<h2 id="ルーティングについて">・ルーティングについて</h2>
+<p>インターネット経由でパブリックサブネット内のインスタンスに到達する通信は、インターネットゲートウェイのルート表に基づき、NFWサブネット内のNetwork Firewallを通過します。その後、検査済みトラフィックがパブリックサブネット内のインスタンスに転送されます。<br />
+パブリックサブネット内のインスタンスから発生する通信も、ルート表の設定によりNetwork Firewallを通過します。検査済みの通信は、NFWサブネットのルート表ルールを基にインターネットゲートウェイを介して外部へ送信されます。</p>
+
+<p><br /></p>
+
+<h1 id="1-ネットワークの構築">1. ネットワークの構築</h1>
+
+<h2 id="1-1-vcnの作成">1-1. VCNの作成</h2>
+<p>OCIコンソール画面にアクセスし、左上の <strong>[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク]</strong> と移動します。<br />
+<strong>[VCNウィザードの起動]</strong> を選択します。</p>
+
+<p><img src="nfw02.png" alt="VCN作成ウィザード1" /></p>
+
+<p><strong>「インターネット接続性を持つVCNの作成」</strong>を選択。</p>
+
+<p><img src="nfw03.png" alt="VCN作成ウィザード2" /></p>
+
+<p>VCN作成画面にて以下項目を入力し、<strong>[次]</strong> をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN名</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;VCNを作成するコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN IPv4 CIDRブロック</code></strong></span> - 10.0.0.0/16</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw04.png" alt="VCN作成ウィザード2" /></p>
+
+<p>作成されるリソースを確認し、<strong>[作成]</strong> をクリックすると以下の環境でVCNが作成されます。</p>
+
+<p><img src="nfw05.png" alt="VCNウィザードで作成されるリソース" /></p>
+
+<p>今回はプライベート・サブネット、サービス・ゲートウェイ、NATゲートウェイを使用しません。そのため、後続の構成図ではこれらのリソースを省略しています。</p>
+
+<p><br /></p>
+
+<h2 id="1-2-network-firewall用サブネットの作成">1-2. Network Firewall用サブネットの作成</h2>
+
+<p>Network Firewallを配置するためのサブネットを作成します。
+サブネット作成前に、必要となるルート表とセキュリティ・リストを準備します。</p>
+
+<h3 id="ルート表の作成">・ルート表の作成</h3>
+
+<p>作成したVCN詳細画面の「ルート表」セクションより <strong>[ルート表の作成]</strong> ボタンをクリックします。<br />
+ルート表作成画面にて以下項目を入力し、<strong>[作成]</strong> をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - Route Table for NFWサブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のルート・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong></span> - インターネット・ゲートウェイ</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong></span> - インターネット・ゲートウェイ-VCN4tutorial</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><img src="nfw06.png" alt="NFWルート表" /></p>
+
+<h3 id="セキュリティリストの作成">・セキュリティ・リストの作成</h3>
+
+<p>作成したVCN詳細画面の「セキュリティ・リスト」セクションより <strong>[セキュリティ・リストの作成]</strong> ボタンを選択します。
+セキュリティ・リスト作成画面にて以下項目を入力し、<strong>[セキュリティ・リストの作成]</strong> をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - Security List for NFWサブネット</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のイングレス・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 80</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) HTTP通信を許可</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のイングレス・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 22</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) SSH接続を許可</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のエグレス・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - すべてのプロトコル</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) 任意のアウトバウンド通信を許可</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><img src="nfw07.png" alt="NFWセキュリティリスト1" />
+<img src="nfw08.png" alt="NFWセキュリティリスト2" /></p>
+
+<h3 id="サブネットの作成">・サブネットの作成</h3>
+
+<p>作成したVCN詳細画面の「サブネット」セクションより <strong>[サブネットの作成]</strong> ボタンを選択します。
+サブネット作成画面にて以下項目を入力し、<strong>[サブネットの作成]</strong> をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - NFWサブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット・タイプ</code></strong></span> - リージョナル</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPv4 CIDR Block</code></strong></span> - 10.0.2.0/24</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong></span> - Route Table for NFWサブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット・アクセス</code></strong></span> - パブリック・サブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong></span> - Security List for NFWサブネット</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw09.png" alt="NFWサブネット" /></p>
+
+<p>ここまでで以下の構成が整いました。</p>
+
+<p><img src="nfw10.png" alt="構成途中1" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="2-network-firewallの作成">2. Network Firewallの作成</h1>
+
+<h2 id="2-1-ネットワークファイアウォールポリシーの作成">2-1. ネットワーク・ファイアウォール・ポリシーの作成</h2>
+
+<p>Network Firewallインスタンスを作成する際、ネットワーク・トラフィックを制御するルールをまとめたポリシー、ネットワーク・ファイアウォール・ポリシーを指定する必要があります。そのため事前に以下の手順でポリシーを作成します。</p>
+
+<p>OCIコンソール画面左上のメニューボタンより、<strong>[アイデンティティとセキュリティ] → [ファイアウォール] → [ネットワーク・ファイアウォール・ポリシー]</strong> と移動、<strong>[ネットワーク・ファイアウォール・ポリシーの作成]</strong> をクリックします。<br />
+表示された作成画面にて以下の項目を入力し、<strong>[作成]</strong> ボタンをクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - nfw_pol_tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw11.png" alt="NFW-polの作成" /></p>
+
+<h2 id="2-2-ネットワークファイアウォールポリシーの設定">2-2. ネットワーク・ファイアウォール・ポリシーの設定</h2>
+
+<p>デフォルトではすべての通信は拒否されますので、以下の手順ですべての通信を許可しつつ、疑わしい通信をブロックするルールを設定します。</p>
+
+<p>ポリシー詳細画面の「セキュリティ・ルール」セクションで、<strong>[セキュリティ・ルールの作成]</strong> ボタンをクリックします。
+作成画面にて以下項目を入力し、セキュリティ・ルールを作成します。</p>
+
+<hr />
+
+<ul>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - idp</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・アドレス</code></strong></span> - 任意のアドレス</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先アドレス</code></strong></span> - 任意のアドレス</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">アプリケーション</code></strong></span> - 任意のアプリケーション</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サービス</code></strong></span> - 任意のサービス</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">URL</code></strong></span> - 任意のURL</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ルール・アクション</code></strong></span> - 侵入防止</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw26.png" alt="NFW-polの設定" /></p>
+
+<h2 id="2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</h2>
+
+<p>続いてNetwork Firewallインスタンスを作成します。
+OCIコンソール画面左上のメニューボタンより、<strong>[アイデンティティとセキュリティ] → [ファイアウォール]</strong> と移動、<strong>[ネットワーク・ファイアウォールの作成]</strong> をクリックします。</p>
+
+<p>作成画面にて以下の項目を入力し、<strong>[ネットワーク・ファイアウォールの作成]</strong> をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - NFW4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ネットワーク・ファイアウォール・ポリシー</code></strong></span> - nfw_pol_tutorial（先ほど作成したネットワーク・ファイアウォール・ポリシーを選択）</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong></span> - NFWサブネット リージョナル</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">IPアドレスの指定（任意）</code></strong> - サブネット内のIPアドレスを明示的に指定する場合、「IPアドレスをサブネットからファイアウォールに手動で割り当てます」にチェックを付けます。本チュートリアルではIPアドレスを「10.0.2.100」に指定しています。</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw12.png" alt="NFWの作成" /></p>
+
+<p>Network Firewallインスタンスの作成には約40分かかります。作成中に詳細画面でIPv4アドレスを確認できるので、以降のルーティング設定で使用するために控えておいてください。</p>
+
+<p>Network Firewallを作成している間、続く手順３，４を進めます。</p>
+
+<p><img src="nfw12.png" alt="NFWの作成中画面" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="3-テストwebページ用のコンピュートインスタンスの作成と設定">3. テストWebページ用のコンピュートインスタンスの作成と設定</h1>
+<h2 id="3-1-コンピュートインスタンスの作成">3-1. コンピュートインスタンスの作成</h2>
+
+<p>この手順では、パブリックサブネット内にWebサーバーを構築し、Webページへのアクセスを確認します。</p>
+
+<p><img src="nfw13.png" alt="構成途中2" /></p>
+
+<p>OCIコンソール画面左上のメニューボタンより、<strong>[コンピュート] → [インスタンス]</strong> と移動、<strong>[インスタンスの作成]</strong> をクリックし、作成画面にて以下の設定で作成します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - websvr4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">可用性ドメイン</code></strong></span> - AD1</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">イメージ</code></strong></span> - Oracle Linux 8</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">Shape</code></strong></span> - (任意)VM.Standard.E5.Flex</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong></span> - パブリック・サブネット-VCN4tutorial (リージョナル)</li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">IPアドレスの指定（任意）</code></strong> - サブネット内のIPアドレスを明示的に指定する場合、「プライベートIPv4アドレスの手動割当て」を選択します。本チュートリアルではIPアドレスを「10.0.0.10」に指定しています。</p>
+  </li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong></span> - 「キー・ペアを自動で生成」を選択し、秘密キーと公開キーをそれぞれ保存します。手元に既存のSSHキーがある場合は、「公開キー・ファイルのアップロード」または「公開キーの貼りつけ」を選択し、公開キーを登録してください。</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[拡張オプションの表示]</code></strong>をクリックし展開
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">初期化スクリプト</code></strong></span> - 「cloud-initスクリプトの貼付け」を選択し、以下のスクリプトを張り付ける</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cloud-config
+packages:
+  - httpd
+
+runcmd:
+  - systemctl enable httpd
+  - systemctl start httpd
+  - firewall-offline-cmd --permanent --add-service=http
+  - systemctl restart firewalld
+  - curl https://secure.eicar.org/eicar.com.txt &gt; /var/www/html/eicar.html
+</code></pre></div></div>
+
+<p class="notice--info"><strong>cloud-initで実行する内容について</strong><br />
+apache HTTPS serverをインストールし、起動しています。また、ウイルス対策ソフトの応答をテストするためeicarファイルをeicarのHPより取得し、<code class="language-plaintext highlighter-rouge">/var/www/html/eicar.html</code>へ新規に配置しています。この動作はインスタンスの作成と同時に行われます。</p>
+
+<p>以上の項目を入力し、<strong>[作成]</strong> をクリックします。</p>
+
+<p><img src="nfw15.png" alt="コンピュートの作成画面1" />
+<img src="nfw16.png" alt="コンピュートの作成画面2" />
+<img src="nfw17.png" alt="コンピュートの作成画面3" />
+<img src="nfw18.png" alt="コンピュートの作成画面4" /></p>
+
+<p>後に作成されたテスト用のWebページにアクセスしますので、割り当てられたパブリックIPアドレスを控えておきます。</p>
+
+<p>初期化スクリプトの実行に数分かかりますので、その間にWebページにアクセスできるように次の手順にて通信の許可設定を行います。</p>
+
+<h2 id="3-2-httpアクセスのためのセキュリティリストの編集">3-2. HTTPアクセスのためのセキュリティ・リストの編集</h2>
+
+<p>OCIコンソール画面にアクセスし、左上のメニューボタンより、<strong>[ネットワーキング] → [仮想クラウド・ネットワーク] → [VCN4tutorial]</strong> と移動します。<br />
+VCN詳細画面の「セキュリティ・リスト」セクションから <strong>[Default Security List for VCN4tutorial]</strong> を選択し、<strong>[イングレス・ルールの追加]</strong> ボタンより以下のイングレス・ルールを追加します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 80</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) HTTP通信を許可</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw19.png" alt="イングレスルールの追加" /></p>
+
+<h2 id="3-3-webページへのアクセスを確認">3-3. Webページへのアクセスを確認</h2>
+
+<p>ブラウザで以下のURLにアクセスし、テストページが正しく表示されることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://&lt;コンピュートのパブリックIP&gt;/
+</code></pre></div></div>
+
+<p>アクセスできない場合、初期化スクリプトの実行がまだ完了していない可能性があります。数分待ってから再試行してください。（参考：筆者の環境では約2分半で完了しました）</p>
+
+<p><img src="nfw20.png" alt="testページの確認" /></p>
+
+<p>次に以下のURLにアクセスし、eicarファイルが正しく表示されることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://&lt;コンピュートのパブリックIP&gt;/eicar.html
+</code></pre></div></div>
+
+<p>eicarファイルはウイルス対策ソフトの応答をテストするためのテキストファイルです。</p>
+
+<p><img src="nfw21.png" alt="eicarページの確認" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="4-firewallを経由するためのルーティング設定">4. Firewallを経由するためのルーティング設定</h1>
+
+<p>Network FirewallインスタンスのプライベートIPアドレスを元に、通信がFirewallインスタンスを経由するようにルーティングの設定を行います。</p>
+
+<h2 id="4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</h2>
+
+<p>OCIコンソール画面にアクセスし、左上の <strong>[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] → [VCN4tutorial]</strong> と移動します。<br />
+作成したVCN詳細画面の「ルート表」セクションより<strong>[ルート表の作成]</strong> ボタンをクリックします。
+ルート表作成画面にて以下項目を入力し、<strong>[作成]</strong> をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - Route Table for IGW</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のルート・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong></span> - プライベートIP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネットまたはVLANコンパートメント</code></strong></span> - &lt;サブネットが所属するコンパートメントを選択&gt;</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRタイプ</code></strong></span> - CIDRブロック</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong></span> - 10.0.0.0/16</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong></span> - 10.0.2.100（Network FirewallインスタンスのプライベートIPアドレス）</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><img src="nfw22.png" alt="IGWルート表作成" /></p>
+
+<p>作成したルート表をインターネット・ゲートウェイに関連付けます。<br />
+VCN詳細画面の「インターネット・ゲートウェイ」セクションを選択し、作成されているインターネット・ゲートウェイのケバブメニューから<strong>[ルート表の関連付け]</strong> をクリックします。<br />
+ルート表<strong>[Route Table for IGW]</strong> を選択し、<strong>[ルート表の関連付け]</strong> をクリックします。</p>
+
+<p><img src="nfw23.png" alt="IGWルート表関連付け" /></p>
+
+<h2 id="4-2-パブリックサブネットのルート表の編集">4-2. パブリック・サブネットのルート表の編集</h2>
+
+<p>パブリック・サブネット内からの通信がNetwork Firewallインスタンスを経由するようにルート表を編集します。<br />
+作成したVCN詳細画面の「ルート表」セクションより<strong>[default route table for VCN4tutorial]</strong> を選択し、既存のルート・ルールを編集し以下の新しいルート・ルールに変更します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong></span> - プライベートIP</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネットまたはVLANコンパートメント</code></strong></span> - &lt;サブネットが所属するコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRタイプ</code></strong></span> - CIDRブロック</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong></span> - 0.0.0.0/0</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong></span> - 10.0.2.100（Network FirewallインスタンスのプライベートIPアドレス）</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw25.png" alt="パブリック・サブネットルート表設定" /></p>
+
+<p><br /></p>
+
+<p>ここまでの設定により、現時点での環境は以下のようになっています。</p>
+
+<p><img src="nfw31.png" alt="構築途中3" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="5-network-firewallのidp機能を確認する">5. Network FirewallのIDP機能を確認する</h1>
+<h2 id="5-1-テストサイトにアクセスする">5-1. テストサイトにアクセスする</h2>
+
+<p>Firewallインスタンスの作成が完了した後、webサーバーに配置したeicarファイルへのアクセスがFirewallによって防止されるかを確認します。<br />
+この手順で、IDP（侵入防止機能）が正しく動作していることを検証します。</p>
+
+<p>手順3-3と同様、ブラウザで以下の2つのURLにアクセスします。</p>
+
+<p>以下のURLでアクセスし、正しくテストページが表示されることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://&lt;コンピュートのパブリックIP&gt;/
+</code></pre></div></div>
+
+<p><img src="nfw27.png" alt="testページの確認_after" /></p>
+
+<p>次に以下のURLにアクセスするとeicarファイルがFirewallによって検知され、アクセスが拒否されることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://&lt;コンピュートのパブリックIP&gt;/eicar.html
+</code></pre></div></div>
+
+<p><img src="nfw28.png" alt="eicarページの確認_after" /></p>
+
+<h2 id="5-2-ログを確認する">5-2. ログを確認する</h2>
+<p>Firewallがeicarファイルへのアクセスを検知した場合、その記録をログとして確認できます。</p>
+
+<p>ログを確認するためには、Network Firewallインスタンスの詳細画面の「ログ」セクションより検知した脅威のログ（Threat Log）を有効化します。</p>
+
+<p><img src="nfw29.png" alt="NFWのログの有効化" /></p>
+
+<p>検知されたeicarファイルはこの脅威ログより、以下のように確認できます。</p>
+
+<p><img src="nfw30.png" alt="NFW脅威ログ" /></p>
+
+<p><br /></p>
+
+<hr />
+
+<p>手順2-1で作成したネットワーク・ファイアウォール・ポリシーでは、IDS/IPS、URLフィルタリング、SSLインスペクションなどの機能を設定できます。
+さらにFirewallの動作を検証するステップとして、サービスリストやURLリストの動作検証を行うチュートリアル「<a href="/ocitutorials/security/networkfirewall-policycheck">OCI Network Firewallの動作検証を行う</a>」もご用意しています。ぜひお試しください。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#security" class="page__taxonomy-item p-category" rel="tag">security</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=OCI+Network+Firewall%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-setup%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-setup%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=OCI+Network+Firewall%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-setup%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/security/networkfirewall-setup-tunnelinspection/" class="pagination--pager" title="トンネル検査構成でOCI Network Firewallを構築する">前へ</a>
+    
+    
+      <a href="/ocitutorials/security/waf-v1-setup/" class="pagination--pager" title="OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

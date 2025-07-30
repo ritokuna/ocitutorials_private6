@@ -1,0 +1,818 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その4 - ブロック・ボリュームをインスタンスにアタッチする | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その4 - ブロック・ボリュームをインスタンスにアタッチする">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/">
+
+
+  <meta property="og:description" content="ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/img6.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/attaching-block-volume/img6.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その4 - ブロック・ボリュームをインスタンスにアタッチする
+
+        
+      </h1>
+      
+        <p class="page__lead">ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/beginners" itemprop="item"><span itemprop="name">Beginners</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その4 - ブロック・ボリュームをインスタンスにアタッチする</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">入門編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/beginners/acquiring-free-trial/">準備 - Oracle Cloud 無料トライアルを申し込む</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/attaching-block-volume/" class="active">その4 - ブロック・ボリュームをインスタンスにアタッチする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/managing-instance-lifecycle/">その5 - インスタンスのライフサイクルを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-oracle-database/">その8 - クラウドでOracle Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds/">その9 - クラウドでMySQL Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds-ha/">その11 - クラウドでMySQL Databaseを高可用性構成で使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds-readreplica/">その12 - MySQL Database Serviceでリードレプリカを構成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds-channel/">その13 - MySQL Database Serviceでレプリケーションを使用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/alwaysfree/">Always Freeで快適DBアプリ開発環境を構築する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その4 - ブロック・ボリュームをインスタンスにアタッチする">
+    <meta itemprop="description" content="ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-ブロックボリュームの作成">1. ブロック・ボリュームの作成</a></li><li><a href="#2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</a></li><li><a href="#3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利用することにより、ベアメタル・インスタンスや仮想マシン・インスタンスからブロックデバイスとして利用することができるボリュームを、簡単に作成、管理することができます。用途に応じたサイズのボリュームを作成、インスタンスへのアタッチ、変更などが可能です。インスタンスからボリュームに対するアクセスは iSCSI もしくは準仮想化を通じて行われます。
+インスタンスにアタッチしたボリュームは、通常のディスク・ドライブと同じようにOSから利用することができ、またインスタンスからデタッチし、新しい別のインスタンスにアタッチすることで、データを失うことなく移行することが可能です。</p>
+
+<p>ブロック・ボリュームの典型的なユースケースとしては以下のようなものがあります。</p>
+
+<ul>
+  <li>インスタンスのストレージの拡張 : Oracle Cloud Infrastructure の ベアメタル・インスタンス、仮想マシン・インスタンスいずれに対しても、ブロック・ボリュームをアタッチすることでOSのストレージ領域を拡張することができます。</li>
+  <li>永続化されたストレージ領域の利用 : インスタンスを終了(Terminate)しても、ブロック・ボリュームとそこに格納されたデータは永続します。これらはボリュームを明示的に終了(Terminate)するまで存続します。</li>
+  <li>インスタンス間のデータの移動 : インスタンスにアタッチしたブロック・ボリュームをデタッチし、別のインスタンスにアタッチすることにより、1つのインスタンスから別のインスタンスにデータを簡単に移動させることができます。
+このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。</li>
+</ul>
+
+<p>ブロック・ボリュームのバックアップについては応用編の<a href="../../intermediates/taking-block-volume-backups">ブロック・ボリュームをバックアップする</a> をどうぞ。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li><a href="../creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> と<a href="../creating-compute-instance">その3 - インスタンスを作成する</a> を完了し、仮想クラウド・ネットワーク(VCN)の中に任意のLinuxインスタンスの作成が完了していること</li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>参考動画：</strong> 本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。</p>
+
+<ul>
+  <li><a href="https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+4.%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0/1_9jgr5164">Oracle Cloud Infrastructure ハンズオン - 4.ブロック・ボリューム</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-ブロックボリュームの作成">1. ブロック・ボリュームの作成</h1>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>ストレージ</strong> → <strong>ブロック・ストレージ</strong> → <strong>ブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>ブロック・ボリュームの作成</strong> ウィンドウに以下の項目を入力し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
+    <ul>
+      <li><strong>名前</strong> - 任意 (集合ハンズオン研修の場合は、講師の指示に従ってください)</li>
+      <li><strong>コンパートメントに作成</strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します。</li>
+      <li><strong>可用性ドメイン</strong> - - 第3章でインスタンスを作成したものと同じアベイラビリティ・ドメインを選択。</li>
+    </ul>
+
+    <blockquote>
+      <p><strong>POINT</strong></p>
+
+      <p>ブロック・ボリュームは同じ可用性ドメイン(AD)にあるインスタンスからのみアクセスが可能です。別の可用性ドメインや、別のリージョンのインスタンスからアクセスすることはできません。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p><strong>ボリューム・サイズとパフォーマンス</strong></p>
+
+        <ul>
+          <li><strong>カスタム</strong> を選択</li>
+          <li><strong>サイズ(GB)</strong> - 50 を入力</li>
+          <li><strong>VPU</strong> - 10 (バランス) を選択</li>
+        </ul>
+      </li>
+      <li><strong>バックアップ・ポリシー</strong> - ここでは空欄のまま。（必要に応じてポリシーを選択することで自動的にバックアップ取得することも可能です）</li>
+      <li><strong>クロス・リージョン・レプリケーション</strong> - ここでは空欄のまま。</li>
+      <li><strong>暗号化</strong> - <em>Oracle管理キーを使用した暗号化</em> が選択されていることを確認</li>
+    </ul>
+  </li>
+</ol>
+
+<p><img src="bv_img1.png" alt="bv_img1.png" /></p>
+
+<ol>
+  <li>
+    <p>ボリュームの作成中は プロビジョニング中 と表示されます。</p>
+
+    <p><img src="bv_img2.png" alt="bv_img2.png" /></p>
+  </li>
+  <li>
+    <p>ボリュームの作成が完了し、ステータスが 使用可能 になったことを確認します。</p>
+
+    <p><img src="bv_img3.png" alt="bv_img3.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</h1>
+
+<p>第3章で作成した仮想マシンのコンピュート・インスタンスに、先ほど作成したブロック・ボリュームをアタッチします。</p>
+
+<p>アタッチ方法はiSCSIと準仮想化が選べますが、仮想マシン・インスタンスからのアタッチであれば準仮想化のほうが使い勝手がよいので今回は準仮想化を選択していきます。（念のためiSCSIの場合の追加手順も記載してあります。）</p>
+
+<ul>
+  <li>準仮想化 - OSからのコマンド操作は不要なので利用は簡単。</li>
+  <li>iSCSI - コンソールでの操作に加え、追加のOSコマンド操作が必要。ベアメタル・インスタンスの場合はiSCSIのみ。</li>
+</ul>
+
+<p>ブロック・ボリュームの画面からもアタッチ操作ができますが、今回はコンピュート・インスタンスの画面からアタッチしていきましょう。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>コンピュート</strong> → <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択します。</p>
+  </li>
+  <li>
+    <p>第2章で作成した実行中のインスタンス名のリンクをクリックし、インスタンスの詳細画面にナビゲートします。
+<img src="bv_img4.png" alt="bv_img4.png" /></p>
+  </li>
+  <li>
+    <p>画面下部の <strong>リソース</strong> から <strong>アタッチされたブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームのアタッチ</strong> ボタンを押します。
+  <img src="bv_img5.png" alt="bv_img5.png" /></p>
+  </li>
+  <li>立ち上がった <strong>ブロック・ボリュームのアタッチ</strong> ウィンドウに以下の項目を入力し、<strong>アタッチ</strong> ボタンを押します。
+    <ul>
+      <li>
+        <p><strong>ボリューム・アタッチメント・タイプ</strong> - <em>準仮想化</em> を選択</p>
+      </li>
+      <li>
+        <p><strong>転送中暗号化の使用</strong> - 空欄のまま</p>
+      </li>
+      <li>
+        <p><strong>ボリューム</strong></p>
+
+        <ul>
+          <li><strong>ボリュームの選択</strong> を選択します。</li>
+          <li>
+            <コンパートメント名>の **ボリューム** - 先ほど作成したブロック・ボリュームを選択します
+   
+</コンパートメント名>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>デバイス・パス</strong> - 任意のパスを選択します</p>
+      </li>
+      <li>
+        <p><strong>アクセス</strong> - <em>読取り/書込み</em> を選択</p>
+
+        <p><img src="bv_img6.png" alt="bv_img6.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> <strong>ブロック・ボリュームのアタッチ</strong> のウィンドウが開きます。内容を確認したらウィンドウを閉じます。</p>
+
+    <p><img src="bv_img7.png" alt="bv_img7.png" /></p>
+  </li>
+  <li>
+    <p>アタッチ中は、ステータスが <strong>アタッチ中</strong> と表示されます。</p>
+
+    <p><img src="bv_img8.png" alt="bv_img8.png" /></p>
+  </li>
+  <li>
+    <p>アタッチが完了すると、ステータスが <strong>アタッチ済</strong> に変わります。</p>
+
+    <p><img src="bv_img9.png" alt="bv_img9.png" /></p>
+  </li>
+  <li>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> アタッチされたボリュームの右側の <strong>・・・</strong> メニューから <strong>iSCSIコマンドおよび情報</strong> を選択します。</p>
+
+    <p><img src="bv_img10.png" alt="bv_img10.png" /></p>
+  </li>
+  <li>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> 立ち上がった <strong>iSCSIコマンドおよび情報</strong> ウィンドウの中に、インスタンスから iSCSI デバイスにアクセスするためのコマンドをコピーします。
+<strong>アタッチ・コマンド</strong> というコマンドブロックの左下にある コピー リンクをクリックし、表示が <strong>コピー済</strong> となったことを確認します。</p>
+
+    <p><img src="img11.png" alt="img11.png" /></p>
+  </li>
+  <li>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> インスタンスに opcユーザーで sshアクセスし、先ほどコピーしたコマンドをペーストして実行し、実行結果が <strong>successful</strong> となっていることを確認します。</p>
+
+    <p>実行した iSCSI コマンドによって、インスタンスを再ブートした後も、iSCSI ボリュームに再度ログインされます。</p>
+
+    <p>コマンドは再起動の度に実行する必要はありません。</p>
+
+    <p><img src="img12.png" alt="img12" /></p>
+  </li>
+  <li>
+    <p>以下のコマンドを実行し、OSから新しくブロックデバイスが認識されていることを確認します。</p>
+
+    <blockquote>
+
+      <p>lsblk　　</p>
+    </blockquote>
+
+    <p><img src="bv_img13.png" alt="bv_img13.png" /></p>
+
+    <p>上記の例では、新しく /dev/sdb という50GBのボリュームが認識されています。</p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</h1>
+
+<p>その後、実際にボリューム上にデータを配置する際には、各OS上で適切なファイルシステムを構築して利用してください。</p>
+
+<p>ここでは、Oracle Linux 7.9 の場合を例にしてサンプルの手順を示します。</p>
+
+<ol>
+  <li>
+    <p>lsblk コマンドでデバイスの確認を行います。この環境では、/dev/sdbが追加したブロック・ボリュームです。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sdb      8:16   0   50G  0 disk
+sda      8:0    0 46.6G  0 disk
+├-sda2   8:2    0    8G  0 part [SWAP]
+├-sda3   8:3    0 38.4G  0 part /
+└-sda1   8:1    0  200M  0 part /boot/efi
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>parted コマンドで現在のパーティション情報を確認します。/dev/sdaはブート・ボリュームです。Oracle Linux 7.9のイメージではパーティションテーブルはgptで、ファイルシステムはxfsになっています。/dev/sdbにはまだパーティションはありません。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo parted -l
+Model: ORACLE BlockVolume (scsi)
+Disk /dev/sda: 50.0GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: gpt
+Disk Flags:
+   
+Number  Start   End     Size    File system     Name                  Flags
+ 1      1049kB  211MB   210MB   fat16           EFI System Partition  boot
+ 2      211MB   8801MB  8590MB  linux-swap(v1)
+ 3      8801MB  50.0GB  41.2GB  xfs
+   
+   
+Error: /dev/sdb: unrecognised disk label
+Model: ORACLE BlockVolume (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: unknown
+Disk Flags:
+   
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>parted コマンドでパーティションを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo parted -s -a optimal /dev/sdb \
+   mklabel gpt \
+   mkpart primary 0% 100%
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>作成できたか確認します。sdb1 としてパーティションが作成されたことがわかります。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo parted /dev/sdb print
+Model: ORACLE BlockVolume (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: gpt
+Disk Flags:
+   
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  53.7GB  53.7GB               primary
+   
+$ sudo lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sdb      8:16   0   50G  0 disk
+└-sdb1   8:17   0   50G  0 part
+sda      8:0    0 46.6G  0 disk
+├-sda2   8:2    0    8G  0 part [SWAP]
+├-sda3   8:3    0 38.4G  0 part /
+└-sda1   8:1    0  200M  0 part /boot/efi
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>mkfs.xfs でファイルシステムを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkfs.xfs /dev/sdb1
+meta-data=/dev/sdb1              isize=256    agcount=4, agsize=3276672 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=0        finobt=0, sparse=0, rmapbt=0
+         =                       reflink=0
+data     =                       bsize=4096   blocks=13106688, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=6399, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>マウントポイントを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkdir /mnt/bv1
+$ sudo chown opc:opc /mnt/bv1
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>lsblk コマンドでsdb1のUUIDを確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ lsblk -o +UUID
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT UUID
+sdb      8:16   0   50G  0 disk
+└-sdb1   8:17   0   50G  0 part            a773b2a6-e49c-4c90-8d53-d18d8832f61e
+sda      8:0    0 46.6G  0 disk
+├-sda2   8:2    0    8G  0 part [SWAP]     dbabf4fc-a92c-4317-90a8-16182288fde5
+├-sda3   8:3    0 38.4G  0 part /          7415dba2-8eff-478e-8c0c-24321f669e0d
+└-sda1   8:1    0  200M  0 part /boot/efi  6669-0EBB
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>/etc/fstab ファイルを編集し、以下の内容を追記します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo vi /etc/fstab
+</code></pre></div>    </div>
+
+    <p>追記する内容</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>UUID=&lt;確認したUUID&gt; /mnt/bv1 xfs defaults,_netdev,nofail 0 2
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>fstabの設定を反映します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mount -a
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>df  コマンドで確認してみます。/mnt/bv1 にマウントされたことが確認できました。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        742M     0  742M   0% /dev
+tmpfs           773M     0  773M   0% /dev/shm
+tmpfs           773M  8.7M  764M   2% /run
+tmpfs           773M     0  773M   0% /sys/fs/cgroup
+/dev/sda3        39G  8.9G   30G  23% /
+/dev/sda1       200M  7.4M  193M   4% /boot/efi
+tmpfs           155M     0  155M   0% /run/user/0
+tmpfs           155M     0  155M   0% /run/user/994
+tmpfs           155M     0  155M   0% /run/user/1000
+/dev/sdb1        50G   33M   50G   1% /mnt/bv1
+$
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=%E3%81%9D%E3%81%AE4+-+%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AB%E3%82%A2%E3%82%BF%E3%83%83%E3%83%81%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fattaching-block-volume%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fattaching-block-volume%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=%E3%81%9D%E3%81%AE4+-+%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AB%E3%82%A2%E3%82%BF%E3%83%83%E3%83%81%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fattaching-block-volume%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/beginners/creating-compute-instance/" class="pagination--pager" title="その3 - インスタンスを作成する">前へ</a>
+    
+    
+      <a href="/ocitutorials/beginners/managing-instance-lifecycle/" class="pagination--pager" title="その5 - インスタンスのライフサイクルを管理する">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

@@ -1,0 +1,1225 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>GPUクラスタを構築する(オンデマンドクラスタ自動構築編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="GPUクラスタを構築する(オンデマンドクラスタ自動構築編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">
+
+
+  <meta property="og:description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          GPUクラスタを構築する(オンデマンドクラスタ自動構築編)
+
+        
+      </h1>
+      
+        <p class="page__lead">GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/" class="active">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="GPUクラスタを構築する(オンデマンドクラスタ自動構築編)">
+    <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1--hpcクラスタスタック">1.  HPCクラスタスタック</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-インスタンスプリンシパル認証関連設定">1-1. インスタンス・プリンシパル認証関連設定</a></li><li><a href="#1-2-スタックの作成">1-2. スタックの作成</a></li><li><a href="#1-3-スタックの計画">1-3. スタックの計画</a></li><li><a href="#1-4-スタックの適用">1-4. スタックの適用</a></li></ul></li><li><a href="#2-bastionノード確認設定変更">2. Bastionノード確認・設定変更</a></li><li><a href="#3-ldapユーザ作成確認">3. LDAPユーザ作成・確認</a></li><li><a href="#4-オンデマンドgpuクラスタ稼働確認nccl通信性能検証">4. オンデマンドGPUクラスタ稼働確認（NCCL通信性能検証）</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-ジョブスクリプト作成">4-1. ジョブスクリプト作成</a></li><li><a href="#4-2-ジョブ投入">4-2. ジョブ投入</a></li><li><a href="#4-3-gpuクラスタデプロイ状況確認">4-3. GPUクラスタデプロイ状況確認</a></li><li><a href="#4-4-ジョブ結果確認">4-4. ジョブ結果確認</a></li><li><a href="#4-5-gpuクラスタ削除確認">4-5. GPUクラスタ削除確認</a></li></ul></li><li><a href="#5-multiworkermirroredstrategyサンプルプログラム実行">5. MultiWorkerMirroredStrategyサンプルプログラム実行</a><ul><li><a href="#5-0-概要">5-0. 概要</a></li><li><a href="#5-1-プログラム作成">5-1. プログラム作成</a></li><li><a href="#5-2-ジョブ投入結果確認">5-2. ジョブ投入・結果確認</a></li></ul></li><li><a href="#6-スタックの破棄">6. スタックの破棄</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の <strong>NVIDIA A100</strong> 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ <strong>BM.GPU4.8/BM.GPU.GM4.8</strong> とこれらを接続する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を提供しており、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行するGPUクラスタを構築するには最適なクラウドサービスです。</p>
+
+<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無償で利用可能な <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を利用し、以下構成のオンデマンドGPUクラスタを構築します。</p>
+
+<ul>
+  <li><strong>NVIDIA A100</strong> 40 GBを8枚搭載するGPUノード（ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> ）</li>
+  <li>インターコネクト: <strong>クラスタ・ネットワーク</strong> （ノード当たり100 Gbps x 16）</li>
+  <li>インターネットからSSH接続可能なBastionノード</li>
+  <li>OS: <strong>Oracle Linux</strong> 7.9</li>
+  <li>コンテナランタイム: <strong><a href="https://github.com/NVIDIA/enroot/">Enroot</a></strong></li>
+  <li>ジョブスケジューラ: <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> + <strong><a href="https://github.com/NVIDIA/pyxis">Pyxis</a></strong></li>
+  <li>オンデマンドクラスタ機能： <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong></li>
+  <li><strong>ファイル・ストレージ</strong> によるGPUクラスタ内ホームディレクトリ共有</li>
+  <li>LDAPによるクラスタ内ユーザ統合管理</li>
+</ul>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
+
+<p>またこのチュートリアルは、デプロイしたGPUクラスタで複数ノードに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム（ <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> ）で検証後、分散機械学習のサンプルプログラムを実行します。</p>
+
+<p>GPUクラスタのワークロード実行環境は、機械学習環境のデファクトスタンダードである <strong>Dokcer</strong> コンテナを利用し、コンテナランタイムに <strong>Enroot</strong> 、ジョブスケジューラに <strong>Slurm</strong> を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示する <strong>Slurm</strong> のプラグイン <strong>Pyxis</strong> を使用します。</p>
+
+<p>また、コンテナ環境からGPUやNICをRDMAで利用可能とする <strong><a href="https://github.com/NVIDIA/nvidia-container-toolkit">NVIDIA Container Toolkit</a></strong> を含むソフトウェア群もインストールされ、ノードを跨ぐGPU間通信を高帯域・低遅延でコンテナ上から実行することが可能です。この通信性能詳細は、 <strong><a href="#3-0-概要">3-0. 概要</a></strong> を参照ください。</p>
+
+<p>オンデマンドGPUクラスタにおけるワークロード実行は、 <strong>Slurm</strong> にジョブを投入することで行い、 <strong>クラスタオートスケーリング</strong> がジョブ実行に必要なGPUノードを <strong>クラスタ・ネットワーク</strong> と共に動的に起動、 <strong>Slurm</strong> が <strong>Pyxis</strong> を介してこれらGPUノード上に指定のコンテナを起動、ジョブ終了後にコンテナを終了します。<br />
+また <strong>クラスタオートスケーリング</strong> は、ジョブが実行されない状態が一定時間経過すると、自動的にGPUノードを削除します。</p>
+
+<p><img src="software_stack.png" alt="ソフトウェアスタック" /></p>
+
+<p>本チュートリアルで使用する <strong>HPCクラスタスタック</strong> は、通常であれば数日かかる構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択した後、1クリックで自動的に実施することを可能とします。</p>
+
+<p><strong>所要時間 :</strong> 約3時間</p>
+
+<p><strong>前提条件 :</strong> オンデマンドGPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)が作成されていること。</p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する <strong>HPCクラスタスタック</strong> のバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
+
+<hr />
+<h1 id="1--hpcクラスタスタック">1.  HPCクラスタスタック</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本チュートリアルで使用する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> は、大きく2つのステップに分けて構築を実施しており、前半は <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> によるOCIリソース構築フェーズで、後半は <strong>Terraform</strong> から起動される <strong>Ansible</strong> が行うOSレベルのカスタマイズフェーズです。</p>
+
+<p>具体的には、以下のような処理が行われます。</p>
+
+<p>［ <strong>Terraform</strong> によるOCIリソース構築フェーズ］</p>
+
+<ul>
+  <li><strong>VCN</strong> と関連するネットワークリソース構築</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と関連リソース構築</li>
+  <li>Bastionノードインスタンス構築</li>
+  <li><strong>ファイル・ストレージ</strong> 構築</li>
+  <li><strong>Ansible</strong> 関連ソフトウェアインストール</li>
+</ul>
+
+<p>[ <strong>Ansible</strong> によるOSレベルカスタマイズフェーズ]</p>
+
+<ul>
+  <li>NFSファイル共有環境構築</li>
+  <li>LDAPユーザ統合環境構築</li>
+  <li><strong>Slurm</strong> 環境構築</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> ツール群インストール</li>
+</ul>
+
+<p>また <strong>クラスタオートスケーリング</strong> は、Bastionノードから <strong>Terraform</strong> CLIを使用して動的にGPUクラスタを構築するため、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定を予め行います。</p>
+
+<p>以上より本章では、以下の手順でGPUクラスタ構築のための  <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。</p>
+
+<ul>
+  <li><strong>インスタンス・プリンシパル</strong> 認証関連設定</li>
+  <li>スタックの作成</li>
+  <li>スタックの計画</li>
+  <li>スタックの適用</li>
+</ul>
+
+<h2 id="1-1-インスタンスプリンシパル認証関連設定">1-1. インスタンス・プリンシパル認証関連設定</h2>
+
+<p>本章は、Bastionノードから <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用して動的にGPUクラスタを構築するための <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証関連設定を行います。</p>
+
+<p><strong>インスタンス・プリンシパル</strong> 認証の設定は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定">ここ</a></strong> の手順に従います。<br />
+この際、 <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> に含めるインスタンスは、Bastionノードとします。</p>
+
+<h2 id="1-2-スタックの作成">1-2. スタックの作成</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を元に、前述の環境構築のための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。このチュートリアルで使用する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> は、バージョン <strong>2.10.2.1</strong> です。</p>
+
+<ol>
+  <li>
+    <p>以下 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> の <strong>HPCクラスタスタック</strong> のページにアクセスします。</p>
+
+    <p><a href="https://cloud.oracle.com/marketplace/application/67628143/">https://cloud.oracle.com/marketplace/application/67628143/</a></p>
+  </li>
+  <li>
+    <p>OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。</p>
+  </li>
+  <li>
+    <p>表示される以下画面の右上で、 <strong>スタック</strong> をデプロイするリージョンを選択し、<strong>使用許諾</strong> チェックボックスをチェックし、 <strong>スタックの起動</strong> ボタンをクリックします。</p>
+
+    <p><img src="market_place.png" alt="画面ショット" /></p>
+  </li>
+  <li>表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>名前 :</strong> <strong>スタック</strong> に付与する名前（任意）</li>
+      <li><strong>説明 :</strong> <strong>スタック</strong> に付与する説明（任意）</li>
+      <li><strong>コンパートメントに作成 :</strong> <strong>スタック</strong> を作成するコンパートメント(※1)</li>
+    </ul>
+
+    <p>※1) OCIコンソールで最後に使用していたコンパートメントが引き継がれるため、意図したコンパートメントでない場合は、 <strong>HPCクラスタスタック</strong> ページにアクセスする前に、予め所望のコンパートメントを選択しておきます。</p>
+
+    <p><img src="stack_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <p>5.1 <strong>Cluster configuration</strong> フィールド</p>
+    <ul>
+      <li><strong>Public SSH key :</strong> （Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵）
+        <ul>
+          <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="stack_page02.png" alt="画面ショット" /></p>
+
+    <p>5.2 <strong>Headnode options</strong> フィールド</p>
+    <ul>
+      <li><strong>Availability Domain :</strong> （Bastionノードをデプロイする可用性ドメイン）</li>
+    </ul>
+
+    <p><img src="stack_page03.png" alt="画面ショット" /></p>
+
+    <p>5.3 <strong>Compute node options</strong> フィールド</p>
+    <ul>
+      <li><strong>Availability Domain :</strong> （GPUノードをデプロイする可用性ドメイン）</li>
+      <li><strong>Shape of the Compute Nodes :</strong> <strong>BM.GPU4.8</strong> （GPUノードに使用するシェイプ）</li>
+      <li><strong>Initial cluster size :</strong> 0 (※2)</li>
+      <li><strong>Size of the boot volume in GB :</strong> 200（GPUノードのブート・ボリュームサイズ）</li>
+      <li><strong>Image version :</strong> GPU（GPUノードのイメージ）</li>
+    </ul>
+
+    <p>※2) このフィールドは、スタティックに常時起動しておくGPUノードのノード数を指定しますが、本チュートリアルはオンデマンドでのみGPUノードをデプロイするため、このフィールドを0とします。</p>
+
+    <p><img src="stack_page04.png" alt="画面ショット" /></p>
+
+    <p>5.4 <strong>Additional Login Node</strong> フィールド</p>
+    <ul>
+      <li><strong>Login Node :</strong> チェックオフ（※3）</li>
+    </ul>
+
+    <p>※3) Bastionノードに追加してログインノードをデプロイするかの指定で、本チュートリアルではデプロイしません。</p>
+
+    <p><img src="stack_page04-2.png" alt="画面ショット" /></p>
+
+    <p>5.5 <strong>Autoscaling</strong> フィールド</p>
+    <ul>
+      <li><strong>Scheduler based autoscaling :</strong> チェック</li>
+    </ul>
+
+    <p><img src="stack_page04-0.png" alt="画面ショット" /></p>
+
+    <p>5.6 <strong>API authencication, needed for autoscaling</strong> フィールド</p>
+    <ul>
+      <li><strong>Use Instance Princopal instead of configuration file :</strong> チェックオフ</li>
+      <li><strong>API User OCID :</strong> ユーザOCID（※4）</li>
+      <li><strong>API fingerprint :</strong> <strong>APIキー</strong> のフィンガープリント（※5）</li>
+      <li><strong>API private key :</strong> <strong>APIキー</strong> の秘密鍵（ <strong>参照</strong> ボタンをクリックしてアップロード）（※6）</li>
+    </ul>
+
+    <p>※4) ユーザOCIDの確認は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> の手順を参照して下さい。   <br />
+※5) <strong><a href="#1-1-apiキーの作成・登録">APIキーの作成・登録</a></strong> で作成した <strong>APIキー</strong> のフィンガープリント<br />
+※6) <strong><a href="#1-1-apiキーの作成・登録">APIキーの作成・登録</a></strong> で作成した <strong>APIキー</strong> の秘密鍵</p>
+
+    <p><img src="stack_page04-3.png" alt="画面ショット" /></p>
+
+    <p>5.7 <strong>Additional file system</strong> フィールド</p>
+    <ul>
+      <li><strong>Add another NFS filesystem :</strong> チェック</li>
+      <li><strong>Create FSS :</strong> チェック</li>
+      <li><strong>NFS Path :</strong> /mnt/home（※7）</li>
+      <li><strong>NFS server Path :</strong> /mnt/home（※7）</li>
+    </ul>
+
+    <p>※7) ここで指定するパスは、ファイル・ストレージ領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。</p>
+
+    <p><img src="stack_page04-1.png" alt="画面ショット" /></p>
+
+    <p>5.8 <strong>Advanced storage options</strong> フィールド</p>
+    <ul>
+      <li><strong>Show advanced storage options :</strong> チェック</li>
+      <li><strong>Shared NFS scratch space from NVME or Block volume :</strong> チェックオフ（※8）</li>
+    </ul>
+
+    <p>※8) GPUノードの <strong>NVMe SSD</strong> ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。</p>
+
+    <p><img src="stack_page05.png" alt="画面ショット" /></p>
+
+    <p>5.9 <strong>Software</strong> フィールド</p>
+    <ul>
+      <li><strong>Install Nvidia Enroot for containerized GPU workloads :</strong> チェック</li>
+      <li><strong>Install Nvidia Pyxis plugin for Slurm :</strong> チェック</li>
+    </ul>
+
+    <p><img src="stack_page05-1.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page06.png" alt="画面ショット" /></p>
+
+    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時にスタックの適用が開始され、オンデマンドGPUクラスタのデプロイが始まりますが、このチュートリアルでは <strong>スタック</strong> の計画を実行してから適用を行います。</p>
+  </li>
+</ol>
+
+<p>これで、以下画面のとおりオンデマンドGPUクラスタを構築する <strong>スタック</strong> が作成されました。</p>
+
+<p><img src="stack_page07.png" alt="画面ショット" /></p>
+
+<h2 id="1-3-スタックの計画">1-3. スタックの計画</h2>
+
+<p>本章は、完成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を計画し、どのようなリソースがデプロイされるか確認します。</p>
+
+<ol>
+  <li>
+    <p>作成したスタックの以下 <strong>スタックの詳細</strong> 画面で、 <strong>計画</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page08.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>計画</strong> サイドバーで、 <strong>計画</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page09.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブの詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> → <strong>成功</strong> と遷移すれば、 <strong>スタック</strong> の計画が終了しています。</p>
+
+    <p><img src="stack_page10.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、適用時にデプロイされるリソースを確認します。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="1-4-スタックの適用">1-4. スタックの適用</h2>
+
+<p>本章は、計画で作成されるリソースに問題が無いことを確認した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> に対し、適用を行いオンデマンドGPUクラスタをデプロイします。</p>
+
+<ol>
+  <li>
+    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>適用</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>適用</strong> サイドバーで、 <strong>適用</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page13.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の適用が実施されています。</p>
+
+    <p><img src="stack_page14.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースのデプロイ状況を確認します。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+
+    <p>この適用が完了するまでの所要時間は、15分程度です。</p>
+
+    <p>ステータスが <strong>成功</strong> となれば、オンデマンドGPUクラスタのデプロイが完了しています。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-bastionノード確認設定変更">2. Bastionノード確認・設定変更</h1>
+
+<p>本章は、デプロイされたBastionノードにログインし、環境の確認とジョブスケジューラの設定を一部変更します。</p>
+
+<ol>
+  <li>
+    <p>Bastionノードログイン</p>
+
+    <p>Bastionノードへのログインは、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 適用時の以下 <strong>ログ</strong> フィールドの最後に表示されているBastionノードのIPアドレスを使用し、インターネットを介してopcユーザでSSHログインします。</p>
+
+    <p><img src="stack_page15.png" alt="画面ショット" /></p>
+
+    <p>このSSH接続では、 <strong>スタック</strong> に指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Bastionノードファイルシステム確認</p>
+
+    <p>Bastionノードは、以下のようにファイル・ストレージの/mnt/homeがマウントされています。この/mnt/homeは、オンデマンドGPUクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+Filesystem        Size  Used Avail Use% Mounted on
+FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Slurm</strong> 設定変更</p>
+
+    <p><strong>Pxys</strong> を介して <strong>Slurm</strong> から <strong>Enroot</strong> 上のコンテナを利用する場合、デフォルトの挙動はジョブ終了後にインポートしたコンテナを削除します。<br />
+ジョブ終了後もコンテナを保持するため、Bastionノードで以下のように <strong>Slurm</strong> の設定ファイルを修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /etc/slurm/plugstack.conf_org /etc/slurm/plugstack.conf
+1c1
+&lt; required /usr/local/lib/slurm/spank_pyxis.so
+<span class="nt">---</span>
+<span class="o">&gt;</span> required /usr/local/lib/slurm/spank_pyxis.so <span class="nv">container_scope</span><span class="o">=</span>global
+</code></pre></div>    </div>
+
+    <p>次に、この設定変更を反映するため、Bastionノードのopcユーザで以下コマンドを実行し、 <strong>Slurm</strong> を再起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl restart slurmctld slurmdbd
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-ldapユーザ作成確認">3. LDAPユーザ作成・確認</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> が作成したLDAP統合ユーザ管理環境にLDAPユーザを作成し、このユーザでインターネットからBastionノードにSSHログイン出来ることを確認します。</p>
+
+<p>このLDAP統合ユーザ管理環境は、BastionノードがLDAPサーバ兼クライアントでGPUノードがLDAPクライアントです。</p>
+
+<ol>
+  <li>
+    <p>LDAPユーザ作成</p>
+
+    <p>LDAPサーバであるBastionノードは、LDAPユーザ管理のためのclusterコマンドが用意されています。</p>
+
+    <p>このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリである <strong>ファイル・ストレージ</strong> の/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
+</code></pre></div>    </div>
+
+    <p>次に、以下コマンドをBastionノードのopcユーザで実行し、イニシャルグループが <strong>privilege</strong> （グループIDが9876で、そのメンバーにコンテナ実行権限が付与される。）のLDAPユーザを作成します。<br />
+なおこのユーザは、この後の稼働確認に使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cluster user add user_name <span class="nt">--gid</span> 9876
+Password:  &lt;- Password <span class="k">for </span>user_name
+Repeat <span class="k">for </span>confirmation: &lt;- Password <span class="k">for </span>user_name
+Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
+<span class="nv">$ </span><span class="nb">id </span>user_name
+<span class="nv">uid</span><span class="o">=</span>10001<span class="o">(</span>user_name<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span>
+</code></pre></div>    </div>
+
+    <p>ここで指定するパスワードは、オンデマンドGPUクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。</p>
+
+    <p>次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
+public_key_for_user_name
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>LDAPユーザログイン</p>
+
+    <p>先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。</p>
+
+    <p>このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="4-オンデマンドgpuクラスタ稼働確認nccl通信性能検証">4. オンデマンドGPUクラスタ稼働確認（NCCL通信性能検証）</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
+
+<p>本章は、 <strong>NCCL</strong> 通信性能検証用のジョブを使用し、オンデマンドGPUクラスタがジョブの投入・終了に伴い自動的にGPUクラスタを作成・削除することを確認し、その後GPUクラスタ内の <strong>NCCL</strong> 通信性能を検証します。</p>
+
+<p>ここで使用する <strong>NCCL</strong> は、ジョブが <strong>Nvidia GPU Cloud</strong> からインポートする <strong>TensorFlow</strong> のコンテナに予め含まれるものを使用し、 <strong>NCCL Tests</strong> はコンテナ内でソースコードからビルドします。</p>
+
+<h2 id="4-1-ジョブスクリプト作成">4-1. ジョブスクリプト作成</h2>
+
+<p>BastionノードのLDAPユーザで、以下のジョブスクリプトをファイル名 <strong>nccl_test.sh</strong> で作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p compute</span>
+<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH --ntasks-per-node 1</span>
+<span class="c">#SBATCH -J nccl_test</span>
+<span class="c">#SBATCH --gpus-per-node=8</span>
+<span class="nb">export </span><span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4
+<span class="nb">export </span><span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3
+<span class="nb">export </span><span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span>
+srun <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--mpi</span> pmi2 bash <span class="nt">-c</span> <span class="s2">"cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
+</code></pre></div></div>
+
+<p>このジョブスクリプトは、2ノードのGPUノード上に <strong>Nvidia GPU Cloud</strong> からダウンロードした <strong>TensorFlow</strong> のコンテナを1台づつ起動し、このコンテナ上で <strong>NCCL Tests</strong> のソースツリーをクローンしてビルド、その後2ノード全16枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を10 GBのメッセージサイズで計測します。<br />
+ジョブスクリプト内で指定している <strong>NCCL_IB_</strong> で始まる環境変数は、 <strong>NCCL Tests</strong> の <strong>All-Reduce</strong> 通信性能向上を目的として指定しています。</p>
+
+<h2 id="4-2-ジョブ投入">4-2. ジョブ投入</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、作成したジョブスクリプトを <strong>Slurm</strong> に投入、ジョブステータスを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch nccl_test.sh 
+Submitted batch job 1
+<span class="nv">$ </span>squeue 
+   JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+       1   compute nccl_tes user_nam PD       0:00      2 <span class="o">(</span>Nodes required <span class="k">for </span>job are DOWN, DRAINED or reserved <span class="k">for </span><span class="nb">jobs </span><span class="k">in </span>higher priority partitions<span class="o">)</span>
+</code></pre></div></div>
+
+<p>この時点では、ジョブを実行するためのGPUノードが存在しないため、ジョブのステータスが <strong>PD</strong> の状態です。</p>
+
+<h2 id="4-3-gpuクラスタデプロイ状況確認">4-3. GPUクラスタデプロイ状況確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> は、Bastionノードのopcユーザのcrontabから以下のように毎分起動される <strong>autoscale_slurm.sh</strong> というPyrhonスクリプトにより、 <strong>Slurm</strong> のジョブ投入状況に応じてオンデマンドに必要な数のGPUノードを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共にデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>crontab <span class="nt">-l</span> | <span class="nb">grep </span>autoscale_slurm
+<span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /opt/oci-hpc/autoscaling/crontab/autoscale_slurm.sh <span class="o">&gt;&gt;</span> /opt/oci-hpc/logs/crontab_slurm_<span class="sb">`</span><span class="nb">date</span> <span class="s1">'+\%Y\%m\%d'</span><span class="sb">`</span>.log 2&gt;&amp;1
+</code></pre></div></div>
+
+<p>このため、先の手順のジョブ投入から最大で1分以上経過すると、自動的に2ノードのGPUノードとこれらを接続する <strong>クラスタ・ネットワーク</strong> のデプロイを開始します。<br />
+そこで、OCIコンソールでオンデマンドGPUクラスタをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧から2ノードのGPUノードが <strong>プロビジョニング中</strong> となっていることを確認します。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>このジョブは、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> によるGPUノードのデプロイが完了すると前述のインスタンスの <strong>状態</strong> が <strong>実行中</strong> となりますが、ここから <strong>Ansible</strong> によるOSのカスタマイズが始まり、これが完了して初めて <strong>Slurm</strong> 上のジョブ状態が <strong>R</strong> （実行中）になり、ここまでにおよそ20分を要します。<br />
+またジョブの実行が開始されると、コンテナのインポート・起動におよそ15分を要し、ここから実質的なジョブの実行が始まります。<br />
+以上より、ジョブ投入からジョブ完了までの所要時間は、40分程度です。</p>
+
+<h2 id="4-4-ジョブ結果確認">4-4. ジョブ結果確認</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブ完了を確認した後、その出力結果を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nv">$ </span>squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+   <span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-A2</span> busbw slurm-1.out
+   <span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
+   <span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
+    10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>   122711   87.50  164.07      0   121865   88.11  165.21      0
+</code></pre></div></div>
+
+<p>この出力結果から、busbwが <strong>165.21 GB/s</strong> となっていることがわかります。</p>
+
+<h2 id="4-5-gpuクラスタ削除確認">4-5. GPUクラスタ削除確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> は、GPUノードで実行されるジョブが無い状態が10分間継続すると、以降crontabから最初に起動される <strong>autoscale_slurm.sh</strong> がこのGPUノードを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共に削除します。<br />
+OCIコンソールで、想定通りGPUクラスタが削除されていることを確認します。</p>
+
+<hr />
+<h1 id="5-multiworkermirroredstrategyサンプルプログラム実行">5. MultiWorkerMirroredStrategyサンプルプログラム実行</h1>
+
+<h2 id="5-0-概要">5-0. 概要</h2>
+
+<p>本章は、MultiWorkerMirroredStrategyサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。</p>
+
+<p>ここで使用するMultiWorkerMirroredStrategyサンプルプログラムは、以下 <strong>TensorFlow</strong> 公式ドキュメントページのチュートリアルで使用されている、MNISTデータセットを使用した訓練を行うプログラムです。</p>
+
+<p><a href="https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras">https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras</a></p>
+
+<h2 id="5-1-プログラム作成">5-1. プログラム作成</h2>
+
+<p>本章は、MultiWorkerMirroredStrategyサンプルプログラムを作成します。</p>
+
+<p>BastionノードのLDAPユーザで、以下3個のプログラムを作成し、パーミッションを適切に設定します。これらのプログラム中で、LDAPユーザ名として使用されているuser_nameは、自身で作成したユーザ名に修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
+/mnt/home/user_name/tensorflow
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
+total 24
+<span class="nt">-rw-r--r--</span> 1 user_name privilege 1385 Jan 26 09:29 mnist.py
+<span class="nt">-rwxr-xr-x</span> 1 user_name privilege 1158 Jan 26 09:29 start_mnist.sh
+<span class="nt">-rw-r--r--</span> 1 user_name privilege  791 Jan 26 09:28 submit.sh
+</code></pre></div></div>
+
+<p>[submit.sh]</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p compute</span>
+<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH --ntasks-per-node 1</span>
+<span class="c">#SBATCH -J mnist</span>
+<span class="c">#SBATCH --gpus-per-node=8</span>
+
+<span class="c"># Set working directory which contains all programs to train MNIST datasets</span>
+<span class="nv">workdir</span><span class="o">=</span><span class="s2">"/mnt/home/user_name/tensorflow"</span>
+<span class="c"># Set node list file which contains GPU node names assigned to this job one at a line</span>
+<span class="nv">hfname</span><span class="o">=</span><span class="s2">"slurm_nodelist.txt"</span>
+
+<span class="nb">cd</span> <span class="nv">$workdir</span>
+<span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$hfname</span>
+
+<span class="c"># For loop to generate node list file from environment variable SLURM_JOB_NODELIST Slurm dinamically sets</span>
+<span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames <span class="k">${</span><span class="nv">SLURM_JOB_NODELIST</span><span class="k">}</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nb">echo</span> <span class="nv">$hname</span> <span class="o">&gt;&gt;</span> <span class="nv">$hfname</span>
+<span class="k">done</span>
+
+<span class="c"># Start TensorFlow containers on all GPU nodes one at a node and run start_mnist.sh on all the containers</span>
+srun <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nv">$workdir</span>/start_mnist.sh <span class="nv">$hfname</span> <span class="nv">$workdir</span>
+</code></pre></div></div>
+
+<p>[start_mnist.sh]</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c"># Get node list file from first argument</span>
+<span class="nv">hfname</span><span class="o">=</span><span class="nv">$1</span>
+<span class="c"># Get working directory from second argument</span>
+<span class="nv">workdir</span><span class="o">=</span><span class="nv">$2</span>
+
+<span class="c"># Declare array accomodating all worker host names and set own hostnmae</span>
+<span class="nb">declare</span> <span class="nt">-a</span> <span class="nv">ar_worker</span><span class="o">=()</span>
+<span class="nv">myhname</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
+
+<span class="c"># Set output file names for standard out/error</span>
+<span class="nv">std_out</span><span class="o">=</span><span class="nv">$myhname</span><span class="s2">".out"</span>
+<span class="nv">std_err</span><span class="o">=</span><span class="nv">$myhname</span><span class="s2">".err"</span>
+
+<span class="nb">cd</span> <span class="nv">$workdir</span>
+<span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$std_out</span>
+<span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$std_err</span>
+
+<span class="c"># Set worker host names in ar_worker each at an element and rank number in desccending order of node list file</span>
+<span class="nv">count</span><span class="o">=</span>0
+<span class="k">while </span><span class="nb">read </span>hname
+<span class="k">do
+  </span>ar_worker[<span class="nv">$count</span><span class="o">]=</span><span class="nv">$hname</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="nv">$myhname</span> <span class="o">==</span> <span class="nv">$hname</span> <span class="o">]</span>
+  <span class="k">then
+    </span><span class="nv">myrank</span><span class="o">=</span><span class="nv">$count</span>
+  <span class="k">fi
+  </span><span class="nv">count</span><span class="o">=</span><span class="si">$(</span><span class="nb">expr</span> <span class="nv">$count</span> + 1<span class="si">)</span>
+<span class="k">done</span> &lt; <span class="nv">$hfname</span>
+
+<span class="c"># Set TF_CONFIG environment variable for each worker</span>
+<span class="c"># Example</span>
+<span class="c">#  &gt; printenv TF_CONFIG</span>
+<span class="c">#  {"cluster": {"worker": ["node_a:12345", "node_b:23456"]}, "task": {"type": "worker", "index": 0}}</span>
+<span class="nb">export </span><span class="nv">TF_CONFIG</span><span class="o">=</span><span class="s2">"{</span><span class="se">\"</span><span class="s2">cluster</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">: [</span><span class="se">\"</span><span class="k">${</span><span class="nv">ar_worker</span><span class="p">[0]</span><span class="k">}</span><span class="s2">:12345</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="k">${</span><span class="nv">ar_worker</span><span class="p">[1]</span><span class="k">}</span><span class="s2">:23456</span><span class="se">\"</span><span class="s2">]}, </span><span class="se">\"</span><span class="s2">task</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">index</span><span class="se">\"</span><span class="s2">: </span><span class="nv">$myrank</span><span class="s2">}}"</span>
+
+<span class="c"># Print my rank to standard error file</span>
+<span class="nb">echo</span> <span class="s2">"My rank = "</span><span class="nv">$myrank</span> <span class="o">&gt;</span> ./<span class="nv">$std_err</span>
+<span class="nb">echo</span> <span class="o">&gt;&gt;</span> ./<span class="nv">$std_err</span>
+
+<span class="c"># Run MNIST training script</span>
+python ./mnist.py <span class="o">&gt;</span> ./<span class="nv">$std_out</span> 2&gt;&gt; ./<span class="nv">$std_err</span>
+</code></pre></div></div>
+
+<p>[mnist.py]</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">os</span>
+<span class="kn">import</span> <span class="n">json</span>
+<span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="k">def</span> <span class="nf">mnist_dataset</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+  <span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">datasets</span><span class="p">.</span><span class="n">mnist</span><span class="p">.</span><span class="nf">load_data</span><span class="p">()</span>
+  <span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span> <span class="o">/</span> <span class="n">np</span><span class="p">.</span><span class="nf">float32</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+  <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_train</span><span class="p">.</span><span class="nf">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">int64</span><span class="p">)</span>
+  <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="nf">from_tensor_slices</span><span class="p">(</span>
+      <span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)).</span><span class="nf">shuffle</span><span class="p">(</span><span class="mi">60000</span><span class="p">).</span><span class="nf">repeat</span><span class="p">().</span><span class="nf">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">train_dataset</span>
+
+<span class="k">def</span> <span class="nf">build_and_compile_cnn_model</span><span class="p">():</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="nc">Sequential</span><span class="p">([</span>
+      <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="nc">InputLayer</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>
+      <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="nc">Reshape</span><span class="p">(</span><span class="n">target_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+      <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="nc">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="sh">'</span><span class="s">relu</span><span class="sh">'</span><span class="p">),</span>
+      <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="nc">Flatten</span><span class="p">(),</span>
+      <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="nc">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="sh">'</span><span class="s">relu</span><span class="sh">'</span><span class="p">),</span>
+      <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="nc">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+  <span class="p">])</span>
+  <span class="n">model</span><span class="p">.</span><span class="nf">compile</span><span class="p">(</span>
+      <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">losses</span><span class="p">.</span><span class="nc">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+      <span class="n">optimizer</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">optimizers</span><span class="p">.</span><span class="nc">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">),</span>
+      <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">accuracy</span><span class="sh">'</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">model</span>
+
+<span class="n">per_worker_batch_size</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">tf_config</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="nf">loads</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">TF_CONFIG</span><span class="sh">'</span><span class="p">])</span>
+<span class="n">num_workers</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">tf_config</span><span class="p">[</span><span class="sh">'</span><span class="s">cluster</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">worker</span><span class="sh">'</span><span class="p">])</span>
+
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">distribute</span><span class="p">.</span><span class="nc">MultiWorkerMirroredStrategy</span><span class="p">()</span>
+
+<span class="n">global_batch_size</span> <span class="o">=</span> <span class="n">per_worker_batch_size</span> <span class="o">*</span> <span class="n">num_workers</span>
+<span class="n">multi_worker_dataset</span> <span class="o">=</span> <span class="nf">mnist_dataset</span><span class="p">(</span><span class="n">global_batch_size</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">strategy</span><span class="p">.</span><span class="nf">scope</span><span class="p">():</span>
+  <span class="n">multi_worker_model</span> <span class="o">=</span> <span class="nf">build_and_compile_cnn_model</span><span class="p">()</span>
+
+<span class="n">multi_worker_model</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">multi_worker_dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">steps_per_epoch</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="5-2-ジョブ投入結果確認">5-2. ジョブ投入・結果確認</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブスクリプトを <strong>Slurm</strong> に投入します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch submit.sh 
+Submitted batch job 2
+</code></pre></div></div>
+
+<p>次に、OCIコンソールでGPUノードが2ノードデプロイされたことを確認し、以下コマンドで実行中のジョブが無いことによるジョブ終了とジョブ標準出力の表示によるジョブ正常終了を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>squeue
+    JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+<span class="nv">$ </span><span class="nb">cat </span>compute-hpc-node-<span class="k">*</span>.out 
+Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
+11490434/11490434 <span class="o">[==============================]</span> - 0s 0us/step
+Epoch 1/3
+70/70 <span class="o">[==============================]</span> - 10s 67ms/step - loss: 2.2653 - accuracy: 0.1280
+Epoch 2/3
+70/70 <span class="o">[==============================]</span> - 4s 64ms/step - loss: 2.1829 - accuracy: 0.2941
+Epoch 3/3
+70/70 <span class="o">[==============================]</span> - 5s 65ms/step - loss: 2.0823 - accuracy: 0.4592
+Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
+11490434/11490434 <span class="o">[==============================]</span> - 0s 0us/step
+Epoch 1/3
+70/70 <span class="o">[==============================]</span> - 10s 67ms/step - loss: 2.2653 - accuracy: 0.1280
+Epoch 2/3
+70/70 <span class="o">[==============================]</span> - 4s 64ms/step - loss: 2.1829 - accuracy: 0.2941
+Epoch 3/3
+70/70 <span class="o">[==============================]</span> - 5s 65ms/step - loss: 2.0823 - accuracy: 0.4592
+</code></pre></div></div>
+
+<hr />
+<h1 id="6-スタックの破棄">6. スタックの破棄</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を破棄することで、構築したオンデマンドGPUクラスタを削除します。</p>
+
+<p>以下の手順は、本チュートリアルで作成したOCI上のリソースをすべて削除するため、 <strong>LDAPユーザのホームディレクトリ用途で作成したファイル・ストレージに格納されているデータが全て消失</strong> します。</p>
+
+<p>なお、 <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> がオンデマンドでデプロイしたGPUノードと <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、この <strong>スタック</strong> 破棄で削除されません。<br />
+そのため、 <strong>クラスタオートスケーリング</strong> がこれらのリソースを削除したことを確認し、その後 <strong>スタック</strong> の破棄を実施します。</p>
+
+<ol>
+  <li>
+    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page16.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>破棄</strong> サイドバーで、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page17.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の破棄が実施されています。</p>
+
+    <p><img src="stack_page18.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースの削除状況を確認します。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+
+    <p>この破棄が完了するまでの所要時間は、2分程度です。</p>
+
+    <p>ステータスが <strong>成功</strong> となれば、オンデマンドGPUクラスタの削除が完了しています。</p>
+  </li>
+</ol>
+
+<p>これで、このチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=GPU%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%28%E3%82%AA%E3%83%B3%E3%83%87%E3%83%9E%E3%83%B3%E3%83%89%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E8%87%AA%E5%8B%95%E6%A7%8B%E7%AF%89%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-gpu-cluster-withautoscaling%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-gpu-cluster-withautoscaling%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=GPU%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%28%E3%82%AA%E3%83%B3%E3%83%87%E3%83%9E%E3%83%B3%E3%83%89%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E8%87%AA%E5%8B%95%E6%A7%8B%E7%AF%89%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-gpu-cluster-withautoscaling%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/" class="pagination--pager" title="GPUクラスタを構築する(スタティッククラスタ自動構築編)">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/" class="pagination--pager" title="GPUクラスタを構築する(Ubuntu OS編)">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

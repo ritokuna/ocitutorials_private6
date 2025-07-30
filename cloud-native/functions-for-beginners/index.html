@@ -1,0 +1,860 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Functions ハンズオン | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Functions ハンズオン">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-for-beginners/">
+
+
+  <meta property="og:description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-for-beginners/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Functions ハンズオン
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Functions ハンズオン</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ci-for-beginners/">OCI Container Instances をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/" class="active">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/">OCI API GatewayとOCI Functions を利用したデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-beginners/">OCI Cacheを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-commons/">OCI Cacheを使ってレスポンス・キャッシングをしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Functions ハンズオン">
+    <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#条件">条件</a></li><li><a href="#事前準備">事前準備</a></li><li><a href="#1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</a></li><li><a href="#2oracle-functions実行環境の構築">2.Oracle Functions実行環境の構築</a><ul><li><a href="#2-1-oracle-functionsが利用するvcnの作成">2-1. Oracle Functionsが利用するVCNの作成</a></li><li><a href="#2-2-oracle-functionsのアプリケーションの作成">2-2. Oracle Functionsのアプリケーションの作成</a></li><li><a href="#2-3-oci-functionsのサンプルアプリケーション実行">2-3. OCI Functionsのサンプルアプリケーション実行</a></li></ul></li><li><a href="#オプション3podman環境で作業する場合">【オプション】3.Podman環境で作業する場合</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>Oracle Functionsは、Oracleが提供するオープンソースのFaaSプラットフォームであるFn Projectのマネージドサービスです。<br />
+このエントリーでは、Oracle Functions環境構築から動作確認までの手順を記します。</p>
+
+<h2 id="条件">条件</h2>
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>有効なOracle Cloudアカウントがあること</li>
+      <li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>が完了していること(このハンズオンの理解を深めるため)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="事前準備">事前準備</h2>
+
+<p class="notice--info"><strong>注意事項: コンパートメントについて</strong><br />
+Oracle Cloudにはコンパートメントという考え方があります。<br />
+コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。<br />
+また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。<br />今回は、ルートコンパートメントと呼ばれるすべてのリソースを保持するコンパートメントを利用するので、特に意識する必要がありません。</p>
+
+<p class="notice--info"><strong>注意事項: ポリシーについて</strong><br />
+Oracle Cloudでは、各ユーザーから各サービスへのアクセスおよび各サービスから他サービスへアクセスを「ポリシー」を利用して制御します。ポリシーは、各リソースに誰がアクセスできるかを指定することができます。
+このハンズオンでは、テナンシ管理者を想定してポリシーを設定していきます。</p>
+
+<div class="notice--warning">
+  <p><strong>注意事項: リージョンとリージョンコードについて</strong><br />
+Oracle Cloudでは、エンドポイントやレジストリにアクセスする際にリージョンおよびリージョンコードを使用する場合があります。<br />
+以下に各リージョンと対応するリージョンコードを記載します。<br />
+本ハンズオンでは、OCI CLIのセットアップおよびOCIRのログイン時に使用します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>リージョン</th>
+      <th>リージョンコード</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ap-tokyo-1</td>
+      <td>nrt</td>
+    </tr>
+    <tr>
+      <td>ap-osaka-1</td>
+      <td>kix</td>
+    </tr>
+    <tr>
+      <td>ap-melbourne-1</td>
+      <td>mel</td>
+    </tr>
+    <tr>
+      <td>us-ashburn-1</td>
+      <td>iad</td>
+    </tr>
+    <tr>
+      <td>us-phoenix-1</td>
+      <td>phx</td>
+    </tr>
+    <tr>
+      <td>ap-mumbai-1</td>
+      <td>bom</td>
+    </tr>
+    <tr>
+      <td>ap-seoul-1</td>
+      <td>icn</td>
+    </tr>
+    <tr>
+      <td>ap-sydney-1</td>
+      <td>syd</td>
+    </tr>
+    <tr>
+      <td>ca-toronto-1</td>
+      <td>yyz</td>
+    </tr>
+    <tr>
+      <td>ca-montreal-1</td>
+      <td>yul</td>
+    </tr>
+    <tr>
+      <td>eu-frankfurt-1</td>
+      <td>fra</td>
+    </tr>
+    <tr>
+      <td>eu-zurich-1</td>
+      <td>zrh</td>
+    </tr>
+    <tr>
+      <td>sa-saopaulo-1</td>
+      <td>gru</td>
+    </tr>
+    <tr>
+      <td>sa-vinhedo-1</td>
+      <td>vcp</td>
+    </tr>
+    <tr>
+      <td>uk-london-1</td>
+      <td>lhr</td>
+    </tr>
+    <tr>
+      <td>sa-santiago-1</td>
+      <td>scl</td>
+    </tr>
+    <tr>
+      <td>ap-hyderabad-1</td>
+      <td>hyd</td>
+    </tr>
+    <tr>
+      <td>eu-amsterdam-1</td>
+      <td>ams</td>
+    </tr>
+    <tr>
+      <td>me-jeddah-1</td>
+      <td>jed</td>
+    </tr>
+    <tr>
+      <td>ap-chuncheon-1</td>
+      <td>yny</td>
+    </tr>
+    <tr>
+      <td>me-dubai-1</td>
+      <td>dxb</td>
+    </tr>
+    <tr>
+      <td>uk-cardiff-1</td>
+      <td>cwl</td>
+    </tr>
+    <tr>
+      <td>us-sanjose-1</td>
+      <td>sjc</td>
+    </tr>
+  </tbody>
+</table>
+
+
+</div>
+
+<p>ここでは、Oracle Functionsのハンズオンを実施するためにOCI(Oracle Cloud Infrastructure)に対してポリシーの設定を行います。</p>
+
+<p>Oracle Cloudのダッシューボードにログインし、ダッシューボード画面のハンバーガーメニューで[アイデンティティとセキュリティ]=&gt;[ポリシー]をクリックします。
+<img src="00-00.png" alt="" /></p>
+
+<p>“ポリシーの作成”をクリックします。
+<img src="00-01.png" alt="" /></p>
+
+<p>“名前”に任意の名前(特にこだわりがなければ”Oracle-Functions-Policy”)を入力、”説明”にも名前と同様の値を入力、”手動エディタ”の表示にチェックを入れてテキストボックスに以下の2つを入力し、”作成”をクリックします。<br />
+以下の2つのポリシーによって、Oracle FunctionsからのVCN(ネットワーク)の使用およびファンクションを格納するレジストリの使用を許可します。</p>
+
+<ul>
+  <li>Allow service FaaS to read repos in tenancy</li>
+</ul>
+
+<p><img src="00-02.png" alt="" /></p>
+
+<p>以上で、事前準備は完了です。</p>
+
+<h2 id="1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</h2>
+<p>本ハンズオンではOKEクラスターを操作するいくつかのCLIを実行するための環境としてCloud Shellと呼ばれるサービスを使用します。
+Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザベースのコンソールです。
+Cloud Shellには、OCI CLIをはじめとして、次のようないくつかの便利なツールおよびユーティリティの現在のバージョンがインストールされています。
+詳細は、<a href="https://docs.cloud.oracle.com/ja-jp/iaas/Content/API/Concepts/cloudshellintro.htm">公式ドキュメントの記載</a>をご確認ください。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>インストール済みツール</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Git</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+    </tr>
+    <tr>
+      <td>Python (2および3)</td>
+    </tr>
+    <tr>
+      <td>SQL Plus</td>
+    </tr>
+    <tr>
+      <td>kubectl</td>
+    </tr>
+    <tr>
+      <td>helm</td>
+    </tr>
+    <tr>
+      <td>maven</td>
+    </tr>
+    <tr>
+      <td>gradle</td>
+    </tr>
+    <tr>
+      <td>terraform</td>
+    </tr>
+    <tr>
+      <td>ansible</td>
+    </tr>
+    <tr>
+      <td>fn</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--warning"><strong>Cloud Shellついて</strong><br />
+Cloud Shellは開発専用ではなく、一時的にOCIコマンドを実行したい場合などライトなご利用を想定したサービスであるため、実運用時はCLI実行環境を別途ご用意ください。</p>
+
+<p>OCIコンソール上で右上にあるターミナルのアイコンをクリックします。</p>
+
+<p><img src="01-02-01.png" alt="" /></p>
+
+<p>しばらく待つと、Cloud Shellが起動されます。　　</p>
+
+<p><img src="01-02-02.png" alt="" /></p>
+
+<p>デフォルトでは、Cloud Shellが利用しているCPUアーキテクチャが<code class="language-plaintext highlighter-rouge">ARM</code>である可能性があります。<br />
+今回は、<code class="language-plaintext highlighter-rouge">X86_64</code>を利用したいので、利用するCPUアーキテクチャを修正します。</p>
+
+<p>Cloud Shellの左側にある<code class="language-plaintext highlighter-rouge">アーキテクチャ</code>をクリックします。</p>
+
+<p><img src="01-02-03.png" alt="" /></p>
+
+<p>希望するアーキテクチャを<code class="language-plaintext highlighter-rouge">X86_64</code>に変更し、<code class="language-plaintext highlighter-rouge">確認して再起動</code>をクリックします。</p>
+
+<p><img src="01-02-04.png" alt="" /></p>
+
+<p>インスタンスの再起動というダイアログが表示されたら、<code class="language-plaintext highlighter-rouge">再起動</code>をクリックします。</p>
+
+<p><img src="01-02-05.png" alt="" /></p>
+
+<p>しばらくすると、Cloud Shellが起動します。</p>
+
+<p>起動後に以下のコマンドで確認してみましょう。<br />
+このハンズオンに必要なCLI(<code class="language-plaintext highlighter-rouge">fn</code>コマンド)はデフォルトでインストール済みです。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn --version
+</code></pre></div></div>
+
+<p>以下のような結果となれば、<code class="language-plaintext highlighter-rouge">fn</code>コマンドは正常にインストールされています。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn version 0.6.33
+</code></pre></div></div>
+
+<p>以上で、準備作業は完了です。</p>
+
+<h2 id="2oracle-functions実行環境の構築">2.Oracle Functions実行環境の構築</h2>
+<p>ここでは、Oracle Functionsを動作させるための環境を構築します。</p>
+
+<h3 id="2-1-oracle-functionsが利用するvcnの作成">2-1. Oracle Functionsが利用するVCNの作成</h3>
+<p>Oracle Cloudのダッシューボードにログインし、ダッシューボード画面のハンバーガメニューで”ネットワーキング”=&gt;”仮想クラウド・ネットワーキング”をクリックします。</p>
+
+<p><img src="01-01.png" alt="" /></p>
+
+<p>表示された画面左下の”スコープ”内の”コンパートメント”をクリックし、ルートコンパートメント(下記の場合は”functionshandson”)を選択します。ルートコンパートメントはOracle Cloudの登録時に設定した名称になります。既に選択されている場合は、この手順はスキップしてください。</p>
+
+<p><img src="01-12.png" alt="" /></p>
+
+<p>“VCNウィザードの起動”をクリックします。</p>
+
+<p><img src="01-02.png" alt="" /></p>
+
+<p>“インターネット接続性を持つVCN”を選択し、”ワークフローの起動”をクリックします。</p>
+
+<p><img src="01-03.png" alt="" /></p>
+
+<p>以下の情報を入力し、”次”をクリックします。</p>
+
+<p><img src="01-04.png" alt="" /></p>
+
+<ul>
+  <li>VCN名：任意の名前(こだわりがなければ”Oracle Functions Handson”)</li>
+  <li>コンパートメント：ルートコンパートメント</li>
+  <li>VCN CIDRブロック：<code class="language-plaintext highlighter-rouge">10.0.0.0/16</code></li>
+  <li>パブリック・サブネットCIDRブロック：<code class="language-plaintext highlighter-rouge">10.0.0.0/24</code></li>
+  <li>プライベート・サブネットCIDRブロック：<code class="language-plaintext highlighter-rouge">10.0.1.0/24</code></li>
+</ul>
+
+<p>“作成”をクリックします。</p>
+
+<p><img src="01-14.png" alt="" /></p>
+
+<p>“仮想クラウド・ネットワークの表示”をクリックします。</p>
+
+<p><img src="01-15.png" alt="" /></p>
+
+<p>以上で、VCN(ネットワーク)の作成は終わりです。</p>
+
+<h3 id="2-2-oracle-functionsのアプリケーションの作成">2-2. Oracle Functionsのアプリケーションの作成</h3>
+<p>ここでは、Oracle Functionsのアプリケーションの作成を行います。</p>
+
+<p>OCIのコンソールに移り、”開発者サービス”の”ファンクション”をクリックします。
+<img src="03-12.png" alt="" /></p>
+
+<p>“アプリケーションの作成”をクリックします。
+<img src="03-13.png" alt="" /></p>
+
+<p>名前に”helloworld-app”と入力、VCNに<a href="#2-1-oracle-functionsが利用するvcnの作成">2-1. Oracle Functionsが利用するVCNの作成</a>で作成したネットワーク名を選択、サブネットにVCNに紐づくパブリックサブネットを選択、シェイプに<code class="language-plaintext highlighter-rouge">GENERIC_X86</code>を選択し、”作成”をクリックします。
+<img src="03-14.png" alt="" /></p>
+
+<p>以上で、Oracle Functionsのアプリケーションの作成は完了です。</p>
+
+<h3 id="2-3-oci-functionsのサンプルアプリケーション実行">2-3. OCI Functionsのサンプルアプリケーション実行</h3>
+
+<p>ここでは、OCI Functionsのサンプルアプリケーションを実行します。<br />
+アプリケーションの実行にはいくつかの手順が必要ですが、<a href="#2-2-Oracle Functionsのアプリケーションの作成">2-2. Oracle Functionsのアプリケーションの作成</a>で作成したアプリケーションにスタートガイドがあるので、こちらの手順をベースに実施します。</p>
+
+<p>先ほど作成したアプリケーションをクリックします。</p>
+
+<p><img src="05-01.png" alt="" /></p>
+
+<p>左下にある<code class="language-plaintext highlighter-rouge">スタート・ガイド</code>をクリックします。</p>
+
+<p><img src="05-02.png" alt="" /></p>
+
+<p>こちらにJavaのサンプルアプリケーション実行までを整理した手順があるので、こちらをベースに移行の手順を実施します。</p>
+
+<p><img src="05-03.png" alt="" /></p>
+
+<p>①~③については、ガイドにあるコマンドをCloud Shell上でそのまま実行してください。</p>
+
+<p>④については、[repo-name-prefix]を任意のコンテナイメージ名に置き換えてCloud Shell上で実行してください。</p>
+
+<div class="notice--warning">
+  <p><strong>集合ハンズオンや共有環境の場合</strong><br />
+集合ハンズオンなどの1つの環境を複数人で共有している場合、コンテナイメージパスが重複する場合があります。<br />
+その場合は、コンテナイメージ名にイニシャルを付与するなど、重複をしないようにコンテナイメージ名をきめてください。</p>
+
+</div>
+
+<p>⑤については、ガイドのリンクをクリックします。　　</p>
+
+<p>ユーザーの詳細画面の左側のメニューで、”認証トークン”をクリックし、さらに”トークンの生成”をクリックします。
+<img src="02-02.png" alt="" /></p>
+
+<p>“説明”に”This token is used for Oracle Functions Handson”と入力し、”トークンの生成”をクリックします。
+<img src="02-03.png" alt="" /></p>
+
+<p>以下の画面が表示されるので、”コピー”をクリックし、これを手元のテキストエディタなどにペーストしておきます。
+<img src="02-04.png" alt="" /></p>
+
+<p>⑥〜⑪については、ガイドにあるコマンドをCloud Shell上でそのまま実行してください。</p>
+
+<p>⑪の実行後に以下が表示されれば、OCI Functionsを無事に実行できています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>takuya_nii@cloudshell:hello-java <span class="o">(</span>ap-tokyo-1<span class="o">)</span><span class="nv">$ </span>fn invoke helloworld-app hello-java
+Hello, world!
+</code></pre></div></div>
+
+<h2 id="オプション3podman環境で作業する場合">【オプション】3.Podman環境で作業する場合</h2>
+<p>この手順は、Dockerの代わりにPodmanがインストールされた環境向けの手順です。<br />
+Dockerを利用する方はこの手順は無視してください。<br />
+Cloud Shellを利用している方は、この手順は不要です。<br />
+なお、PodmanはFn Project CLI v0.6.12以降で利用可能です。</p>
+
+<p>Fn CLIのconfigを編集し、利用するコンテナエンジンを以下のようにPodmanに変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ~/.fn/config.yaml
+</code></pre></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">cli-version</span><span class="pi">:</span> <span class="s">0.6.13</span>
+<span class="na">container-enginetype</span><span class="pi">:</span> <span class="s">podman</span> <span class="c1"># &lt;== "docker"から"podman"に変更</span>
+<span class="na">current-context</span><span class="pi">:</span> <span class="s">ap-tokyo-1</span>
+</code></pre></div></div>
+
+<p>以上で、Podman環境設定は完了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=Oracle+Functions+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-for-beginners%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-for-beginners%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/cloud-native/functions-for-beginners/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=Oracle+Functions+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-for-beginners%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/fn-for-beginners/" class="pagination--pager" title="Fn Project ハンズオン">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/" class="pagination--pager" title="Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

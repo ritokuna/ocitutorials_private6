@@ -1,0 +1,880 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>212: Autonomous Database を災害対策構成にしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="DRを構成するにはどうしたら良いでしょうか？ADBでは数回クリックするだけでスタンバイ・データベースを簡単にプロビジョニングできます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="212: Autonomous Database を災害対策構成にしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb212-audg/">
+
+
+  <meta property="og:description" content="DRを構成するにはどうしたら良いでしょうか？ADBでは数回クリックするだけでスタンバイ・データベースを簡単にプロビジョニングできます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb212-audg/img1.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-30T23:17:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb212-audg/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb212-audg/img1.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          212: Autonomous Database を災害対策構成にしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">DRを構成するにはどうしたら良いでしょうか？ADBでは数回クリックするだけでスタンバイ・データベースを簡単にプロビジョニングできます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">212: Autonomous Database を災害対策構成にしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb111-select-ai/">111: SELECT AIを試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/" class="active">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb220-autoworkload-replay/">220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb221-autopartitioning/">221 : 自動パーティション化（Automatic Partitioning）を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb404-cloud-link/">404 : クラウド・リンクによるデータ共有をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="212: Autonomous Database を災害対策構成にしてみよう">
+    <meta itemprop="description" content="DRを構成するにはどうしたら良いでしょうか？ADBでは数回クリックするだけでスタンバイ・データベースを簡単にプロビジョニングできます。">
+    <meta itemprop="datePublished" content="2025-07-30T23:17:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-autonomous-data-guard">1. Autonomous Data Guard</a><ul><li><a href="#1-1-ローカルautonomous-data-guard-の有効化">1-1. ローカルAutonomous Data Guard の有効化</a></li><li><a href="#1-2-autonomous-data-guard-のスイッチオーバー">1-2. Autonomous Data Guard のスイッチオーバー</a></li><li><a href="#1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</a></li><li><a href="#1-4-autonomous-data-guard-のその他の機能">1-4. Autonomous Data Guard のその他の機能</a></li></ul></li><li><a href="#2-バックアップベースのディザスタリカバリ">2. バックアップベースのディザスタ・リカバリ</a><ul><li><a href="#2-1-ローカルバックアップベースのディザスタリカバリ">2-1. ローカル・バックアップベースのディザスタ・リカバリ</a></li><li><a href="#2-2-クロスリージョンバックアップベースのディザスタリカバリ">2-2. クロスリージョン・バックアップベースのディザスタ・リカバリ</a></li></ul></li><li><a href="#おわりに">おわりに</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>Autonomous Database ではReal Application Clusters(RAC)やAutomatic Storage Management(ASM)などの高可用性技術が事前構成済みです。そのため、単一のDBサーバー障害やストレージ障害については、RTO/RPOがほぼ0(SLO: サービスレベル目標)で復旧させることが可能です。</p>
+
+<p>それらに加え、有償オプションとして、大きく2種類の災害対策ソリューションが提供されています。</p>
+
+<p>それがAutonomous Data Guardとバックアップベースのディザスタ・リカバリです。Autonomous Data Guard は、本番環境用インスタンス(プライマリ・インスタンス)のスタンバイ・データベースを構成する事ができます。これによって、Autonomous Database インスタンスにデータ保護およびディザスタ・リカバリを実現可能です。Autonomous Data Guard が有効になっている場合、全ノード障害やリージョン障害などの大規模障害の際に、フェイルオーバーやスイッチオーバーが可能なスタンバイ・データベースを提供します。なおAutonomous Data Guard のスタンバイ・データベースへはデータ操作や接続ができません。</p>
+
+<p>バックアップベースのディザスタ・リカバリは、デフォルトで取得されている自動バックアップのコピーを、本番環境用インスタンスのリージョンと異なるリージョンに保管しておくことができます。こちらもAutonomous Data Guard と同様、リージョン障害時に別のリージョンで本番環境と同等の環境をバックアップから構成することで、ディザスタ・リカバリを実現可能です。</p>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-autonomous-data-guard">1. Autonomous Data Guard</a>
+    <ul>
+      <li><a href="#1-1-ローカルautonomous-data-guard-の有効化">1-1. ローカルAutonomous Data Guard の有効化</a></li>
+      <li><a href="#1-2-autonomous-data-guard-のスイッチオーバー">1-2. Autonomous Data Guard のスイッチオーバー</a></li>
+      <li><a href="#1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</a></li>
+      <li><a href="#1-4-autonomous-data-guard-のその他の機能">1-4. Autonomous Data Guard のその他の機能</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-バックアップベースのディザスタリカバリ">2. バックアップベースのディザスタ・リカバリ</a>
+    <ul>
+      <li><a href="#2-1-ローカルバックアップベースのディザスタリカバリ">2-1. ローカル・バックアップベースのディザスタ・リカバリ</a></li>
+      <li><a href="#2-2-クロスリージョンバックアップベースのディザスタリカバリ">2-2. クロスリージョン・バックアップベースのディザスタ・リカバリ</a></li>
+    </ul>
+  </li>
+  <li><a href="#おわりに">おわりに</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間:</strong> 約30分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-autonomous-data-guard">1. Autonomous Data Guard</h1>
+<p>まずはスタンバイ・データベースを構成するAutonomous Data Guard を有効化してみます。</p>
+
+<p>Autonomous Database は<strong>SLA 99.95%</strong>で提供されますが、Autonomous Data Guard構成時には<strong>SLA 99.995%</strong>で提供されます。</p>
+
+<p>Autonomous Data Guard には2種類あり、プライマリ・インスタンスと同じリージョンにスタンバイ・データベースを構成する<strong>ローカル Autonomous Data Guard</strong>と、異なるリージョンにスタンバイ・データベースを構成する<strong>クロス・リージョン Autonomous Data Guard</strong>があります。</p>
+
+<p><img src="AuDG1.jpg" alt="AuDG1" /></p>
+
+<p>ローカルとクロス・リージョンでは、対応できる障害やRPO/RTO、追加コストが異なります。以下をご参照ください。</p>
+
+<p><img src="AuDG2.jpg" alt="AuDG2" /></p>
+
+<p>なおローカルAutonomous Data Guard では、複数のAvailability Domain(AD)のあるリージョンでは、異なるAD上にプロビジョニングされ、1つのADのみあるリージョンでは、スタンバイ・データベースはプライマリと異なるFault Domain(異なるExadata環境)上にプロビジョニングされます。これにより、全ノード障害やストレージの完全な障害などの物理マシン全体が被害を受けるケースにおいても、スタンバイ・データベースは異なる環境にあるため復旧することが可能です。</p>
+
+<p>コストについて、例えばプライマリ・インスタンスを10ECPU、ストレージ1TBのADBで運用していた場合、それぞれの追加コストは以下のようになります。</p>
+<ul>
+  <li>ローカル Autonomous Data Guard: 10ECPU、ストレージ1TB</li>
+  <li>クロス・リージョン Autonomous Data Guard: 10ECPU、ストレージ2TB</li>
+</ul>
+
+<p>なおスタンバイ・データベースでは、プライマリ・インスタンスの自動スケーリングでスケールした分のCPU課金は発生しません。設定ECPUのみの課金となります。</p>
+
+<p><br />
+<a id="anchor1-1"></a></p>
+
+<h2 id="1-1-ローカルautonomous-data-guard-の有効化">1-1. ローカルAutonomous Data Guard の有効化</h2>
+<p>実際にAutonomous Data Guard を有効化してみます。</p>
+
+<ol>
+  <li>
+    <p>Autonomous Databaseの詳細画面の[ディザスタ・リカバリ]の<strong>Autonomous Data Guardにアップグレード</strong>をクリックします。デフォルトではプライマリ・インスタンスと同じリージョンにバックアップが取得されているため、『ローカル: バックアップベース』と記載されています。</p>
+
+    <p><img src="AuDG3.jpg" alt="AuDG3" /></p>
+  </li>
+  <li>
+    <p>今回プライマリ・インスタンスは東京リージョンに作成してあるため、リージョンは東京となっています。ディザスタ・リカバリ・タイプとして、Autonomous Data Guard とバックアップベースのディザスタ・リカバリの2種類表示されています。上記の通りローカルのバックアップベースのディザスタ・リカバリはデフォルトで構成されている自動バックアップと同義のため、こちらを選択しても構成に変更は起きません。Autonomous Data Guard を選択し、送信ボタンをクリックします。</p>
+
+    <p><img src="AuDG4.jpg" alt="AuDG4" /></p>
+
+    <blockquote>
+      <p>（補足）
+データ損失制限(秒)のある自動フェイルオーバーについて</p>
+
+      <p>ローカル Autonomous Data Guard では障害発生時の自動フェイルオーバーがサポートされています。</p>
+
+      <p>プライマリ・インスタンスが利用できなくなり、ユーザーが接続できない場合、ローカルのスタンバイ・データベースが利用可能であれば自動的にスタンバイ・データベースにフェイルオーバーします。</p>
+
+      <p>自動フェイルオーバーを行うのは、データ損失が上記で0(デフォルト)~3600秒の間で設定した制限内であることを保証できる場合のみです。</p>
+
+      <p>例えばデータ損失制限を60秒と設定した場合に、データ損失が60秒以内であれば自動フェイルオーバーを実施しますが、60秒以上であれば自動フェイルオーバーは行いません。この場合はユーザーによる手動フェイルオーバーでの復旧が必要となります。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>画面左上のステータスがオレンジ色の更新中に変化しました。完了するまで数分待ってみましょう。なおスタンバイ・データベースの構成中であっても、データベース操作に影響はなく、ダウンタイムは発生しません。</p>
+
+    <p><img src="AuDG5.jpg" alt="AuDG5" /></p>
+  </li>
+  <li>
+    <p>プロビジョニングが完了し、ステータスが緑色の使用可能に戻りました。ADBの詳細画面の[ディザスタ・リカバリ]は<strong>ローカル: Autonomous Data Guard</strong>に変更されています。また左下の[リソース]のディザスタ・リカバリをクリックすると、以下のようにDRタイプがAutonomous Data Guard表示になっています。</p>
+
+    <p><img src="AuDG6.jpg" alt="AuDG6" /></p>
+
+    <p><img src="AuDG7.jpg" alt="AuDG7" /></p>
+  </li>
+  <li>
+    <p>ここでターミナルからADBにSQL*Plusで接続してみます。現在のプライマリ・インスタンスの情報を下記のSQL文で確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="k">admin</span><span class="o">/&lt;</span><span class="k">ADMIN</span><span class="err">ユーザのパスワード</span><span class="o">&gt;@&lt;</span><span class="n">ADB</span><span class="err">の接続サービス</span><span class="o">&gt;</span>
+</code></pre></div>    </div>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> 
+<span class="n">DBID</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">DB_UNIQUE_NAME</span>
+<span class="k">FROM</span> 
+<span class="n">V</span><span class="err">$</span><span class="k">DATABASE</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p><img src="AuDG8.jpg" alt="AuDG8" /></p>
+
+    <p>スイッチオーバーの前後でDBID、NAME、DB_UNIQUE_NAMEが変化することを確認したいと思うので、SQLの出力結果をメモ帳などにメモしておいてください。</p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor1-2"></a></p>
+
+<h2 id="1-2-autonomous-data-guard-のスイッチオーバー">1-2. Autonomous Data Guard のスイッチオーバー</h2>
+<p>Autonomous Data Guard を有効化できたので、続いてスタンバイ・データベースにスイッチオーバーして、ロール変更します。
+スイッチオーバーは一般的に、実際の障害時のフェイルオーバーのテスト目的で行われます。スイッチオーバー後は、これまでのスタンバイ・データベースがプライマリに、これまでのプライマリ・インスタンスがスタンバイに変更されます。</p>
+
+<ol>
+  <li>
+    <p>ADB詳細画面に戻り、スイッチオーバーをします。ADBの詳細画面の[ディザスタ・リカバリ]の<strong>スイッチオーバー</strong>をクリックして下さい。</p>
+
+    <p><img src="AuDG9.jpg" alt="AuDG9" /></p>
+  </li>
+  <li>
+    <p>DB名の入力確認があるので、以下のように入力してスイッチオーバーします。</p>
+
+    <p><img src="AuDG10.jpg" alt="AuDG10" /></p>
+  </li>
+  <li>
+    <p>数分でスイッチオーバーが完了しました。ここでターミナルからADBにSQL*Plusでログインしましょう。スイッチオーバー後のプライマリの情報を下記のSQL文でクエリします。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="k">admin</span><span class="o">/&lt;</span><span class="k">ADMIN</span><span class="err">ユーザのパスワード</span><span class="o">&gt;@&lt;</span><span class="n">ADB</span><span class="err">の接続サービス</span><span class="o">&gt;</span>
+</code></pre></div>    </div>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> 
+<span class="n">DBID</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">DB_UNIQUE_NAME</span>
+<span class="k">FROM</span> 
+<span class="n">V</span><span class="err">$</span><span class="k">DATABASE</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p><img src="AuDG11.jpg" alt="AuDG11" /></p>
+
+    <p>問合せたDBID、NAME、DB_UNIQUE_NAMEは、スイッチオーバー前に接続していたDBとは異なる情報です。適切にスイッチオーバーされたのが確認できます。</p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor1-3"></a></p>
+
+<h2 id="1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</h2>
+<p>続いてクロスリージョンでのAutonomous Data Guard を構成してみます。プライマリを東京に作成している場合、クロスリージョンでのスタンバイ・データベースの作成先としては、大阪・ソウルリージョンがあります。</p>
+
+<ol>
+  <li>
+    <p>ADBの詳細画面の左下、リソースの[ディザスタ・リカバリ]をクリックし、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+    <p><img src="AuDG12.jpg" alt="AuDG12" /></p>
+  </li>
+  <li>
+    <p>リージョンを選択すると、ディザスタ・リカバリ・タイプの選択ができます。<strong>Autonomous Data Guard</strong>を選択します。</p>
+
+    <p><img src="AuDG13.jpg" alt="AuDG13" /></p>
+
+    <blockquote>
+      <p>（補足）
+クロスリージョン・バックアップ・レプリケーションの有効化について</p>
+
+      <p>デフォルトではクロスリージョン・スタンバイ・データベースでは、プライマリと異なり自動バックアップが取得されません。そのためスタンバイ・データベースにスイッチオーバー/フェイルオーバーした直後は、自動バックアップを使用したリストアやクローニングが実行できません。</p>
+
+      <p>しかしこの機能を有効化すると、最大7日間までの自動バックアップがスタンバイ側リージョンにレプリケートされるため、最大7日間以内であれば、新プライマリ(旧スタンバイ)DBをリストア、クローニングすることができます。</p>
+
+      <p>なおレプリケートされたバックアップは、7日後もしくは自動バックアップの保持期間が7日未満の場合は、その保持期間の日数が経過すると削除されます。またレプリケートされたバックアップは、バックアップ分の追加コストが発生します。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>プライマリ・インスタンスのネットワーク・アクセス・タイプが<strong>プライベート・エンドポイント・アクセス</strong>の場合、スタンバイのネットワーク・アクセスを設定する必要があります。ここでは大阪側のVCNとサブネットを選択して、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+    <p><img src="AuDG14.jpg" alt="AuDG14" /></p>
+  </li>
+  <li>
+    <p>画面左上のステータスがオレンジ色の更新中に変化しました。完了するまで数分待ってみましょう。なおスタンバイ・データベースの構成中であっても、データベース操作に影響はなく、ダウンタイムは発生しません。</p>
+
+    <p><img src="AuDG5.jpg" alt="AuDG5" /></p>
+  </li>
+  <li>
+    <p>スタンバイ・データベースが構成されると、以下のように大阪リージョンに<em>DB名_KIX</em>というインスタンスが作成されます。</p>
+
+    <p><img src="AuDG15.jpg" alt="AuDG15" /></p>
+  </li>
+</ol>
+
+<p>クロスリージョンAutonomous Data Guard では、自動フェイルオーバーがサポートされていないため、ユーザーによる手動フェイルオーバーを行う必要があります。</p>
+
+<p>実際の障害時には、まずローカルAutonomous Data Guard と同じ要領でスイッチオーバーを試みます。スイッチオーバーが失敗した場合、OCIコンソール上にフェイルオーバーを行うリンクが表示されます。ここではデータ損失が発生し得る時間も同時に表示されます。以下がサンプルです。</p>
+
+<p><img src="adb_failover_manual.png" alt="adb_failover_manual" /></p>
+
+<p>Autonomous Database は、RTO: 15分、RPO: 1分というサービスレベル目標(SLO)を基準にフェイルオーバーを行います。</p>
+
+<p><br />
+<a id="anchor1-4"></a></p>
+
+<h2 id="1-4-autonomous-data-guard-のその他の機能">1-4. Autonomous Data Guard のその他の機能</h2>
+<p>Autonomous Data Guard には、本記事でご紹介した以外にもいくつか補足機能があります。</p>
+
+<ol>
+  <li>
+    <p>スナップショット・スタンバイ</p>
+
+    <p>Autonomous Data Guard で作成したスタンバイ・データベースは、データ操作はもちろんDB接続はできませんが、このスナップショット・スタンバイ機能を使用すれば、<strong>2日間まで</strong>であれば読み書き可能なインスタンスとしてスタンバイ・データベースを活用できます。スナップショット・スタンバイになっている間は、プライマリからのREDO(更新データ)は転送されるものの、適用はされません。ユーザーが明示的にスナップショット・スタンバイから通常のスタンバイ・データベースに戻すか2日間が経過すれば、プライマリに自動的に再接続されます。そしてスナップショット・スタンバイ中に更新されたデータは破棄され、REDOの適用が再開されます。</p>
+
+    <p>スタンバイ・データベースの詳細画面から、[その他のアクション]の<strong>スナップショット・スタンバイ・データベースへの変換</strong>をクリックします。</p>
+
+    <p><img src="AuDG16.jpg" alt="AuDG16" /></p>
+
+    <p>ソース・データベース名(プライマリ)を入力して変換を行います。</p>
+
+    <p><img src="AuDG17.jpg" alt="AuDG17" /></p>
+
+    <p>これでスタンバイ・データベースは最大2日間読み書き可能なインスタンスになりました。通常のスタンバイ・データベースに戻す際は、<strong>ディザスタ・リカバリ・ピア・データベースへの変換</strong>をクリックします。</p>
+
+    <p><img src="AuDG18.jpg" alt="AuDG18" /></p>
+  </li>
+  <li>
+    <p>クロステナンシのAutonomous Data Guard
+Autonomous Data Guard では、プライマリと異なるテナンシにスタンバイ・データベースを作成することができます。Autonomous Data Guard の本来の目的であるスイッチオーバー、フェイルオーバーを異なるテナンシにできることに加え、Autonomous Database を他のテナンシに移行する際にもこちらの機能を利用することができます。</p>
+
+    <p>具体的な手順については、<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/autonomous-data-guard-cross-tenancy.html#GUID-D53D86E6-9A6E-4E6D-8516-3394B3F1CB2C" target="_blank">こちら</a>をご参照ください。</p>
+  </li>
+  <li>
+    <p>スタンバイ・データベースに関するイベント通知
+Autonomous Data Guard でスタンバイ・データベースを構成する場合、OCI EventsやOCI Notificationsサービスと組み合わせて、以下のようなイベント通知をすることができます。ユーザーはこれらを受け取って、障害発生時の対応や状況確認をよりスムーズに行うことができます。</p>
+    <ul>
+      <li>自動フェイルオーバーの開始/終了(ローカルAutonomous Data Guard のみ)</li>
+      <li>Autonomous Data Guard の無効化の開始/終了</li>
+      <li>Autonomous Data Guard の有効化の開始/終了</li>
+      <li>手動フェイルオーバーの開始/終了</li>
+      <li>スイッチオーバーの開始/終了</li>
+    </ul>
+
+    <p>EventsやNotificationsとの連携方法については、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb503-monitoring/" target="_blank">こちら</a>をご参照ください。</p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor2"></a></p>
+
+<h1 id="2-バックアップベースのディザスタリカバリ">2. バックアップベースのディザスタ・リカバリ</h1>
+<p>ここではバックアップベースのディザスタ・リカバリを有効にしてみます。</p>
+
+<p><br />
+<a id="anchor2-1"></a></p>
+
+<h2 id="2-1-ローカルバックアップベースのディザスタリカバリ">2-1. ローカル・バックアップベースのディザスタ・リカバリ</h2>
+<p>ADBではデフォルトで自動バックアップが取得されています。自動バックアップがローカル(ADBインスタンスと同じリージョン)・バックアップコピーとして取得されています。そのため、追加コストとしては発生せず、自動バックアップ分の課金のみになります。</p>
+
+<p>ADBの詳細画面の[リソース]の<strong>ディザスタ・リカバリ</strong>をクリックすると、デフォルトでは以下のようになっています。</p>
+
+<p><img src="backupbase1.jpg" alt="backupbase1" /></p>
+
+<p>※ADBプロビジョニング直後など自動バックアップが取られていない場合、表示されないケースがあります。</p>
+
+<p>このバックアップコピーの右の3点リーダーをクリックすると、以下の項目が表示されます。</p>
+
+<p><img src="backupbase2.jpg" alt="backupbase2" /></p>
+
+<ul>
+  <li>
+    <p>スイッチオーバー: 現在プロビジョニングされているExadata環境と異なるExadata環境に、バックアップからインスタンス化することでスイッチオーバーします。スイッチオーバーまでの時間はADBストレージ量に比例して長くなります。
+ <img src="backup-based-dr-local.png" alt="backup-based-dr-local" /></p>
+  </li>
+  <li>ディザスタ・リカバリの更新: バックアップコピーからローカルAutonomous Data Guard にディザスタ・リカバリ・タイプを変更します。</li>
+  <li>ピアの無効化(クリック不可): ローカル・バックアップコピーは自動バックアップ同様無効化できません。</li>
+</ul>
+
+<p><br />
+<a id="anchor2-2"></a></p>
+
+<h2 id="2-2-クロスリージョンバックアップベースのディザスタリカバリ">2-2. クロスリージョン・バックアップベースのディザスタ・リカバリ</h2>
+<p>ローカルとは別に、ADBがプロビジョニングされているリージョンと異なるリージョンに、バックアップコピーを取っておくことができます。クロスリージョンの場合はローカルとは異なり、追加コストとしてコピーするバックアップ(プライマリで課金される自動バックアップに必要なストレージ)の2倍の課金がかかります。</p>
+
+<p><img src="backup-based-dr-cross-region.png" alt="backup-based-dr-cross-region" /></p>
+
+<p>それではクロスリージョンのバックアップベースのディザスタ・リカバリを有効にしてみます。</p>
+
+<p>ADBの詳細画面の[リソース]のディザスタ・リカバリをクリックして、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+<p><img src="backupbase3.jpg" alt="backupbase3" /></p>
+
+<p>次にリージョンを選択します。東京リージョンの場合、大阪リージョンとソウルリージョンが選択できます。ここでは大阪リージョンを選択します。</p>
+
+<p>ディザスタ・リカバリ・タイプの選択は、<strong>バックアップベース・ディザスタ・リカバリ</strong>を選択します。</p>
+
+<p><img src="backupbase4.jpg" alt="backupbase4" /></p>
+
+<p>クロスリージョン・バックアップ・レプリケーションの有効化については、<a href="#1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</a>に記載があるので、そちらをご参照ください。</p>
+
+<p>プライマリ・インスタンスのネットワーク・アクセス・タイプが<strong>プライベート・エンドポイント・アクセス</strong>の場合、スタンバイのネットワーク・アクセスを設定する必要があります。ここでは大阪側のVCNとサブネットを選択して、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+<p><img src="AuDG14.jpg" alt="AuDG14" /></p>
+
+<p>少し待つと、大阪リージョン側に<em>DB名_KIX</em>が作成されます。</p>
+
+<p><img src="backupbase5.jpg" alt="backupbase5" /></p>
+
+<p>ロール: バックアップ・コピーとなっているため、このインスタンスに接続することはできません。</p>
+
+<p>Autonomous Data Guard と同様の手順で、スイッチオーバーや、プライマリ障害時にはこのバックアップ・コピーを用いたフェイルオーバーが可能です。</p>
+
+<p><br />
+<a id="おわりに"></a></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>このチュートリアルでは、ADBで設定可能な災害対策ソリューションについてご紹介しました。ADBではデフォルトで高可用性構成になっているものの、特にミッションクリティカルなシステムでは、広域障害への対策が必要になってきます。そのような場合に今回ご紹介したソリューションが使用可能です。それぞれのソリューションで、RTO/RPO、コストが変わってくるので、システムの要件に応じてご選択いただければと思います。</p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-30T23:17:22+09:00">July 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=212%3A+Autonomous+Database+%E3%82%92%E7%81%BD%E5%AE%B3%E5%AF%BE%E7%AD%96%E6%A7%8B%E6%88%90%E3%81%AB%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb212-audg%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb212-audg%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/adb/adb212-audg/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=212%3A+Autonomous+Database+%E3%82%92%E7%81%BD%E5%AE%B3%E5%AF%BE%E7%AD%96%E6%A7%8B%E6%88%90%E3%81%AB%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb212-audg%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb211-clone/" class="pagination--pager" title="211: クローン機能を活用しよう">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb213-tac/" class="pagination--pager" title="213 : Application Continuityを設定しよう">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
