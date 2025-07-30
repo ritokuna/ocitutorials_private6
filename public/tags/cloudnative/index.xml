@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloudnative on OCIチュートリアル</title>
+    <link>http://localhost:1313/ocitutorials_private6/tags/cloudnative/</link>
+    <description>Recent content in Cloudnative on OCIチュートリアル</description>
+    <generator>Hugo</generator>
+    <language>ja</language>
+    <lastBuildDate>Wed, 06 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/ocitutorials_private6/tags/cloudnative/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cloud Nativeチュートリアル</title>
+      <link>http://localhost:1313/ocitutorials_private6/cloud-native/</link>
+      <pubDate>Wed, 06 Apr 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/ocitutorials_private6/cloud-native/</guid>
+      <description>&lt;p&gt;このページでは、Oracle Cloud Infrastructure(OCI)の各コンテナ/サーバレス関連サービスやCI/CDサービスのチュートリアルをまとめています。&lt;br&gt;&#xA;各チュートリアルごとにステップ・バイ・ステップで学ぶことができ、各サービスの基本的な機能、操作やオペレーションについて学習することができます。&lt;/p&gt;&#xA;&lt;div class=&#34;flex align-center gdoc-page__anchorwrap&#34;&gt;&#xA;    &lt;h1 id=&#34;1-oracle-cloud-infrastructure-devopsチュートリアル&#34;&#xA;    &gt;&#xA;        1. Oracle Cloud Infrastructure DevOpsチュートリアル&#xA;    &lt;/h1&gt;&#xA;    &lt;a data-clipboard-text=&#34;http://localhost:1313/ocitutorials_private6/cloud-native/#1-oracle-cloud-infrastructure-devopsチュートリアル&#34; class=&#34;gdoc-page__anchor clip flex align-center&#34; title=&#34;アンカー先: 1. Oracle Cloud Infrastructure DevOpsチュートリアル&#34; aria-label=&#34;アンカー先: 1. Oracle Cloud Infrastructure DevOpsチュートリアル&#34; href=&#34;#1-oracle-cloud-infrastructure-devops%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab&#34;&gt;&#xA;        &lt;svg class=&#34;gdoc-icon gdoc_link&#34;&gt;&lt;use xlink:href=&#34;#gdoc_link&#34;&gt;&lt;/use&gt;&lt;/svg&gt;&#xA;    &lt;/a&gt;&#xA;&lt;/div&gt;&#xA;&lt;!-- ## 事前準備編 --&gt;&#xA;&lt;div class=&#34;flex align-center gdoc-page__anchorwrap&#34;&gt;&#xA;    &lt;h2 id=&#34;事前準備編&#34;&#xA;    &gt;&#xA;        事前準備編&#xA;    &lt;/h2&gt;&#xA;    &lt;a data-clipboard-text=&#34;http://localhost:1313/ocitutorials_private6/cloud-native/#事前準備編&#34; class=&#34;gdoc-page__anchor clip flex align-center&#34; title=&#34;アンカー先: 事前準備編&#34; aria-label=&#34;アンカー先: 事前準備編&#34; href=&#34;#%e4%ba%8b%e5%89%8d%e6%ba%96%e5%82%99%e7%b7%a8&#34;&gt;&#xA;        &lt;svg class=&#34;gdoc-icon gdoc_link&#34;&gt;&lt;use xlink:href=&#34;#gdoc_link&#34;&gt;&lt;/use&gt;&lt;/svg&gt;&#xA;    &lt;/a&gt;&#xA;&lt;/div&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;&lt;a&#xA;  class=&#34;gdoc-markdown__link&#34;&#xA;  href=&#34;./devops-for-commons/&#34;&#xA;&gt;Oracle Cloud Infrastructure(OCI) DevOps事前準備&lt;/a&gt;&lt;/strong&gt;&lt;br&gt;&#xA;OCI DevOpsを利用するための事前準備を行います。まずはここから始めましょう【所要時間:約30分】&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;flex align-center gdoc-page__anchorwrap&#34;&gt;&#xA;    &lt;h2 id=&#34;初級編&#34;&#xA;    &gt;&#xA;        初級編&#xA;    &lt;/h2&gt;&#xA;    &lt;a data-clipboard-text=&#34;http://localhost:1313/ocitutorials_private6/cloud-native/#初級編&#34; class=&#34;gdoc-page__anchor clip flex align-center&#34; title=&#34;アンカー先: 初級編&#34; aria-label=&#34;アンカー先: 初級編&#34; href=&#34;#%e5%88%9d%e7%b4%9a%e7%b7%a8&#34;&gt;&#xA;        &lt;svg class=&#34;gdoc-icon gdoc_link&#34;&gt;&lt;use xlink:href=&#34;#gdoc_link&#34;&gt;&lt;/use&gt;&lt;/svg&gt;&#xA;    &lt;/a&gt;&#xA;&lt;/div&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;&lt;a&#xA;  class=&#34;gdoc-markdown__link&#34;&#xA;  href=&#34;./devops-for-beginners-compute&#34;&#xA;&gt;初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-&lt;/a&gt;&lt;/strong&gt;&lt;br&gt;&#xA;ここでは、OCI Computeを利用したアプリケーション環境の構築、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
