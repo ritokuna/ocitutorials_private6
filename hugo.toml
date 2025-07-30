@@ -1,0 +1,53 @@
+defaultContentLanguage = 'ja'
+baseURL = 'https://ritokuna.github.io/ocitutorials_private6/'
+# languageCode = 'ja'
+title = 'OCIチュートリアル'
+theme = "hugo-geekdoc"
+
+pluralizeListTitles = false
+
+# Geekdoc required configuration
+pygmentsUseClasses = true
+pygmentsCodeFences = true
+disablePathToLower = true
+
+# Required if you want to render robots.txt template
+enableRobotsTXT = true
+
+enableGitInfo = true
+
+geekdocRepo = "https://github.com/ritokuna/ocitutorials_private6"
+
+# Needed for mermaid shortcodes
+[markup]
+  [markup.goldmark.renderer]
+    # Needed for mermaid shortcode or when nesting shortcodes (e.g. img within
+    # columns or tabs)
+    unsafe = true
+  [markup.tableOfContents]
+    startLevel = 1
+    endLevel = 9
+
+[taxonomies]
+   tag = "tags"
+
+[outputs]
+   home = ["HTML", "JSON"]
+   section = ["HTML", "JSON"]
+   page = ["HTML"]
+
+[params]
+  customCSS = ["./custom.css"]
+  favicon = "./img/favicon.ico"
+  geekdocLogo = "./img/theo_white.png"
+  geekdocMenuBundle = false
+  geekdocPageLastmod = true
+  geekdocBreadcrumb = true
+  geekdocTagsToMenu = true
+  geekdocBackToTop = true                    # topへ戻るボタン
+
+
+
+[params.geekdocContentLicense]
+  name = "日本オラクル株式会社"
+  link = "https://www.oracle.com/jp/"

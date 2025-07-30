@@ -3,7 +3,8 @@ title: "アーキテクチャベースのチュートリアル"
 excerpt: "3層Webアーキテクチャベースで関連サービスのチュートリアルについて学習できるチュートリアルです。"
 permalink: /od_cso_initiative/
 layout: single
-tags: "od_cso"
+tags: 
+  - "od_cso"
 show_excerpts: true
 toc: true
 date: "2024-10-31"

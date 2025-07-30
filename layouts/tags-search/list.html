@@ -1,0 +1,146 @@
+{{ define "main" }}
+<div class="layout-container">
+  <div class="sidebar">
+    <h2>タグで絞り込む</h2>
+    <div id="tag-filters">
+      <label><input type="checkbox" value="all" checked>すべて</label>
+      {{ $allTags := slice }}
+      {{ range .Site.RegularPages }}
+        {{ range .Params.tags }}
+          {{ $allTags = $allTags | append . }}
+        {{ end }}
+      {{ end }}
+      {{ $uniqueTags := $allTags | uniq | sort }}
+      {{ range $uniqueTags }}
+        <label><input type="checkbox" class="tag-checkbox" value="{{ . }}">{{ . }}</label>
+      {{ end }}
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2>記事一覧</h2>
+    <div id="filtered-results" class="articles-grid">
+      {{ range .Site.RegularPages }}
+        <div class="article-card" data-tags='{{ .Params.tags | jsonify }}'>
+          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          <p>{{ .Date.Format "2006-01-02" }}</p>
+          <p>
+            {{ range .Params.tags }}
+              <span class="tag">#{{ . }}</span>
+            {{ end }}
+          </p>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+
+<style>
+  .layout-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .sidebar {
+    width: 240px;
+    padding: 1rem;
+    background-color: #f4f4f4;
+    border-right: 1px solid #ddd;
+  }
+
+  #tag-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 1rem;
+  }
+
+  .articles-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .article-card {
+    width: 280px;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .article-card h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .article-card p {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .article-card a {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+    color: #007acc;
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const checkboxes = document.querySelectorAll(".tag-checkbox");
+    const allCheckbox = document.querySelector("input[value='all']");
+    const cards = document.querySelectorAll(".article-card");
+
+    const filterCards = () => {
+      const selectedTags = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value.toLowerCase());
+
+      cards.forEach(card => {
+        let tags = [];
+        try {
+          tags = JSON.parse(card.dataset.tags.replace(/'/g, '"')).map(tag => tag.toLowerCase());
+        } catch (e) {
+          tags = [];
+        }
+
+        if (selectedTags.length === 0) {
+          card.style.display = "flex";
+          return;
+        }
+
+        // Show card only if it matches ANY of the selected tags
+        const matchAny = selectedTags.some(tag => tags.includes(tag));
+        card.style.display = matchAny ? "flex" : "none";
+      });
+    };
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        allCheckbox.checked = false;
+        filterCards();
+      });
+    });
+
+    allCheckbox.addEventListener("change", () => {
+      if (allCheckbox.checked) {
+        checkboxes.forEach(cb => cb.checked = false);
+        cards.forEach(card => card.style.display = "flex");
+      }
+    });
+
+    // Trigger initial filter
+    filterCards();
+  });
+</script>
+{{ end }}

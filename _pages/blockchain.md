@@ -3,7 +3,8 @@ title: "Oracle Blockchain Platformチュートリアル"
 excerpt: "Oracle Blockchain Platform (OBP) を使ってみよう！という人のためのチュートリアルです。各文書ごとにステップ・バイ・ステップで作業を進めて、OBP の基本的な機能、操作やオペレーションについて学習することができます。"
 permalink: /blockchain/
 layout: single
-tags: "Blockchain"
+tags: 
+  - "Blockchain"
 show_excerpts: true
 toc: true
 ---
